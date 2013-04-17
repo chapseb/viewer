@@ -1,0 +1,9 @@
+#!/bin/bash
+#Generate gettext files
+pushd app/locale > /dev/null
+for l in fr_FR.utf8 en_US
+do
+    msgmerge -U $l.po messages.pot
+    msgfmt $l.po -o $l/LC_MESSAGES/BachViewer.mo
+done
+popd > /dev/null

@@ -1,0 +1,21 @@
+{
+    "name": "bach/viewer",
+    "description": "Advanced image viewer",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Johan Cwiklinski",
+            "email": "trasher@x-tnd.be",
+            "homepage": "http://x-tnd.be"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3.7",
+        "analog/analog": "1.0.2-stable",
+        "slim/slim": "2.2.0",
+        "slim/extras": "2.0.3",
+        "twig/twig": "v1.12.3",
+        "twig/extensions": "v1.0.0",
+        "pimple/pimple": "v1.0.2"
+    }
+}
