@@ -1,6 +1,7 @@
 <?php
 use \Slim\Slim;
 use \Slim\Extras\Views\Twig;
+use \Bach\Viewer\Picture;
 
 /** I18n stuff */
 // Set language to French
@@ -41,23 +42,43 @@ define('APP_ROOTS', '/var/www/photos/');
 define('DEFAULT_PICTURE', 'main.jpg');
 
 //main route
-$app->get('/', function () use ($app) {
-    $app->redirect('/viewer/' . DEFAULT_PICTURE);
-});
-
-$app->get('/viewer/:image', function($img) use($app) {
-    $img_path = APP_ROOTS . $img;
-    if ( $img === DEFAULT_PICTURE ) {
-        $img_path = APP_DIR . '/web/images/main.jpg';
+$app->get(
+    '/',
+    function () use ($app) {
+        $app->redirect('/viewer/' . DEFAULT_PICTURE);
     }
-    $path = '/images/main.jpg';
-    $app->render(
-        'index.html.twig',
-        array(
-            'img'   => $img,
-            'path'  => $path
-        )
-    );
-});
+);
+
+$app->get(
+    '/show/:uri',
+    function ($uri) use ($app) {
+        $picture = new Picture(base64_decode($uri));
+        //var_dump($picture);
+        $picture->display();
+    }
+);
+
+$app->get(
+    '/viewer/:image',
+    function ($img) use ($app) {
+        $picture = null;
+        //$img_path = APP_ROOTS . $img;
+        if ( $img === DEFAULT_PICTURE ) {
+            //$img_path = APP_DIR . '/web/images/main.jpg';
+            $picture = new Picture('main.jpg', WEB_DIR . '/images/');
+        } else {
+            $picture = new Picture($img);
+        }
+        //$path = '/images/main.jpg';
+        $app->render(
+            'index.html.twig',
+            array(
+                'img'   => $img,
+                //'path'  => $path
+                'picture'   => $picture
+            )
+        );
+    }
+);
 
 $app->run();
