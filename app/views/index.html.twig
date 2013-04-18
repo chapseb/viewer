@@ -4,12 +4,12 @@
         <meta charset="utf-8"/>
         <title>{% trans "Bach Viewer" %} - {{ img }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
         <link rel="stylesheet" href="/styles/viewer.css"/>
-        <script src="/scripts/viewer.js"></script>
     </head>
     <body>
-        <figure id="">
-            <img src="{{ path }}" alt=""/>
+        <figure id="viewer">
+            <!--<img src="{{ picture.getUrl() }}" alt=""/>-->
         </figure>
         <!-- Navigation dans la série - si série il y a -->
         <!--<nav>
@@ -18,5 +18,33 @@
                 </li>
             </ul>
         </nav>-->
+
+        <script src="/scripts/jquery-1.9.1.min.js"></script>
+        <script src="/scripts/jquery.ui.core.min.js"></script>
+        <script src="/scripts/jquery.ui.widget.min.js"></script>
+        <script src="/scripts/jquery.ui.mouse.min.js"></script>
+        <script src="/scripts/jquery.mousewheel.js"></script>
+        <script src="/scripts/jquery.iviewer.min.js"></script>
+        {% if iip %}
+        <script src="/scripts/mootools-core-1.4.5-full-nocompat.js"></script>
+        <script src="/scripts/mootools-more-1.4.0.1.js"></script>
+        {% endif %}
+        <script src="/scripts/viewer.js"></script>
+        <script>
+            //no conflict jquery
+            jQuery.noConflict();
+            //jquery stuff
+            (function($) {
+                var iv1 = $("#viewer").iviewer({
+                    src: "{{ picture.getUrl() }}",
+                    update_on_resize: false,
+                    zoom_animation: false,
+                    mousewheel: true,
+                    onMouseMove: function(ev, coords) { },
+                    //onStartDrag: function(ev, coords) { return false; }, //this image will not be dragged
+                    onDrag: function(ev, coords) { }
+                });
+            })(jQuery);
+        </script>
     </body>
 </html>

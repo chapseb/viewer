@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ba34e0a78943076faf633545f98b8c97",
+    "hash": "c757e8b22350ea5770350d4852c7a7f3",
     "packages": [
         {
             "name": "analog/analog",

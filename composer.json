@@ -9,6 +9,9 @@
             "homepage": "http://x-tnd.be"
         }
     ],
+    "autoload": {
+        "psr-0": { "Bach": "app/lib" }
+    },
     "require": {
         "php": ">= 5.3.7",
         "analog/analog": "1.0.2-stable",
