@@ -35,7 +35,13 @@
             jQuery.noConflict();
             //jquery stuff
             (function($) {
-                var iv1 = $("#viewer").iviewer({
+                {% if not(enable_right_click) %}
+                $(this).bind("contextmenu", function(e) {
+                    e.preventDefault();
+                });
+                {% endif %}
+
+                var viewer = $("#viewer").iviewer({
                     src: "{{ picture.getUrl() }}",
                     update_on_resize: false,
                     zoom_animation: false,
