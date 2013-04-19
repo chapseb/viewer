@@ -7,13 +7,27 @@ section {
     overflow: hidden;
 }
 
-nav {
+header, nav {
     background: url(../images/bar.png) top left repeat-x;
     position: absolute;
-    bottom: 0;
     left: 0;
     width: 100%;
     z-index: 5000;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+
+header {
+    top:0;
+}
+
+h1 {
+    margin: .2em 0;
+}
+
+nav {
+    bottom: 0;
     height: 31px;
 }
 

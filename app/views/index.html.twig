@@ -10,13 +10,18 @@
     </head>
     <body>
         <section>
-            <!--<header>
-                <h1>{{ img }}</h1>
-            </header>-->
             <figure id="viewer">
+                <header>
+                    <h1>{{ img }}</h1>
+                </header>
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
+                <select name="formats">
+                {% for key, fmt in picture.getVisibleFormats() %}
+                <option value="{{ key }}">{{ fmt }}</option>
+                {% endfor %}
+            </select>
             </figure>
             <!-- Navigation dans la série - si série il y a -->
             <!--<nav>

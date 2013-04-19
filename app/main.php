@@ -14,6 +14,7 @@ if ( !file_exists($config_file) ) {
 require '../vendor/autoload.php';
 $yaml = new Parser();
 $conf = $yaml->parse(file_get_contents(APP_DIR . '/config/config.yml'));
+$formats = $conf['formats'];
 
 /** I18n stuff */
 // Set language to French
@@ -58,7 +59,7 @@ $app->hook(
         $v = $app->view();
         $v->setData(
             'enable_right_click',
-            $conf['display']['enable_right_click']
+            $conf['ui']['enable_right_click']
         );
     }
 );
@@ -73,8 +74,8 @@ $app->get(
 
 $app->get(
     '/show/:uri',
-    function ($uri) use ($app) {
-        $picture = new Picture(base64_decode($uri));
+    function ($uri) use ($app, $formats) {
+        $picture = new Picture(base64_decode($uri), null, $formats);
         //var_dump($picture);
         $picture->display();
     }
@@ -82,14 +83,14 @@ $app->get(
 
 $app->get(
     '/viewer/:image',
-    function ($img) use ($app) {
+    function ($img) use ($app, $formats) {
         $picture = null;
         //$img_path = APP_ROOTS . $img;
         if ( $img === DEFAULT_PICTURE ) {
             //$img_path = APP_DIR . '/web/images/main.jpg';
-            $picture = new Picture('main.jpg', WEB_DIR . '/images/');
+            $picture = new Picture('main.jpg', WEB_DIR . '/images/', $formats);
         } else {
-            $picture = new Picture($img);
+            $picture = new Picture($img, null, $formats);
         }
         //$path = '/images/main.jpg';
         $app->render(

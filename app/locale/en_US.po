@@ -14,3 +14,7 @@ msgstr ""
 #: app/cache/5f/aa/a3fc467ff2e5638853ba54a06d43.php:25
 msgid "Bach Viewer"
 msgstr "Bach Viewer"
+
+#: app/lib/Bach/Viewer/Picture.php:122
+msgid "full"
+msgstr "full"
