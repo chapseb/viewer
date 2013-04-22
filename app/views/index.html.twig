@@ -32,12 +32,21 @@
             </select>
             </figure>
             <!-- Navigation dans la série - si série il y a -->
-            <!--<nav>
+            <nav>
                 <ul>
-                    <li>
-                    </li>
+                    <!-- Zoom out -->
+                    <li id="zoomout" title="{% trans "Zoom in" %}"></li>
+                    <li id="zoomin" title="{% trans "Zoom out" %}"></li>
+                    <li id="fullsize" title="{% trans "Show full size image" %}"></li>
+                    <li id="fitsize" title="{% trans "Fit image to screen" %}"></li>
+                    <li id="zoominfos"></li>
+                    {% if not(iip) %}
+                    <li id="lrotate" title="{% trans "Rotate 90° by left" %}"></li>
+                    <li id="rrotate" title="{% trans "Rotate 90° by right" %}"></li>
+                    {% endif %}
+                    <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
                 </ul>
-            </nav>-->
+            </nav>
         </section>
 
         <script type="text/javascript" src="/scripts/jquery/jquery-1.9.1.min.js"></script>
@@ -68,15 +77,43 @@
                 });
                 {% endif %}
 
-                var viewer = $("#viewer").iviewer({
+                {% if not(iip) %}
+                var viewer = $("#viewer").bviewer({
                     src: "{{ picture.getUrl() }}",
                     update_on_resize: true,
                     zoom_animation: false,
-                    mousewheel: true//,
-                    //onMouseMove: function(ev, coords) { },
-                    //onStartDrag: function(ev, coords) { return false; }, //this image will not be dragged
-                    //onDrag: function(ev, coords) { }
+                    mousewheel: true,
+                    ui_disabled: true
                 });
+                {% else %}
+
+                {% endif %}
+
+                $('#fullscreen').click(function(){
+                    toggleFullScreen();
+                });
+
+                //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
+                function toggleFullScreen() {
+                    if (!document.fullscreenElement &&    // alternative standard method
+                        !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen();
+                        } else if (document.documentElement.mozRequestFullScreen) {
+                            document.documentElement.mozRequestFullScreen();
+                        } else if (document.documentElement.webkitRequestFullscreen) {
+                            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                        }
+                    } else {
+                        if (document.cancelFullScreen) {
+                            document.cancelFullScreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitCancelFullScreen) {
+                            document.webkitCancelFullScreen();
+                        }
+                    }
+                }
             })(jQuery);
             //mootools stuff, if any
         </script>

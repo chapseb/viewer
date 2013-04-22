@@ -26,9 +26,24 @@ h1 {
     margin: .2em 0;
 }
 
+/** === Common navigation bar */
 nav {
     bottom: 0;
     height: 31px;
+}
+
+nav li {
+    display: inline-block;
+    width: 29px;
+    height: 29px;
+    margin-top: 1px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+nav li:hover {
+    background-color: black!important;
 }
 
 #viewer {
@@ -37,3 +52,41 @@ nav {
     position: relative;
     margin: 0;
 }
+
+#zoomin {
+    background-image: url(../images/iviewer/iviewer.zoom_in.gif);
+}
+
+#zoomout {
+    background-image: url(../images/iviewer/iviewer.zoom_out.gif);
+}
+
+#fullsize {
+    background-image: url(../images/iviewer/iviewer.zoom_zero.gif);
+}
+
+#fitsize {
+    background-image: url(../images/iviewer/iviewer.zoom_fit.gif);
+}
+
+#lrotate {
+    background-image: url(../images/iviewer/iviewer.rotate_left.png);
+}
+
+#rrotate {
+    background-image: url(../images/iviewer/iviewer.rotate_right.png);
+}
+
+#fullscreen {
+    background-image: url(../images/buttons/fullscreen.png);
+    background-position: 8px 7px;
+}
+
+#zoominfos {
+    font: 1em/28px Sans;
+    color: #fff;
+    text-align: center;
+    width: 60px;
+    vertical-align: 20%
+}
+/** /Common navigation bar */
