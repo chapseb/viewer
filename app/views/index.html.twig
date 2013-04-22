@@ -32,17 +32,23 @@
             </nav>-->
         </section>
 
-        <script src="/scripts/jquery-1.9.1.min.js"></script>
-        <script src="/scripts/jquery.ui.core.min.js"></script>
-        <script src="/scripts/jquery.ui.widget.min.js"></script>
-        <script src="/scripts/jquery.ui.mouse.min.js"></script>
-        <script src="/scripts/jquery.mousewheel.js"></script>
-        <script src="/scripts/jquery.iviewer.js"></script>
-        {% if iip %}
-        <script src="/scripts/mootools-core-1.4.5-full-nocompat.js"></script>
-        <script src="/scripts/mootools-more-1.4.0.1.js"></script>
+        <script type="text/javascript" src="/scripts/jquery/jquery-1.9.1.min.js"></script>
+        {% if not(iip) %}
+        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.widget.min.js"></script>
+        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.mouse.min.js"></script>
+        <script type="text/javascript" src="/scripts/jquery/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
+        <script type="text/javascript" src="/scripts/bachview/viewer.js"></script>
+        {% else %}
+        <script type="text/javascript" src="/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
+        <script type="text/javascript" src="/scripts/mootools/mootools-more-1.4.0.1.js"></script>
+        <script type="text/javascript" src="/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
+        <script type="text/javascript" src="/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.fr.js"></script>
+        <!--<script type="text/javascript" src="/scripts/iipmooviewer/touch.js"></script>-->
+        <script type="text/javascript" src="/scripts/iipmooviewer/navigation.js"></script>
         {% endif %}
-        <script src="/scripts/viewer.js"></script>
         <script>
             //no conflict jquery
             jQuery.noConflict();
