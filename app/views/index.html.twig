@@ -5,7 +5,15 @@
         <title>{% trans "Bach Viewer" %} - {{ img }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/styles/reset.css"/>
+        {% if not(iip) %}
         <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
+        {% else %}
+        <link rel="stylesheet" type="text/css" media="all" href="/styles/iip.compressed.css" />
+        <!--[if lt IE 10]>
+        <link rel="stylesheet" type="text/css" media="all" href="/styles/ie.compressed.css" />
+        <![endif]-->
+        {% endif %}
+
         <link rel="stylesheet" href="/styles/viewer.css"/>
     </head>
     <body>
