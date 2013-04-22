@@ -204,4 +204,14 @@ class Picture
     {
         return $this->_pyramidal;
     }
+
+    /**
+     * Get image full path on disk
+     *
+     * @return string
+     */
+    public function getFullPath()
+    {
+        return $this->_full_path;
+    }
 }
