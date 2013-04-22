@@ -82,23 +82,22 @@ $app->get(
 );
 
 $app->get(
-    '/viewer/:image',
-    function ($img) use ($app, $formats) {
+    '/viewer/:image+',
+    function ($img_params) use ($app, $formats) {
+        $img = array_pop($img_params);
+        $path = '/' . implode('/', $img_params);
         $picture = null;
-        //$img_path = APP_ROOTS . $img;
         if ( $img === DEFAULT_PICTURE ) {
-            //$img_path = APP_DIR . '/web/images/main.jpg';
             $picture = new Picture('main.jpg', WEB_DIR . '/images/', $formats);
         } else {
-            $picture = new Picture($img, null, $formats);
+            $picture = new Picture($img, $path, $formats);
         }
-        //$path = '/images/main.jpg';
         $app->render(
             'index.html.twig',
             array(
-                'img'   => $img,
-                //'path'  => $path
-                'picture'   => $picture
+                'img'       => $img,
+                'picture'   => $picture,
+                'iip'       => $picture->isPyramidal()
             )
         );
     }

@@ -26,10 +26,11 @@
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
                 <select name="formats">
-                {% for key, fmt in picture.getVisibleFormats() %}
-                <option value="{{ key }}">{{ fmt }}</option>
-                {% endfor %}
-            </select>
+                    {% for key, fmt in picture.getVisibleFormats() %}
+                    <option value="{{ key }}">{{ fmt }}</option>
+                    {% endfor %}
+                </select>
+                {% if iip %}<div id="pviewer"> </div>{% endif %}
             </figure>
             <!-- Navigation dans la série - si série il y a -->
             <nav>
@@ -116,6 +117,26 @@
                 }
             })(jQuery);
             //mootools stuff, if any
+            {% if iip %}
+                // IIPMooViewer options: See documentation at http://iipimage.sourceforge.net for more details
+                // Server path: set if not using default path
+                var server = '/cgi-bin/iipsrv.fcgi';
+
+                // The *full* image path on the server. This path does *not* need to be in the web
+                // server root directory. On Windows, use Unix style forward slash paths without
+                // the "c:" prefix
+                var image = '/var/www/tiffs/PalaisDuLouvre.tif';
+
+                // Copyright or information message
+                var credit = '&copy; 2013 Anaphore';
+
+                // Create our iipmooviewer object
+                new IIPMooViewer( "pviewer", {
+                    server: server,
+                    image: image,
+                    credit: credit
+                });
+            {% endif %}
         </script>
     </body>
 </html>
