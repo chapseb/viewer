@@ -27,6 +27,18 @@ class Picture
     const DEFAULT_WIDTH = 1000;
     const DEFAULT_HEIGHT = 1000;
 
+    private $_supported_types = array(
+        IMAGETYPE_GIF,
+        IMAGETYPE_JPEG,
+        IMAGETYPE_PNG,
+        IMAGETYPE_TIFF_II,
+        IMAGETYPE_TIFF_MM
+    );
+    private $_pyramidal_types = array(
+        IMAGETYPE_TIFF_II,
+        IMAGETYPE_TIFF_MM
+    );
+
     private $_path;
     private $_name;
     private $_full_path;
@@ -34,6 +46,7 @@ class Picture
     private $_height;
     private $_type;
     private $_mime;
+    private $_pyramidal = false;
     private $_formats;
 
     /**
@@ -52,28 +65,75 @@ class Picture
             //TODO: check path from roots
         }
         //normalize path
-        if ( substr($this->_path, - 1) != '/' ) {
+        if ( substr($this->_path, - 1) != '/'
+            && !substr($this->_name, 0, 1) != '/'
+        ) {
             $this->_path = $this->_path . '/';
         }
         $this->_full_path = $this->_path . $this->_name;
 
-        list(
-            $this->_width,
-            $this->_height,
-            $this->_type) = getimagesize($this->_full_path);
-        $this->_mime = image_type_to_mime_type($this->_type);
+        $exif = exif_read_data($this->_full_path);
+
+        if ( $exif === false ) {
+            //no exif data in picture, let's try another way
+            list(
+                $this->_width,
+                $this->_height,
+                $this->_type) = getimagesize($this->_full_path);
+            $this->_mime = image_type_to_mime_type($this->_type);
+        } else {
+            if ( isset($exif['ExifImageWidth']) ) {
+                $this->_width = $exif['ExifImageWidth'];
+            } else if ( isset($exif['ImageWidth']) ) {
+                $this->_width = $exif['ImageWidth'];
+            } else {
+                throw new \RuntimeException(_('Unable to get image width!'));
+            }
+
+            if ( isset($exif['ExifImageLength']) ) {
+                $this->_height = $exif['ExifImageLength'];
+            } else if ( isset($exif['ImageLength']) ) {
+                $this->_height = $exif['ImageLength'];
+            } else {
+                throw new \RuntimeException(_('Unable to get image height!'));
+            }
+
+            $this->_type = $exif['FileType'];
+            $this->_mime =  $exif['MimeType'];
+
+            //checks pyramidal images
+            if ( in_array($this->_type, $this->_pyramidal_types) ) {
+                if ( isset($exif['TileWidth']) || isset($exif['TileLength']) ) {
+                    $this->_pyramidal = true;
+                }
+            }
+        }
 
         $this->_formats = $formats;
-        $this->_checkFormats();
+
+        $this->_check();
     }
 
     /**
-     * Checks for image formats
+     * Check if image is supported
      *
      * @return void
      */
-    private function _checkFormats()
+    private function _check()
     {
+        if ( !in_array($this->_type, $this->_supported_types) ) {
+            throw new \RuntimeException(_('Unsupported image format!'));
+        }
+
+        if ( in_array($this->_type, $this->_pyramidal_types)
+            && $this->_pyramidal === false
+        ) {
+            //TODO: maybe we can convert simple TIFF files to JPEG
+            //instead of throwing an error
+            throw new \RuntimeException(
+                _('Image format not supported if not pyramidal')
+            );
+        }
     }
 
     /**
@@ -133,5 +193,15 @@ class Picture
                 'x' . $this->_height;
         }
         return $visibles;
+    }
+
+    /**
+     * Is current image pyramidal?
+     *
+     * @return Boolean
+     */
+    public function isPyramidal()
+    {
+        return $this->_pyramidal;
     }
 }
