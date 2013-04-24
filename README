@@ -21,3 +21,23 @@ bachview
     - *web*: web files that should be available from the webserver (main routing, css, js, images and so on)
     - *composer.json*: composer configuration file, for convenience
 
+Installation
+------------
+
+You'll have first to download composer:
+$ curl -sS https://getcomposer.org/installer | php
+
+Then, use it to install viewer's dependencies:
+$ php composer.phar install
+
+That last command will populate *vendor* directory with all third party
+libraries, in their relevant version.
+
+Configuration
+-------------
+
+Main configuration file is located under *app/config* directory, and is named
+config.yml (YAML syntax, see http://yaml.org/).
+
+Please be carefull editing this file, you would throw fatal errors if you remove
+a required entry.
