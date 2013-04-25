@@ -16,7 +16,7 @@ section {
     overflow: hidden;
 }
 
-header, nav {
+header, aside {
     background: url(../images/bar.png) top left repeat-x;
     position: absolute;
     left: 0;
@@ -29,20 +29,59 @@ header, nav {
 
 header {
     top:-1px;
+    height: 36px;
 }
 
 h1 {
     margin: .2em 0;
 }
 
-/** === Common navigation bar */
+/** === Serial navigation */
 nav {
+    top: 50%;
+    margin-top: -18px;
+    width: 100%;
+    position:absolute;
+}
+nav a {
+    display: inline-block;
+    position: absolute;
+    z-index: 10;
+    background-repeat: no-repeat;
+    background-image: url(../images/nav.png);
+    background-position:top left;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    text-indent: 40px;
+}
+
+#previmg {
+    left: 0;
+}
+
+#previmg:hover {
+    background-position:bottom left;
+}
+
+#nextimg {
+    right: 0;
+    background-position:top right;
+}
+
+#nextimg:hover {
+    background-position:bottom right;
+}
+/** /Serial navigation */
+
+/** === Common toolbar */
+aside {
     bottom: 0;
     height: 31px;
     cursor: default;
 }
 
-nav li {
+aside li {
     display: inline-block;
     width: 29px;
     height: 29px;
@@ -53,7 +92,7 @@ nav li {
     cursor: pointer;
 }
 
-nav li:hover {
+aside li:hover {
     background-color: black!important;
 }
 
@@ -100,4 +139,4 @@ nav li:hover {
     width: 60px;
     vertical-align: 20%
 }
-/** /Common navigation bar */
+/** /Common toolbar */

@@ -3,6 +3,7 @@ use \Slim\Slim;
 use \Slim\Extras\Views\Twig;
 use \Bach\Viewer\Conf;
 use \Bach\Viewer\Picture;
+use \Bach\Viewer\Series;
 use \Analog\Analog;
 
 //config file read
@@ -102,6 +103,53 @@ $app->get(
                 'iip'       => $picture->isPyramidal()
             )
         );
+    }
+);
+
+$app->get(
+    '/series/:path+',
+    function ($path) use ($app, $conf, $formats) {
+        $req = $app->request();
+        $start = $req->get('s');
+        if ( trim($start) === '' ) {
+            $start = null;
+        }
+        $end = $req->get('e');
+        if ( trim($end) === '' ) {
+            $end = null;
+        }
+
+        if ( $start === null && $end !== null || $start !== null && $end === null ) {
+            $start = null;
+            $end = null;
+            //FIXME: show a warning or throw an exception?
+            throw new \RuntimeException(
+                _('Sub series cannot be instancied; missing one of start or end param!')
+            );
+        }
+        $series = new Series(
+            $conf->getRoots(),
+            implode('/', $path),
+            $start,
+            $end
+        );
+
+        $picture = new Picture(
+            $series->getRepresentative(),
+            $series->getPath(),
+            $formats
+        );
+
+        $app->render(
+            'index.html.twig',
+            array(
+                'img'       => $series->getRepresentative(),
+                'picture'   => $picture,
+                'iip'       => $picture->isPyramidal(),
+                'series'    => true
+            )
+        );
+
     }
 );
 

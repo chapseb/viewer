@@ -30,8 +30,15 @@
                     {% endfor %}
                 </select>
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
-                <!-- Navigation dans la série - si série il y a -->
+                <!-- Browse series, if series there is -->
+                {% if series %}
                 <nav>
+                    <a href="?img=" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    <a href="?img=" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                </nav>
+                {% endif %}
+                <!-- Toolbar -->
+                <aside>
                     <ul>
                         <!-- Zoom out -->
                         <li id="zoomout" title="{% trans "Zoom out" %}"></li>
@@ -43,7 +50,7 @@
                         <li id="rrotate" title="{% trans "Rotate 90° by right" %}"></li>
                         <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
                     </ul>
-                </nav>
+                </aside>
             </figure>
         </section>
 
