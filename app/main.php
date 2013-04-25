@@ -1,8 +1,8 @@
 <?php
 use \Slim\Slim;
 use \Slim\Extras\Views\Twig;
+use \Bach\Viewer\Conf;
 use \Bach\Viewer\Picture;
-use \Symfony\Component\Yaml\Parser;
 use \Analog\Analog;
 
 //config file read
@@ -13,11 +13,11 @@ if ( !file_exists(CONFIG_FILE) ) {
 }
 
 require '../vendor/autoload.php';
-$yaml = new Parser();
-$conf = $yaml->parse(file_get_contents(APP_DIR . '/config/config.yml'));
-$formats = $conf['formats'];
 $log_file = APP_DIR . '/logs/viewer.log';
 Analog::handler(\Analog\Handler\File::init($log_file));
+
+$conf = new Conf();
+$formats = $conf->getFormats();
 
 /** I18n stuff */
 // Set language to French
@@ -52,7 +52,6 @@ if ( defined('APP_CACHE') && APP_CACHE !== false ) {
 }
 
 //TODO: parametize
-define('APP_ROOTS', '/var/www/photos/');
 define('DEFAULT_PICTURE', 'main.jpg');
 
 $app->hook(
@@ -62,7 +61,7 @@ $app->hook(
         $v = $app->view();
         $v->setData(
             'enable_right_click',
-            $conf['ui']['enable_right_click']
+            $conf->getUI()['enable_right_click']
         );
     }
 );
