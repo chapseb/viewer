@@ -3,11 +3,12 @@ use \Slim\Slim;
 use \Slim\Extras\Views\Twig;
 use \Bach\Viewer\Picture;
 use \Symfony\Component\Yaml\Parser;
+use \Analog\Analog;
 
 //config file read
-$config_file = APP_DIR . '/config/config.yml';
+define('CONFIG_FILE', APP_DIR . '/config/config.yml');
 
-if ( !file_exists($config_file) ) {
+if ( !file_exists(CONFIG_FILE) ) {
     throw new \RuntimeException('Missing configuration file.');
 }
 
@@ -15,6 +16,8 @@ require '../vendor/autoload.php';
 $yaml = new Parser();
 $conf = $yaml->parse(file_get_contents(APP_DIR . '/config/config.yml'));
 $formats = $conf['formats'];
+$log_file = APP_DIR . '/logs/viewer.log';
+Analog::handler(\Analog\Handler\File::init($log_file));
 
 /** I18n stuff */
 // Set language to French
