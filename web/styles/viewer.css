@@ -28,7 +28,7 @@ header, nav {
 }
 
 header {
-    top:0;
+    top:-1px;
 }
 
 h1 {
@@ -39,6 +39,7 @@ h1 {
 nav {
     bottom: 0;
     height: 31px;
+    cursor: default;
 }
 
 nav li {
@@ -49,6 +50,7 @@ nav li {
     background-position: center center;
     background-repeat: no-repeat;
     background-color: transparent;
+    cursor: pointer;
 }
 
 nav li:hover {
