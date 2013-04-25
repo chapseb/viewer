@@ -8,7 +8,7 @@
     display: inline-block;
     /*border: 1px  solid #000;*/
     height: 28px;
-    z-index: 5000;
+    z-index: 5;
 }
 
 .iviewer_cursor {

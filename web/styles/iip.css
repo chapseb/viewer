@@ -15,7 +15,7 @@
 
 .navcontainer {
   position: absolute;
-  z-index: 2;
+  z-index: 10;
   text-align: center;
   background: transparent;
   top: 10px;
@@ -67,7 +67,7 @@
   border: 1px outset red;
   border: none;
   top: 10px;
-  z-index: 2;
+  z-index: 10;
   opacity: 0.9;
   width: 100%;
   height: auto;
@@ -78,7 +78,7 @@
   background: #888;
   border: 2px solid yellow;
   cursor: move;
-  z-index: 3;
+  z-index: 15;
   opacity: 0.4;
 }
 .iipmooviewer .canvas{
@@ -87,7 +87,8 @@
   left: 0;
   top:  0;
   z-index: 0;
-  cursor: crosshair;
+  /*cursor: crosshair;*/
+  cursor: url(../images/iviewer/hand.cur) 6 8, pointer;
   position: absolute;
   background: transparent;
   -webkit-transition: -webkit-transform 0.5s ease-in-out;
@@ -108,13 +109,17 @@
   padding: 0;
   border: 0;
   position: absolute;
-  cursor: crosshair;
+  /*cursor: crosshair;*/
+  cursor: url(../images/iviewer/hand.cur) 6 8, pointer;
   display: block;
 }
 .iipmooviewer .canvas img.hidden{
   display: none;
 }
-.iipmooviewer .canvas.drag img{ cursor: move; }
+.iipmooviewer .canvas.drag img{
+  /*cursor: move;*/
+  cursor: url(../images/iviewer/grab.cur) 6 8, pointer;
+}
 
 .iipmooviewer .credit {
   position: absolute;
@@ -151,7 +156,7 @@
   font-family: Verdana, sans-serif;
   font-size: 8pt;
   line-height: 1.2em;
-  z-index: 2;
+  z-index: 10;
   position: relative;
  -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
@@ -275,7 +280,7 @@
 .iipmooviewer .canvas .annotation {
   position: absolute;
   overflow: visible;
-  z-index: 2;
+  z-index: 10;
   border: 1px solid #888;
   background-color: transparent;
   visibility: visible;
@@ -393,8 +398,8 @@
 .iipmooviewer img.logo {
   position: absolute;
   margin: 5px;
-  left: 0;
-  top: 0;
+  right: 0;
+  bottom: 0;
   border: none;
   cursor: help;
   width: 32px;
@@ -405,6 +410,7 @@
   -o-transition: opacity 0.5s ease-in-out;
   -ms-transition: opacity 0.5s ease-in-out;	
   transition: opacity 0.5s ease-in-out;
+  z-index:10;
 }
 .iipmooviewer img.logo:hover { opacity: 1; }
 
@@ -414,7 +420,7 @@ a.logo:link, a.logo:visited {
 }
 .iipmooviewer .info {
   position: absolute;
-  z-index: 10;
+  z-index: 100;
   padding: 2em;
   left: 0;
   top: 0;
