@@ -134,8 +134,19 @@ $app->get(
             $end
         );
 
+        $img = null;
+        if ( $req->get('img') !== null ) {
+            if ( !$series->setImage($req->get('img')) ) {
+                $img = $series->getRepresentative();
+            } else {
+                $img = $req->get('img');
+            }
+        } else {
+            $img = $series->getRepresentative();
+        }
+
         $picture = new Picture(
-            $series->getRepresentative(),
+            $img,
             $series->getPath(),
             $formats
         );
@@ -143,10 +154,10 @@ $app->get(
         $app->render(
             'index.html.twig',
             array(
-                'img'       => $series->getRepresentative(),
+                'img'       => $img,
                 'picture'   => $picture,
                 'iip'       => $picture->isPyramidal(),
-                'series'    => true
+                'series'    => $series
             )
         );
 

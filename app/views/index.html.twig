@@ -33,8 +33,8 @@
                 <!-- Browse series, if series there is -->
                 {% if series %}
                 <nav>
-                    <a href="?img=" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="?img=" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    <a href="?img={{ series.getPreviousImage()  }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    <a href="?img={{ series.getNextImage() }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->

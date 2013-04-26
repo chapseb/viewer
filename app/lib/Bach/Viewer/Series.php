@@ -31,6 +31,7 @@ class Series
     private $_start;
     private $_end;
     private $_content;
+    private $_current;
 
     /**
      * Main constructor
@@ -71,6 +72,7 @@ class Series
                 }
             }
             closedir($handle);
+            sort($this->_content, SORT_STRING);
         }
     }
 
@@ -91,6 +93,67 @@ class Series
      */
     public function getRepresentative()
     {
-        return $this->_content[0];
+        //TODO: get a representative image that is not simply the first
+        //of current series
+        $img = $this->_content[0];
+        $this->setImage($img);
+        return $img;
     }
+
+    /**
+     * Set current image
+     *
+     * @param string $img Image
+     *
+     * @return boolean
+     */
+    public function setImage($img)
+    {
+        if ( in_array($img, $this->_content) ) {
+            $this->_current = $img;
+            return true;
+        } else {
+            Analog::log(
+                str_replace(
+                    '%image',
+                    $img,
+                    _('Image %image is not part of current series!')
+                )
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Get previous image
+     *
+     * @return string
+     */
+    public function getPreviousImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ($_index === 0 ) {
+            $_index = count($this->_content) - 1;
+        } else {
+            $_index -= 1;
+        }
+        return $this->_content[$_index];
+    }
+
+    /**
+     * Get next image
+     *
+     * @return string
+     */
+    public function getNextImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ( $_index === count($this->_content) - 1 ) {
+            $_index = 0;
+        } else {
+            $_index += 1;
+        }
+        return $this->_content[$_index];
+    }
+
 }
