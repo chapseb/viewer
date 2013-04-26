@@ -72,6 +72,16 @@ class Picture
         }
         $this->_full_path = $this->_path . $this->_name;
 
+        if ( !file_exists($this->_full_path) ) {
+            throw new \RuntimeException(
+                str_replace(
+                    '%file',
+                    $this->_full_path,
+                    _('File %file does not exists!')
+                )
+            );
+        }
+
         $exif = exif_read_data($this->_full_path);
 
         if ( $exif === false ) {
