@@ -96,6 +96,8 @@ class Picture
                 $this->_width = $exif['ExifImageWidth'];
             } else if ( isset($exif['ImageWidth']) ) {
                 $this->_width = $exif['ImageWidth'];
+            } else if ( isset($exif['COMPUTED']['Width']) ) {
+                $this->_width = $exif['COMPUTED']['Width'];
             } else {
                 throw new \RuntimeException(_('Unable to get image width!'));
             }
@@ -104,6 +106,8 @@ class Picture
                 $this->_height = $exif['ExifImageLength'];
             } else if ( isset($exif['ImageLength']) ) {
                 $this->_height = $exif['ImageLength'];
+            } else if ( isset($exif['COMPUTED']['Height']) ) {
+                $this->_height = $exif['COMPUTED']['Height'];
             } else {
                 throw new \RuntimeException(_('Unable to get image height!'));
             }
