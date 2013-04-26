@@ -24,11 +24,11 @@
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
-                <select name="formats">
+                <!--<select name="formats">
                     {% for key, fmt in picture.getVisibleFormats() %}
                     <option value="{{ key }}">{{ fmt }}</option>
                     {% endfor %}
-                </select>
+                </select>-->
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
                 <!-- Browse series, if series there is -->
                 {% if series %}
@@ -40,7 +40,6 @@
                 <!-- Toolbar -->
                 <aside>
                     <ul>
-                        <!-- Zoom out -->
                         <li id="zoomout" title="{% trans "Zoom out" %}"></li>
                         <li id="zoomin" title="{% trans "Zoom in" %}"></li>
                         <li id="fullsize" title="{% trans "Show full size image" %}"></li>
