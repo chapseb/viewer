@@ -83,6 +83,16 @@ class Series
      */
     public function getPath()
     {
+        return $this->_path;
+    }
+
+    /**
+     * Retrieve series full path
+     *
+     * @return string
+     */
+    public function getFullPath()
+    {
         return $this->_full_path;
     }
 
@@ -156,4 +166,20 @@ class Series
         return $this->_content[$_index];
     }
 
+    /**
+     * Retrieve informations about current series
+     *
+     * @return array
+     */
+    public function getInfos()
+    {
+        $infos = array(
+            'path'      => $this->_path,
+            'current'   => $this->_current,
+            'next'      => $this->getNextImage(),
+            'prev'      => $this->getPreviousImage(),
+            'count'     => count($this->_content)
+        );
+        return $infos;
+    }
 }

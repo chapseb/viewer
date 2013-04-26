@@ -6,6 +6,9 @@ use \Bach\Viewer\Picture;
 use \Bach\Viewer\Series;
 use \Analog\Analog;
 
+session_start();
+$session = &$_SESSION['bachviewer'];
+
 //config file read
 define('CONFIG_FILE', APP_DIR . '/config/config.yml');
 
@@ -76,6 +79,43 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/img(/:series)/:image',
+    function ($series_path = null, $image) use ($app, $formats, $conf, &$session) {
+        $series = null;
+        if ( isset($session['series']) ) {
+            $series = unserialize($session['series']);
+        }
+
+        if ( $series_path !== null ) {
+            $series = new Series(
+                $conf->getRoots(),
+                $series_path
+            );
+        }
+        $series->setImage($image);
+        $picture = new Picture($image, $series->getFullPath());
+
+        $session['series'] = serialize($series);
+        $session['picture'] = serialize($picture);
+
+        $app->redirect($picture->getUrl());
+    }
+)->conditions(
+    array(
+        'image' => '.*+\.[a-zA-Z]{3,4}'
+    )
+);
+
+$app->get(
+    '/ajax/series/infos',
+    function () use ($app, $session) {
+        $series = unserialize($session['series']);
+        $infos = $series->getInfos();
+        echo json_encode($infos);
+    }
+);
+
+$app->get(
     '/show/:uri',
     function ($uri) use ($app, $formats) {
         $picture = new Picture(base64_decode($uri), null, $formats);
@@ -108,7 +148,7 @@ $app->get(
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, $formats) {
+    function ($path) use ($app, $conf, $formats, &$session) {
         $req = $app->request();
         $start = $req->get('s');
         if ( trim($start) === '' ) {
@@ -147,9 +187,13 @@ $app->get(
 
         $picture = new Picture(
             $img,
-            $series->getPath(),
+            $series->getFullPath(),
             $formats
         );
+
+
+        $session['series'] = serialize($series);
+        $session['picture'] = serialize($picture);
 
         $app->render(
             'index.html.twig',

@@ -73,6 +73,8 @@
         <script type="text/javascript" src="/scripts/bachview/iipnavigation.js"></script>
         {% endif %}
         <script>
+            //global variables
+            var series_path = '{{ series.getPath() }}';
             //no conflict jquery
             jQuery.noConflict();
             //jquery stuff
