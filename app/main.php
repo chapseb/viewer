@@ -1,9 +1,19 @@
 <?php
+/**
+ * Bach's viewer app
+ *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  Viewer
+ * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @license  Unknown http://unknown.com
+ * @link     http://anaphore.eu
+ */
+
 use \Slim\Slim;
 use \Slim\Extras\Views\Twig;
 use \Bach\Viewer\Conf;
-use \Bach\Viewer\Picture;
-use \Bach\Viewer\Series;
 use \Analog\Analog;
 
 session_start();
@@ -70,6 +80,12 @@ $app->hook(
     }
 );
 
+$app->notFound(
+    function () use ($app) {
+        $app->render('404.html.twig');
+    }
+);
+
 //main route
 $app->get(
     '/',
@@ -78,134 +94,12 @@ $app->get(
     }
 );
 
-$app->get(
-    '/ajax/img(/:series)/:image',
-    function ($series_path = null, $image) use ($app, $formats, $conf, &$session) {
-        $series = null;
-        if ( isset($session['series']) ) {
-            $series = unserialize($session['series']);
-        }
-
-        if ( $series_path !== null ) {
-            $series = new Series(
-                $conf->getRoots(),
-                $series_path
-            );
-        }
-        $series->setImage($image);
-        $picture = new Picture($image, $series->getFullPath());
-
-        $session['series'] = serialize($series);
-        $session['picture'] = serialize($picture);
-
-        $app->redirect($picture->getUrl());
-    }
-)->conditions(
-    array(
-        'image' => '.+\.[a-zA-Z]{3,4}'
-    )
-);
-
-$app->get(
-    '/ajax/series/infos',
-    function () use ($app, $session) {
-        $series = unserialize($session['series']);
-        $infos = $series->getInfos();
-        echo json_encode($infos);
-    }
-);
-
-$app->get(
-    '/show/:uri',
-    function ($uri) use ($app, $formats) {
-        $picture = new Picture(base64_decode($uri), null, $formats);
-        //var_dump($picture);
-        $picture->display();
-    }
-);
-
-$app->get(
-    '/viewer/:image+',
-    function ($img_params) use ($app, $formats) {
-        $img = array_pop($img_params);
-        $path = '/' . implode('/', $img_params);
-        $picture = null;
-        if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture('main.jpg', WEB_DIR . '/images/', $formats);
-        } else {
-            $picture = new Picture($img, $path, $formats);
-        }
-        $app->render(
-            'index.html.twig',
-            array(
-                'img'       => $img,
-                'picture'   => $picture,
-                'iip'       => $picture->isPyramidal()
-            )
-        );
-    }
-);
-
-$app->get(
-    '/series/:path+',
-    function ($path) use ($app, $conf, $formats, &$session) {
-        $req = $app->request();
-        $start = $req->get('s');
-        if ( trim($start) === '' ) {
-            $start = null;
-        }
-        $end = $req->get('e');
-        if ( trim($end) === '' ) {
-            $end = null;
-        }
-
-        if ( $start === null && $end !== null || $start !== null && $end === null ) {
-            $start = null;
-            $end = null;
-            //FIXME: show a warning or throw an exception?
-            throw new \RuntimeException(
-                _('Sub series cannot be instancied; missing one of start or end param!')
-            );
-        }
-        $series = new Series(
-            $conf->getRoots(),
-            implode('/', $path),
-            $start,
-            $end
-        );
-
-        $img = null;
-        if ( $req->get('img') !== null ) {
-            if ( !$series->setImage($req->get('img')) ) {
-                $img = $series->getRepresentative();
-            } else {
-                $img = $req->get('img');
-            }
-        } else {
-            $img = $series->getRepresentative();
-        }
-
-        $picture = new Picture(
-            $img,
-            $series->getFullPath(),
-            $formats
-        );
-
-
-        $session['series'] = serialize($series);
-        $session['picture'] = serialize($picture);
-
-        $app->render(
-            'index.html.twig',
-            array(
-                'img'       => $img,
-                'picture'   => $picture,
-                'iip'       => $picture->isPyramidal(),
-                'series'    => $series
-            )
-        );
-
-    }
-);
+//include routes files
+require_once 'routes/images.routes.php';
+require_once 'routes/series.routes.php';
+require_once 'routes/ajax.routes.php';
+if ( APP_DEBUG === true ) {
+    include_once 'routes/debug.routes.php';
+}
 
 $app->run();
