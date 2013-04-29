@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>{% trans "Bach Viewer" %} - {{ img }}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="/styles/reset.css"/>
+{% extends "main.html.twig" %}
+
+{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}
+{% block head %}
         {% if not(iip) %}
         <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
         {% else %}
@@ -14,8 +11,9 @@
         <![endif]-->
         {% endif %}
         <link rel="stylesheet" href="/styles/viewer.css"/>
-    </head>
-    <body>
+{% endblock %}
+
+{% block content %}
         <section>
             <figure id="viewer">
                 <header>
@@ -52,7 +50,9 @@
                 </aside>
             </figure>
         </section>
+{% endblock %}
 
+{% block scripts %}
         <script type="text/javascript" src="/scripts/jquery/jquery-1.9.1.min.js"></script>
         {% if not(iip) %}
         <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.core.min.js"></script>
@@ -143,5 +143,4 @@
                 });
             {% endif %}
         </script>
-    </body>
-</html>
+{% endblock %}
