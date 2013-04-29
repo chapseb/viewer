@@ -102,7 +102,7 @@ $app->get(
     }
 )->conditions(
     array(
-        'image' => '.*+\.[a-zA-Z]{3,4}'
+        'image' => '.+\.[a-zA-Z]{3,4}'
     )
 );
 
