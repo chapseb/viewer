@@ -48,6 +48,7 @@ class Picture
     private $_mime;
     private $_pyramidal = false;
     private $_formats;
+    private $_exif;
 
     /**
      * Main constructor
@@ -82,9 +83,9 @@ class Picture
             );
         }
 
-        $exif = exif_read_data($this->_full_path);
+        $this->_exif = exif_read_data($this->_full_path);
 
-        if ( $exif === false ) {
+        if ( $this->_exif === false ) {
             //no exif data in picture, let's try another way
             list(
                 $this->_width,
@@ -92,32 +93,34 @@ class Picture
                 $this->_type) = getimagesize($this->_full_path);
             $this->_mime = image_type_to_mime_type($this->_type);
         } else {
-            if ( isset($exif['ExifImageWidth']) ) {
-                $this->_width = $exif['ExifImageWidth'];
-            } else if ( isset($exif['ImageWidth']) ) {
-                $this->_width = $exif['ImageWidth'];
-            } else if ( isset($exif['COMPUTED']['Width']) ) {
-                $this->_width = $exif['COMPUTED']['Width'];
+            if ( isset($this->_exif['ExifImageWidth']) ) {
+                $this->_width = $this->_exif['ExifImageWidth'];
+            } else if ( isset($this->_exif['ImageWidth']) ) {
+                $this->_width = $this->_exif['ImageWidth'];
+            } else if ( isset($this->_exif['COMPUTED']['Width']) ) {
+                $this->_width = $this->_exif['COMPUTED']['Width'];
             } else {
                 throw new \RuntimeException(_('Unable to get image width!'));
             }
 
-            if ( isset($exif['ExifImageLength']) ) {
-                $this->_height = $exif['ExifImageLength'];
-            } else if ( isset($exif['ImageLength']) ) {
-                $this->_height = $exif['ImageLength'];
-            } else if ( isset($exif['COMPUTED']['Height']) ) {
-                $this->_height = $exif['COMPUTED']['Height'];
+            if ( isset($this->_exif['ExifImageLength']) ) {
+                $this->_height = $this->_exif['ExifImageLength'];
+            } else if ( isset($this->_exif['ImageLength']) ) {
+                $this->_height = $this->_exif['ImageLength'];
+            } else if ( isset($this->_exif['COMPUTED']['Height']) ) {
+                $this->_height = $this->_exif['COMPUTED']['Height'];
             } else {
                 throw new \RuntimeException(_('Unable to get image height!'));
             }
 
-            $this->_type = $exif['FileType'];
-            $this->_mime =  $exif['MimeType'];
+            $this->_type = $this->_exif['FileType'];
+            $this->_mime =  $this->_exif['MimeType'];
 
             //checks pyramidal images
             if ( in_array($this->_type, $this->_pyramidal_types) ) {
-                if ( isset($exif['TileWidth']) || isset($exif['TileLength']) ) {
+                if ( isset($this->_exif['TileWidth'])
+                    || isset($this->_exif['TileLength'])
+                ) {
                     $this->_pyramidal = true;
                 }
             }
