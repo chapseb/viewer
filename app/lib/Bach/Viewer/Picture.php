@@ -65,8 +65,8 @@ class Picture
             //TODO: check path from roots
         }
         //normalize path
-        if ( substr($this->_path, - 1) != '/'
-            && !substr($this->_name, 0, 1) != '/'
+        if ( substr($this->_path, - 1) !== '/'
+            && !substr($this->_name, 0, 1) !== '/'
         ) {
             $this->_path = $this->_path . '/';
         }
