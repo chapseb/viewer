@@ -5,8 +5,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     _create: function() {
         var me = this;
         $.ui.iviewer.prototype._create.apply(this, arguments);
-        this.options.onFinishLoad = function(){
-            me.updateSeriesInfos();
+        if ( series_path != '' ) {
+            this.options.onFinishLoad = function(){
+                me.updateSeriesInfos();
+            }
         }
         this.createui();
     },
