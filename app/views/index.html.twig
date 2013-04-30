@@ -48,6 +48,7 @@
                         <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
                     </ul>
                 </aside>
+                {% if not(iip) %}
                 <aside id="progressbar">
                     <div>
                         <p>{% trans "Loading image, please wait..." %}</p>
@@ -56,6 +57,7 @@
                         </progress>
                     </div>
                 </aside>
+                {% endif %}
             </figure>
         </section>
 {% endblock %}
