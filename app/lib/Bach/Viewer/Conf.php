@@ -42,10 +42,28 @@ class Conf
                 _('Configuration file not set!')
             );
         }
+
+        if ( !defined('LOCAL_CONFIG_FILE') ) {
+            Analog::log(
+                _('No local configuration file present.'),
+                Analog::WARNING
+            );
+        }
+
         $yaml = new Parser();
         $this->_conf = $yaml->parse(
             file_get_contents(CONFIG_FILE)
         );
+
+        if ( defined('LOCAL_CONFIG_FILE') ) {
+            $this->_conf = array_merge(
+                $this->_conf,
+                $yaml->parse(
+                    file_get_contents(LOCAL_CONFIG_FILE)
+                )
+            );
+        }
+
         $this->_check();
     }
 

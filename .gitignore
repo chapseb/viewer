@@ -5,3 +5,6 @@ quick_gen_project_*_autogen.sh
 vendor/
 app/cache/
 app/logs/*.log
+app/config/local.config.yml
+#exclude not minified 3rd party libs
+web/scripts/jquery/ui/iviewer/jquery.iviewer.js

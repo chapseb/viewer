@@ -22,6 +22,9 @@ $session = &$_SESSION['bachviewer'];
 
 //config file read
 define('CONFIG_FILE', APP_DIR . '/config/config.yml');
+if ( file_exists(APP_DIR . '/config/local.config.yml')) {
+    define('LOCAL_CONFIG_FILE', APP_DIR . '/config/local.config.yml');
+}
 
 if ( !file_exists(CONFIG_FILE) ) {
     throw new \RuntimeException('Missing configuration file.');
