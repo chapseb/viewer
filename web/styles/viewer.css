@@ -37,6 +37,14 @@ h1 {
     margin: .4em 0;
 }
 
+#viewer {
+    width: 100%;
+    min-height: 100%;
+    position: relative;
+    margin: 0;
+}
+/** /Main viewer styles */
+
 /** === Serial navigation */
 nav {
     top: 50%;
@@ -95,13 +103,6 @@ aside li {
 
 aside li:hover {
     background-color: black!important;
-}
-
-#viewer {
-    width: 100%;
-    min-height: 100%;
-    position: relative;
-    margin: 0;
 }
 
 #zoomin {
