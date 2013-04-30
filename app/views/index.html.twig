@@ -48,6 +48,14 @@
                         <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
                     </ul>
                 </aside>
+                <aside id="progressbar">
+                    <div>
+                        <p>{% trans "Loading image, please wait..." %}</p>
+                        <progress max="100">
+                            <strong>{% trans "Loading..." %}</strong>
+                        </progress>
+                    </div>
+                </aside>
             </figure>
         </section>
 {% endblock %}

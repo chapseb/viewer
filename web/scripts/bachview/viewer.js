@@ -5,11 +5,17 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     _create: function() {
         var me = this;
         $.ui.iviewer.prototype._create.apply(this, arguments);
-        if ( series_path != '' ) {
-            this.options.onFinishLoad = function(){
+
+        this.options.onStartLoad = function(){
+            $('#progressbar').fadeIn();
+        };
+
+        this.options.onFinishLoad = function(){
+            if ( series_path != '' ) {
                 me.updateSeriesInfos();
             }
-        }
+            $('#progressbar').fadeOut('slow');
+        };
         this.createui();
     },
 
