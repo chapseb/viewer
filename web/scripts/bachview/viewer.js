@@ -58,6 +58,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     display: function(img)
     {
+        this.image_name = img;
         if ( series_path != '') {
             img = series_path + '/' + img;
         }
@@ -69,8 +70,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
+        var _url = '/ajax/series/infos';
+        if ( this.image_name != undefined ) {
+            _url += '/' + this.image_name;
+        }
         $.get(
-            '/ajax/series/infos',
+            _url,
             function(data){
                 $('#previmg').attr('href', '?img=' + data.prev);
                 $('#nextimg').attr('href', '?img=' + data.next);

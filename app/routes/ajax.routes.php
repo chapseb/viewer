@@ -40,8 +40,12 @@ $app->get(
 
 $app->get(
     '/ajax/series/infos(/:image)',
-    function () use ($app, $session) {
+    function ($img = null) use ($app, $session) {
         $series = unserialize($session['series']);
+        if ( $img !== null ) {
+            $series->setImage($img);
+            $session['series'] = serialize($series);
+        }
         $infos = $series->getInfos();
         echo json_encode($infos);
     }
