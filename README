@@ -33,6 +33,14 @@ $ php composer.phar install
 That last command will populate *vendor* directory with all third party
 libraries, in their relevant version.
 
+You finally have to get your web server write access on some directories:
+- app/cache
+- app/logs
+
+This can be achieved running a command that should like the following,
+assuming 'apache' is the user name your web server has been started with:
+$ chown -R apache:apache app/logs app/cache
+
 Configuration
 -------------
 
