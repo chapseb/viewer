@@ -59,7 +59,6 @@ $app->get(
             $formats
         );
 
-
         $session['series'] = serialize($series);
         $session['picture'] = serialize($picture);
 

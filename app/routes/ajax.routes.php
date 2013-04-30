@@ -36,14 +36,10 @@ $app->get(
 
         $app->redirect($picture->getUrl());
     }
-)->conditions(
-    array(
-        'image' => '.+\.[a-zA-Z]{3,4}'
-    )
 );
 
 $app->get(
-    '/ajax/series/infos',
+    '/ajax/series/infos(/:image)',
     function () use ($app, $session) {
         $series = unserialize($session['series']);
         $infos = $series->getInfos();

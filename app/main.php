@@ -12,6 +12,7 @@
  */
 
 use \Slim\Slim;
+use \Slim\Route;
 use \Slim\Extras\Views\Twig;
 use \Bach\Viewer\Conf;
 use \Analog\Analog;
@@ -78,6 +79,13 @@ $app->hook(
             $conf->getUI()['enable_right_click']
         );
     }
+);
+
+//set default conditions
+Route::setDefaultConditions(
+    array(
+        'image' => '.+\.[a-zA-Z]{3,4}'
+    )
 );
 
 $app->notFound(

@@ -23,7 +23,7 @@ $app->get(
 );
 
 $app->get(
-    '/viewer/:image+',
+    '/viewer/:image_params+',
     function ($img_params) use ($app, $formats) {
         $img = array_pop($img_params);
         $path = '/' . implode('/', $img_params);
