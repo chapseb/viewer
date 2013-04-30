@@ -11,5 +11,4 @@ formats:
 ui:
     enable_right_click: true
 roots:
-    - /var/www/photos/coup_oeil/
-    - /var/www/photos/fompeyre/
+    - /var/www/images
