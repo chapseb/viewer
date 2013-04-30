@@ -35,12 +35,22 @@ $app->get(
                 _('Sub series cannot be instancied; missing one of start or end param!')
             );
         }
-        $series = new Series(
-            $conf->getRoots(),
-            implode('/', $path),
-            $start,
-            $end
-        );
+
+        $series = null;
+        try {
+            $series = new Series(
+                $conf->getRoots(),
+                implode('/', $path),
+                $start,
+                $end
+            );
+        } catch ( \RuntimeException $e ) {
+            Analog::log(
+                _('Cannot load series: ') . $e->getMessage(),
+                Analog::ERROR
+            );
+            $app->pass();
+        }
 
         $img = null;
         if ( $req->get('img') !== null ) {
