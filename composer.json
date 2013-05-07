@@ -19,7 +19,7 @@
         "slim/extras": "2.0.3",
         "twig/twig": "v1.12.3",
         "twig/extensions": "v1.0.0",
-        "pimple/pimple": "v1.0.2",
-        "symfony/yaml": "v2.2.1"
+        "symfony/yaml": "v2.2.1",
+        "atoum/atoum": "dev-master"
     }
 }
