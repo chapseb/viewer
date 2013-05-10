@@ -1,0 +1,16 @@
+Bach Viewer unit tests
+======================
+
+Viewer unit tests has been written on the top of atoum (http://atoum.org/).
+
+Execute unit tests running the following:
+$ php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach
+
+This will execute all available tests.
+
+If you want to generate coevrage report, simply add 
+"-c tests/config/coverage.php" at the end of the command.
+This way, coverage informations will be created in tests/coverag directory.
+
+Please read atoum documentation at http://docs.atoum.org/ if you want
+to learn more.

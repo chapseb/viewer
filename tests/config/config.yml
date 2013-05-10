@@ -1,0 +1,14 @@
+formats:
+    huge:
+        width: 2000
+        height: 2000
+    default:
+        width: 800
+        height: 800
+    thumb:
+        width: 150
+        height: 150
+ui:
+    enable_right_click: true
+roots:
+    - /var/www/images
