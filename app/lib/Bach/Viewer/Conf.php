@@ -32,34 +32,49 @@ class Conf
     private $_formats;
     private $_ui;
 
+    private $_path;
+    private $_local_path;
+
     /**
      * Main constructor
+     *
+     * @param string $path Optional path to configuration file
      */
-    public function __construct()
+    public function __construct($path = null)
     {
-        if ( !defined('CONFIG_FILE') ) {
-            throw new \RuntimeException(
-                _('Configuration file not set!')
-            );
+        //set configuration path if not provided
+        if ( $path === null ) {
+            $path =  APP_DIR . '/config/';
+        } else {
+            //ensures path ends with a slash
+            if ( substr($path, -1) !== '/' ) {
+                $path .= '/';
+            }
         }
 
-        if ( !defined('LOCAL_CONFIG_FILE') ) {
-            Analog::log(
-                _('No local configuration file present.'),
-                Analog::WARNING
-            );
+        $filename = 'config.yml';
+        $this->_path = $path . $filename;
+        $this->_local_path = $path . 'local.' . $filename;
+
+        if ( !file_exists($this->_path) ) {
+            throw new \RuntimeException('Missing configuration file.');
         }
 
         $yaml = new Parser();
         $this->_conf = $yaml->parse(
-            file_get_contents(CONFIG_FILE)
+            file_get_contents($this->_path)
         );
 
-        if ( defined('LOCAL_CONFIG_FILE') ) {
+        if ( !file_exists($this->_local_path) ) {
+            Analog::log(
+                _('No local configuration file present.'),
+                Analog::WARNING
+            );
+        } else {
             $this->_conf = array_merge(
                 $this->_conf,
                 $yaml->parse(
-                    file_get_contents(LOCAL_CONFIG_FILE)
+                    file_get_contents($this->_local_path)
                 )
             );
         }

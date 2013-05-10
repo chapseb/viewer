@@ -20,16 +20,6 @@ use \Analog\Analog;
 session_start();
 $session = &$_SESSION['bachviewer'];
 
-//config file read
-define('CONFIG_FILE', APP_DIR . '/config/config.yml');
-if ( file_exists(APP_DIR . '/config/local.config.yml')) {
-    define('LOCAL_CONFIG_FILE', APP_DIR . '/config/local.config.yml');
-}
-
-if ( !file_exists(CONFIG_FILE) ) {
-    throw new \RuntimeException('Missing configuration file.');
-}
-
 require APP_DIR . '/../vendor/autoload.php';
 $logger = null;
 if ( defined('APP_TESTS') ) {
