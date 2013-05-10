@@ -38,26 +38,20 @@ class Conf
     /**
      * Main constructor
      *
-     * @param string $path Optional path to configuration file
+     * @param string $path Optional path to additional configuration file
      */
     public function __construct($path = null)
     {
-        //set configuration path if not provided
+        $this->_path = APP_DIR . '/config/config.yml';
+
+        //set additional configuration path if not provided
         if ( $path === null ) {
-            $path =  APP_DIR . '/config/';
+            $this->_local_path = APP_DIR . '/config/local.config.yml';
         } else {
-            //ensures path ends with a slash
-            if ( substr($path, -1) !== '/' ) {
-                $path .= '/';
+            $this->_local_path = $path;
+            if ( !file_exists($this->_local_path) ) {
+                throw new \RuntimeException('Configuration file does not exists!');
             }
-        }
-
-        $filename = 'config.yml';
-        $this->_path = $path . $filename;
-        $this->_local_path = $path . 'local.' . $filename;
-
-        if ( !file_exists($this->_path) ) {
-            throw new \RuntimeException('Missing configuration file.');
         }
 
         $yaml = new Parser();
@@ -65,12 +59,7 @@ class Conf
             file_get_contents($this->_path)
         );
 
-        if ( !file_exists($this->_local_path) ) {
-            Analog::log(
-                _('No local configuration file present.'),
-                Analog::WARNING
-            );
-        } else {
+        if ( file_exists($this->_local_path) ) {
             $this->_conf = array_merge(
                 $this->_conf,
                 $yaml->parse(
