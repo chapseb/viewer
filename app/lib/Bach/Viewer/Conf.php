@@ -81,9 +81,21 @@ class Conf
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
 
+        $this->_setRoots($this->_conf['roots']);
+    }
+
+    /**
+     * Set roots directories
+     *
+     * @param array $roots array of root directories
+     *
+     * @return void
+     */
+    private function _setRoots($roots)
+    {
         $this->_roots = array();
         //check roots
-        foreach ( $this->_conf['roots'] as $root ) {
+        foreach ( $roots as $root ) {
             if ( file_exists($root) && is_dir($root) ) {
                 //normalize path
                 if ( substr($root, - 1) != '/' ) {
@@ -156,7 +168,7 @@ class Conf
     public function setRoots(array $roots)
     {
         if ( defined('APP_TESTS') ) {
-            $this->_roots = $roots;
+            $this->_setRoots($roots);
         }
     }
 }

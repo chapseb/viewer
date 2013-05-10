@@ -84,7 +84,8 @@ class Conf extends atoum
         $roots = $conf->getRoots();
         $this->array($roots)
             ->hasSize(1)
-            ->isEqualTo($this->_roots);
+            //note the ending '/' that should has been added
+            ->strictlyContains(TESTS_DIR . '/data/images/');
     }
 
     /**
