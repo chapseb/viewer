@@ -30,9 +30,16 @@ if ( !file_exists(CONFIG_FILE) ) {
     throw new \RuntimeException('Missing configuration file.');
 }
 
-require '../vendor/autoload.php';
-$log_file = APP_DIR . '/logs/viewer.log';
-Analog::handler(\Analog\Handler\File::init($log_file));
+require APP_DIR . '/../vendor/autoload.php';
+$logger = null;
+if ( defined('APP_TESTS') ) {
+    $viewer_log = '';
+    $logger = \Analog\Handler\Variable::init($viewer_log);
+} else {
+    $log_file = APP_DIR . '/logs/viewer.log';
+    $logger = \Analog\Handler\File::init($log_file);
+}
+Analog::handler($logger);
 
 $conf = new Conf();
 $formats = $conf->getFormats();
@@ -113,4 +120,6 @@ if ( APP_DEBUG === true ) {
     include_once 'routes/debug.routes.php';
 }
 
-$app->run();
+if ( !defined('APP_TESTS') ) {
+    $app->run();
+}
