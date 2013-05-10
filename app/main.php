@@ -36,6 +36,7 @@ $formats = $conf->getFormats();
 
 /** I18n stuff */
 // Set language to French
+// FIXME: use user language
 putenv('LC_ALL=fr_FR.utf8');
 setlocale(LC_ALL, 'fr_FR.utf8');
 
