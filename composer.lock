@@ -60,12 +60,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "fbd65d378428fea434cbd83e32a9efec98968496"
+                "reference": "3118d58b929ea5dab41d499e42bafadd110299ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/fbd65d378428fea434cbd83e32a9efec98968496",
-                "reference": "fbd65d378428fea434cbd83e32a9efec98968496",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/3118d58b929ea5dab41d499e42bafadd110299ec",
+                "reference": "3118d58b929ea5dab41d499e42bafadd110299ec",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2013-05-06 15:38:04"
+            "time": "2013-05-07 15:31:26"
         },
         {
             "name": "psr/log",
@@ -172,12 +172,12 @@
             "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Extras.git",
+                "url": "https://github.com/codeguy/Slim-Extras",
                 "reference": "2.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/2.0.3",
+                "url": "https://github.com/codeguy/Slim-Extras/archive/2.0.3.zip",
                 "reference": "2.0.3",
                 "shasum": ""
             },
