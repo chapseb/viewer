@@ -173,13 +173,19 @@ class Series
      */
     public function getInfos()
     {
-        $infos = array(
-            'path'      => $this->_path,
-            'current'   => $this->_current,
-            'next'      => $this->getNextImage(),
-            'prev'      => $this->getPreviousImage(),
-            'count'     => count($this->_content)
-        );
-        return $infos;
+        if ( !isset($this->_current) ) {
+            throw new \RuntimeException(
+                _('Series has not been initialized yet.')
+            );
+        } else {
+            $infos = array(
+                'path'      => $this->_path,
+                'current'   => $this->_current,
+                'next'      => $this->getNextImage(),
+                'prev'      => $this->getPreviousImage(),
+                'count'     => count($this->_content)
+            );
+            return $infos;
+        }
     }
 }
