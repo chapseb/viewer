@@ -141,4 +141,22 @@ class Conf
     {
         return $this->_ui;
     }
+
+    /**
+     * Convenient function to set roots.
+     *
+     * Configuration file for unit tests is always irrelevant
+     * regarding roots path, since none of them does exists.
+     * This function does nothing outside of unit tests.
+     *
+     * @param array $roots Array of existing roots paths
+     *
+     * @return void
+     */
+    public function setRoots(array $roots)
+    {
+        if ( defined('APP_TESTS') ) {
+            $this->_roots = $roots;
+        }
+    }
 }

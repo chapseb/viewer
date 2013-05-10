@@ -9,6 +9,7 @@ formats:
         width: 150
         height: 150
 ui:
-    enable_right_click: true
+    enable_right_click: false
 roots:
-    - /var/www/images
+    - /path/to/images
+    - /path/to/another/images

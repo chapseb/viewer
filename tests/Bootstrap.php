@@ -16,6 +16,7 @@
 //Main application entry for production
 define('APP_DIR', realpath(__DIR__  . '/../app'));
 define('WEB_DIR', realpath(__DIR__  . '/../web'));
+define('TESTS_DIR', realpath(__DIR__));
 define('APP_DEBUG', true);
 define('APP_CACHE', APP_DIR . '/cache/');
 define('APP_TESTS', true);
