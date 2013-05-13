@@ -131,7 +131,7 @@ class Series extends atoum
             ->hasSize(5);
 
         $count = $infos['count'];
-        $this->integer($count)->isEqualTo(3);
+        $this->integer($count)->isEqualTo(5);
 
         $current = $infos['current'];
         $this->string($current)
@@ -143,9 +143,9 @@ class Series extends atoum
 
         $prev = $infos['prev'];
         $this->string($prev)
-            ->isIdenticalTo('saint-benezet.jpg');
+            ->isIdenticalTo('tech.jpg');
 
-        $series->setImage('saint-benezet.jpg');
+        $series->setImage('tech.jpg');
 
         $infos = $this->_series->getInfos();
         $this->array($infos)
@@ -157,7 +157,7 @@ class Series extends atoum
 
         $prev = $infos['prev'];
         $this->string($prev)
-            ->isIdenticalTo('iron_man.jpg');
+            ->isIdenticalTo('saint-benezet.jpg');
     }
 
     /**
