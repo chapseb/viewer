@@ -83,7 +83,7 @@ class Picture
             );
         }
 
-        $this->_exif = exif_read_data($this->_full_path);
+        $this->_exif = @exif_read_data($this->_full_path);
 
         if ( $this->_exif === false ) {
             //no exif data in picture, let's try another way
