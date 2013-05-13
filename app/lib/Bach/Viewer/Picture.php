@@ -13,6 +13,8 @@
 
 namespace Bach\Viewer;
 
+use \Analog\Analog;
+
 /**
  * Picture
  *
@@ -126,7 +128,9 @@ class Picture
             }
         }
 
-        $this->_formats = $formats;
+        if ( $formats !== null ) {
+            $this->_formats = $formats;
+        }
 
         $this->_check();
     }
@@ -188,7 +192,7 @@ class Picture
         if ( $format !== 'full' ) {
             $prefix .= $format . '/';
         }
-        return '/show/' . base64_encode($this->_full_path);
+        return $prefix . base64_encode($this->_full_path);
     }
 
     /**
@@ -200,14 +204,18 @@ class Picture
     {
         $visibles = array();
 
-        foreach ( $this->_formats as $k=>$fmt ) {
-            if ( $k !== 'thumb' ) {
-                $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' . $fmt['height'];
+        if ( count($this->_formats) > 0 ) {
+            foreach ( $this->_formats as $k=>$fmt ) {
+                if ( $k !== 'thumb' ) {
+                    $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' . $fmt['height'];
+                }
             }
-        }
-        if ( !isset($this->_formats['full']) ) {
-            $visibles[_("full")] = _('full') . ' ' . $this->_width .
-                'x' . $this->_height;
+            if ( !isset($this->_formats['full']) ) {
+                $visibles[_("full")] = _('full') . ' ' . $this->_width .
+                    'x' . $this->_height;
+            }
+        } else {
+            Analog::warning(_('No formats has been defined'));
         }
         return $visibles;
     }
@@ -231,4 +239,25 @@ class Picture
     {
         return $this->_full_path;
     }
+
+    /**
+     * Get image width
+     *
+     * @return int
+     */
+    public function getWidth()
+    {
+        return $this->_width;
+    }
+
+    /**
+     * Get image height
+     *
+     * @return int
+     */
+    public function getHeight()
+    {
+        return $this->_height;
+    }
+
 }
