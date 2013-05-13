@@ -68,7 +68,14 @@ class Series
             $handle = opendir($this->_full_path);
             while ( false !== ($entry = readdir($handle)) ) {
                 if ($entry != "." && $entry != "..") {
-                    $this->_content[] = $entry;
+                    try {
+                        $picture = new Picture($entry, $this->_full_path);
+                        $this->_content[] = $entry;
+                    } catch (\RuntimeException $re) {
+                        Analog::warning(
+                            'Image type for ' . $entry . ' is not supported!'
+                        );
+                    }
                 }
             }
             closedir($handle);
