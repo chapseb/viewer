@@ -144,5 +144,41 @@ class Series extends atoum
         $prev = $infos['prev'];
         $this->string($prev)
             ->isIdenticalTo('saint-benezet.jpg');
+
+        $series->setImage('saint-benezet.jpg');
+
+        $infos = $this->_series->getInfos();
+        $this->array($infos)
+            ->hasSize(5);
+
+        $next = $infos['next'];
+        $this->string($next)
+            ->isIdenticalTo('doms.jpg');
+
+        $prev = $infos['prev'];
+        $this->string($prev)
+            ->isIdenticalTo('iron_man.jpg');
+    }
+
+    /**
+     * Test getPath
+     *
+     * @return void
+     */
+    public function testGetPath()
+    {
+        $path = $this->_series->getPath();
+        $this->string($path)->isIdenticalTo('');
+    }
+
+    /**
+     * Test getFullPath
+     *
+     * @return void
+     */
+    public function testGetFullPath()
+    {
+        $fpath = $this->_series->getFullPath();
+        $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/');
     }
 }
