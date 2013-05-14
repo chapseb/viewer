@@ -128,7 +128,7 @@ class Series extends atoum
 
         $infos = $this->_series->getInfos();
         $this->array($infos)
-            ->hasSize(5);
+            ->hasSize(6);
 
         $count = $infos['count'];
         $this->integer($count)->isEqualTo(5);
@@ -145,11 +145,14 @@ class Series extends atoum
         $this->string($prev)
             ->isIdenticalTo('tech.jpg');
 
+        $position = $infos['position'];
+        $this->integer($position)->isIdenticalTo(0);
+
         $series->setImage('tech.jpg');
 
         $infos = $this->_series->getInfos();
         $this->array($infos)
-            ->hasSize(5);
+            ->hasSize(6);
 
         $next = $infos['next'];
         $this->string($next)

@@ -190,7 +190,8 @@ class Series
                 'current'   => $this->_current,
                 'next'      => $this->getNextImage(),
                 'prev'      => $this->getPreviousImage(),
-                'count'     => count($this->_content)
+                'count'     => count($this->_content),
+                'position'  => array_search($this->_current, $this->_content)
             );
             return $infos;
         }
