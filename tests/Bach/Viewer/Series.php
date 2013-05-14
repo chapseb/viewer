@@ -146,7 +146,7 @@ class Series extends atoum
             ->isIdenticalTo('tech.jpg');
 
         $position = $infos['position'];
-        $this->integer($position)->isIdenticalTo(0);
+        $this->integer($position)->isIdenticalTo(1);
 
         $series->setImage('tech.jpg');
 

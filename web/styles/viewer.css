@@ -46,7 +46,7 @@ h1 {
 }
 /** /Main viewer styles */
 
-/** === Serial navigation */
+/** === Series navigation */
 nav {
     top: 50%;
     margin-top: -18px;
@@ -82,7 +82,15 @@ nav a {
 #nextimg:hover {
     background-position:bottom right;
 }
-/** /Serial navigation */
+
+#series_pos {
+    float: right;
+    margin-top: .5em;
+    margin-right:.5em;
+    font-weight: bold;
+    font-size: 0.85em;
+}
+/** /Series navigation */
 
 /** === Common toolbar */
 aside {
@@ -171,3 +179,7 @@ aside#progressbar > div > p {
     font-size: .85em;
 }
 /** /Progress bar */
+
+.navcontainer {
+    top: 35px;
+}

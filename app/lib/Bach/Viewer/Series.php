@@ -174,6 +174,26 @@ class Series
     }
 
     /**
+     * Retrieve number of images in current series
+     *
+     * @return integer
+     */
+    public function getCount()
+    {
+        return count($this->_content);
+    }
+
+    /**
+     * Retrieve current image position in serie
+     *
+     * @return integer
+     */
+    public function getCurrentPosition()
+    {
+        return array_search($this->_current, $this->_content) + 1;
+    }
+
+    /**
      * Retrieve informations about current series
      *
      * @return array
@@ -190,8 +210,8 @@ class Series
                 'current'   => $this->_current,
                 'next'      => $this->getNextImage(),
                 'prev'      => $this->getPreviousImage(),
-                'count'     => count($this->_content),
-                'position'  => array_search($this->_current, $this->_content)
+                'count'     => $this->getCount(),
+                'position'  => $this->getCurrentPosition()
             );
             return $infos;
         }
