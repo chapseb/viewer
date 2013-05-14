@@ -9,3 +9,5 @@ app/config/local.config.yml
 tests/coverage/
 #exclude not minified 3rd party libs
 web/scripts/jquery/ui/iviewer/jquery.iviewer.js
+#exclude local app configuration path
+app/config/config.inc.php
