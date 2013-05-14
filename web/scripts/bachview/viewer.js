@@ -101,6 +101,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             function(data){
                 $('#previmg').attr('href', '?img=' + data.prev);
                 $('#nextimg').attr('href', '?img=' + data.next);
+                $('#current_pos').html(data.position);
                 $('header > h1').html(data.current);
             },
             'json'

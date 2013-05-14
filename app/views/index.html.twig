@@ -17,7 +17,7 @@
         <section>
             <figure id="viewer">
                 <header>
-                    {% if series %}<div id="series_pos">{{ series.getCurrentPosition() }} / {{ series.getCount() }}</div>{% endif %}
+                    {% if series %}<div id="series_pos"><span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}</div>{% endif %}
                     <h1>{{ img }}</h1>
                 </header>
                 <noscript>
