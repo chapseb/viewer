@@ -6,6 +6,9 @@ var BIIPMooViewer = new Class({
      */
     initialize: function( main_id, options ) {
         this.parent(main_id, options);
+        if ( options.disableContextMenu == false ) {
+            this.disableContextMenu = false;
+        }
         // Navigation window options
         this.navigation = null;
         if( (typeof(BNavigation)==="function") ){

@@ -146,6 +146,9 @@
 
                 // Create our iipmooviewer object
                 new BIIPMooViewer( "pviewer", {
+                    {% if enable_right_click %}
+                    disableContextMenu: false,
+                    {% endif %}
                     server: server,
                     image: image,
                     showNavButtons: false,
