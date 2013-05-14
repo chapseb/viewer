@@ -44,6 +44,22 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.display(_img);
             return false;
         });
+
+        //adapted from mouse wheel event
+        this.container.dblclick(function(ev){
+            //this event is there instead of containing div, because
+            //at opera it triggers many times on div
+            var container_offset = me.container.offset(),
+                mouse_pos = {
+                    //jquery.mousewheel 3.1.0 uses strange MozMousePixelScroll event
+                    //which is not being fixed by jQuery.Event
+                    x: (ev.pageX || ev.originalEvent.pageX) - container_offset.left,
+                    y: (ev.pageY || ev.originalEvent.pageX) - container_offset.top
+                };
+
+            me.zoom_by(1, mouse_pos);
+            return false;
+        });
     },
 
     /* update scale info in the container */
