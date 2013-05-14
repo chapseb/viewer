@@ -11,6 +11,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         };
 
         this.options.onFinishLoad = function(){
+            var _io = me.img_object;
+            if ( _io.orig_height() < _io.display_height()
+                || _io.orig_width() < _io.display_width()
+            ) {
+                console.log('max_zoom_set');
+                me.set_zoom(100);
+            }
+
+
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
             }
