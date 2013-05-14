@@ -8,6 +8,8 @@ formats:
     thumb:
         width: 150
         height: 150
+iip:
+    server: /cgi-bin/iipsrv.fcgi
 ui:
     enable_right_click: true
 roots:

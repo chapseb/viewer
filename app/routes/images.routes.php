@@ -33,13 +33,20 @@ $app->get(
         } else {
             $picture = new Picture($img, $path, $formats);
         }
+
+        $args = array(
+            'img'       => $img,
+            'picture'   => $picture,
+            'iip'       => $picture->isPyramidal()
+        );
+
+        if ( $picture->isPyramidal() ) {
+            $args['iipserver'] = $conf->getIIP()['server'];
+        }
+
         $app->render(
             'index.html.twig',
-            array(
-                'img'       => $img,
-                'picture'   => $picture,
-                'iip'       => $picture->isPyramidal()
-            )
+            $args
         );
     }
 );

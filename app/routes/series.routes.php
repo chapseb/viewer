@@ -72,14 +72,20 @@ $app->get(
         $session['series'] = serialize($series);
         $session['picture'] = serialize($picture);
 
+        $args = array(
+            'img'       => $img,
+            'picture'   => $picture,
+            'iip'       => $picture->isPyramidal(),
+            'series'    => $series
+        );
+
+        if ( $picture->isPyramidal() ) {
+            $args['iipserver'] = $conf->getIIP()['server'];
+        }
+
         $app->render(
             'index.html.twig',
-            array(
-                'img'       => $img,
-                'picture'   => $picture,
-                'iip'       => $picture->isPyramidal(),
-                'series'    => $series
-            )
+            $args
         );
 
     }

@@ -138,4 +138,31 @@ class Conf extends atoum
         $rc_enabled = $ui['enable_right_click'];
         $this->boolean($rc_enabled)->isFalse();
     }
+
+    /**
+     * Test IIP settings
+     *
+     * @return void
+     */
+    public function testGetIIP()
+    {
+        //first, test default configuration
+        $conf = new Viewer\Conf();
+        $iip = $conf->getIIP();
+        $this->array($iip)
+            ->hasSize(1)
+            ->hasKey('server');
+
+        $iipserver = $iip['server'];
+        $this->string($iipserver)->isIdenticalTo('/cgi-bin/iipsrv.fcgi');
+
+        //then, test UT configuration
+        $iip = $this->_conf->getIIP();
+        $this->array($iip)
+            ->hasSize(1)
+            ->hasKey('server');
+
+        $iipserver = $iip['server'];
+        $this->string($iipserver)->isIdenticalTo('/path/to/configured/iipsrv.fcgi');
+    }
 }

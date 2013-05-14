@@ -31,6 +31,7 @@ class Conf
     private $_roots;
     private $_formats;
     private $_ui;
+    private $_iip;
 
     private $_path;
     private $_local_path;
@@ -80,7 +81,7 @@ class Conf
     {
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
-
+        $this->_iip = $this->_conf['iip'];
         $this->_setRoots($this->_conf['roots']);
     }
 
@@ -152,6 +153,16 @@ class Conf
     public function getUi()
     {
         return $this->_ui;
+    }
+
+    /**
+     * Retrieve IIP configuration
+     *
+     * @return array
+     */
+    public function getIIP()
+    {
+        return $this->_iip;
     }
 
     /**
