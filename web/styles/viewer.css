@@ -2,6 +2,7 @@
 html, body, section, #pviewer {
     height: 100%;
     font-family: "Cantarell", Verdana, Arial, sans-serif;
+    background: #000;
 }
 
 #pviewer {
