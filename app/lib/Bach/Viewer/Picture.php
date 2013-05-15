@@ -58,15 +58,15 @@ class Picture
      * @param string $name    Image name
      * @param string $path    Image path, if known
      * @param array  $formats Image formats
+     * @param array  $roots   Roots
      */
-    public function __construct($name, $path=null, $formats = null)
+    public function __construct($name, $path=null, $formats = null, $roots = null)
     {
         $this->_name = $name;
         if ( $path !== null ) {
             $this->_path = $path;
-        } else {
-            //TODO: check path from roots
         }
+
         //normalize path
         if ( substr($this->_path, - 1) !== '/'
             && !substr($this->_name, 0, 1) !== '/'
@@ -76,13 +76,34 @@ class Picture
         $this->_full_path = $this->_path . $this->_name;
 
         if ( !file_exists($this->_full_path) ) {
-            throw new \RuntimeException(
-                str_replace(
-                    '%file',
-                    $this->_full_path,
-                    _('File %file does not exists!')
-                )
-            );
+            if ( is_array($roots) ) {
+                foreach ( $roots as $root ) {
+                    if ( file_exists($root . $this->_full_path)
+                        && is_file($root . $this->_full_path)
+                    ) {
+                        $this->_full_path = $root . $this->_full_path;
+                        Analog::log(
+                            str_replace(
+                                '%path',
+                                $this->_full_path,
+                                _('Image path set to "%path"')
+                            )
+                        );
+                        break;
+                    }
+                }
+            }
+
+            //if file has not been found in roots, trhw an exception
+            if ( !file_exists($this->_full_path) ) {
+                throw new \RuntimeException(
+                    str_replace(
+                        '%file',
+                        $this->_full_path,
+                        _('File %file does not exists!')
+                    )
+                );
+            }
         }
 
         $this->_exif = @exif_read_data($this->_full_path);

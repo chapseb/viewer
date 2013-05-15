@@ -91,9 +91,18 @@ class Picture extends atoum
             }
         )->hasMessage('Image format not supported if not pyramidal');
 
+        //test image from series
         $picture = new Viewer\Picture(
             $this->_series->getRepresentative(),
             $this->_series->getFullPath()
+        );
+
+        //test unique image
+        $picture = new Viewer\Picture(
+            'doms.jpg',
+            null,
+            null,
+            $this->_conf->getRoots()
         );
     }
 
