@@ -49,20 +49,21 @@ class Picture
     private $_type;
     private $_mime;
     private $_pyramidal = false;
-    private $_formats;
+    private $_conf;
     private $_exif;
 
     /**
      * Main constructor
      *
-     * @param string $name    Image name
-     * @param string $path    Image path, if known
-     * @param array  $formats Image formats
-     * @param array  $roots   Roots
+     * @param Conf   $conf Viewer configuration
+     * @param string $name Image name
+     * @param string $path Image path, if known
      */
-    public function __construct($name, $path=null, $formats = null, $roots = null)
+    public function __construct($conf, $name, $path=null)
     {
+        $this->_conf = $conf;
         $this->_name = $name;
+
         if ( $path !== null ) {
             $this->_path = $path;
         }
@@ -76,7 +77,8 @@ class Picture
         $this->_full_path = $this->_path . $this->_name;
 
         if ( !file_exists($this->_full_path) ) {
-            if ( is_array($roots) ) {
+            if ( isset($this->_conf) ) {
+                $roots = $this->_conf->getRoots();
                 foreach ( $roots as $root ) {
                     if ( file_exists($root . $this->_full_path)
                         && is_file($root . $this->_full_path)
@@ -149,10 +151,6 @@ class Picture
             }
         }
 
-        if ( $formats !== null ) {
-            $this->_formats = $formats;
-        }
-
         $this->_check();
     }
 
@@ -188,7 +186,9 @@ class Picture
     public function display($format = 'full')
     {
         $length = null;
+        $file_path = null;
         if ( $format == 'full' ) {
+            $file_path = $this->_full_path;
             $length = filesize($this->_full_path);
         }
         //TODO: serve other formats, resize image, and so on
@@ -196,7 +196,7 @@ class Picture
         header('Content-Length: ' . $length);
         ob_clean();
         flush();
-        readfile($this->_full_path);
+        readfile($file_path);
     }
 
     /**
@@ -225,18 +225,17 @@ class Picture
     {
         $visibles = array();
 
-        if ( count($this->_formats) > 0 ) {
-            foreach ( $this->_formats as $k=>$fmt ) {
+        if ( count($this->_conf->getFormats()) > 0 ) {
+            $formats = $this->_conf->getFormats();
+            foreach ( $formats as $k=>$fmt ) {
                 if ( $k !== 'thumb' ) {
                     $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' . $fmt['height'];
                 }
             }
-            if ( !isset($this->_formats['full']) ) {
+            if ( !isset($formats['full']) ) {
                 $visibles[_("full")] = _('full') . ' ' . $this->_width .
                     'x' . $this->_height;
             }
-        } else {
-            Analog::warning(_('No formats has been defined'));
         }
         return $visibles;
     }

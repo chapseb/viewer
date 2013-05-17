@@ -17,10 +17,8 @@ $app->get(
     '/show/:uri',
     function ($uri) use ($app, $conf) {
         $picture = new Picture(
-            base64_decode($uri),
-            null,
-            $conf->getFormats(),
-            $conf->getRoots()
+            $conf,
+            base64_decode($uri)
         );
         //var_dump($picture);
         $picture->display();
@@ -34,9 +32,9 @@ $app->get(
         $path = '/' . implode('/', $img_params);
         $picture = null;
         if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture('main.jpg', WEB_DIR . '/images/', $conf->getFormats());
+            $picture = new Picture($conf, 'main.jpg', WEB_DIR . '/images/');
         } else {
-            $picture = new Picture($img, $path, $conf->getFormats(), $conf->getRoots());
+            $picture = new Picture($conf, $img, $path);
         }
 
         $args = array(

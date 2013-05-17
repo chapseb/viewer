@@ -55,7 +55,6 @@ class Picture extends atoum
             $this->_conf->getRoots(),
             ''
         );
-
     }
 
     /**
@@ -68,14 +67,16 @@ class Picture extends atoum
         $this->exception(
             function () {
                 $picture = new Viewer\Picture(
-                    $this->_name
+                    $this->_conf,
+                    'blahblah'
                 );
             }
-        )->hasMessage('File /' . $this->_name  . ' does not exists!');
+        )->hasMessage('File /blahblah does not exists!');
 
         $this->exception(
             function () {
                 $picture = new Viewer\Picture(
+                    $this->_conf,
                     'saint-benezet.ico',
                     $this->_series->getFullPath()
                 );
@@ -85,6 +86,7 @@ class Picture extends atoum
         $this->exception(
             function () {
                 $picture = new Viewer\Picture(
+                    $this->_conf,
                     'doms.tiff',
                     $this->_series->getFullPath()
                 );
@@ -93,16 +95,15 @@ class Picture extends atoum
 
         //test image from series
         $picture = new Viewer\Picture(
+            $this->_conf,
             $this->_series->getRepresentative(),
             $this->_series->getFullPath()
         );
 
         //test unique image
         $picture = new Viewer\Picture(
-            'doms.jpg',
-            null,
-            null,
-            $this->_conf->getRoots()
+            $this->_conf,
+            'doms.jpg'
         );
     }
 
@@ -114,6 +115,7 @@ class Picture extends atoum
     public function testComputedExifOnly()
     {
         $picture = new Viewer\Picture(
+            $this->_conf,
             'tech.jpg',
             $this->_series->getFullPath()
         );
@@ -134,6 +136,7 @@ class Picture extends atoum
     public function testTiledImage()
     {
         $picture = new Viewer\Picture(
+            $this->_conf,
             'iron_man_tiled.tif',
             $this->_series->getFullPath()
         );
@@ -154,9 +157,9 @@ class Picture extends atoum
     public function testImageProperties()
     {
         $picture = new Viewer\Picture(
+            $this->_conf,
             $this->_series->getRepresentative(),
-            $this->_series->getFullPath(),
-            $this->_conf->getFormats()
+            $this->_series->getFullPath()
         );
         $width = $picture->getWidth();
         $height = $picture->getHeight();
@@ -175,13 +178,5 @@ class Picture extends atoum
         $this->string($surl)->isIdenticalTo(
             '/show/default/' . base64_encode($fpath)
         );
-
-        $picture = new Viewer\Picture(
-            $this->_series->getRepresentative(),
-            $this->_series->getFullPath()
-        );
-
-        $vformats = $picture->getVisibleFormats();
-        $this->array($vformats)->hasSize(0);
     }
 }

@@ -29,7 +29,7 @@ $app->get(
             );
         }
         $series->setImage($image);
-        $picture = new Picture($image, $series->getFullPath());
+        $picture = new Picture($conf, $image, $series->getFullPath());
 
         $session['series'] = serialize($series);
         $session['picture'] = serialize($picture);

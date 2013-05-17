@@ -69,7 +69,11 @@ class Series
             while ( false !== ($entry = readdir($handle)) ) {
                 if ($entry != "." && $entry != "..") {
                     try {
-                        $picture = new Picture($entry, $this->_full_path);
+                        $picture = new Picture(
+                            null,
+                            $entry,
+                            $this->_full_path
+                        );
                         $this->_content[] = $entry;
                     } catch (\RuntimeException $re) {
                         Analog::warning(

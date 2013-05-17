@@ -70,9 +70,9 @@ $app->get(
         }
 
         $picture = new Picture(
+            $conf,
             $img,
-            $series->getFullPath(),
-            $conf->getFormats()
+            $series->getFullPath()
         );
 
         $session['series'] = serialize($series);
