@@ -21,9 +21,22 @@ $app->get(
             base64_decode($uri)
         );
         //var_dump($picture);
-        $picture->display();
+        $picture->display('default');
     }
 );
+
+$app->get(
+    '/show/:format/:uri',
+    function ($format, $uri) use ($app, $conf) {
+        $picture = new Picture(
+            $conf,
+            base64_decode($uri)
+        );
+        //var_dump($picture);
+        $picture->display($format);
+    }
+);
+
 
 $app->get(
     '/viewer/:image_params+',

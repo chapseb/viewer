@@ -190,7 +190,10 @@ class Picture
         if ( $format == 'full' ) {
             $file_path = $this->_full_path;
             $length = filesize($this->_full_path);
+        } else {
+            list($file_path, $length) = $this->_checkImageFormat($format);
         }
+
         //TODO: serve other formats, resize image, and so on
         header('Content-type: ' . $this->_mime);
         header('Content-Length: ' . $length);
@@ -198,6 +201,196 @@ class Picture
         flush();
         readfile($file_path);
     }
+
+    /**
+     * Get image informations for a specific format
+     *
+     * @param string $format Required format
+     *
+     * @return array
+     */
+    private function _checkImageFormat($format)
+    {
+        $name_path = explode('/', $this->_name);
+        $image_name = array_pop($name_path);
+        $path = $this->_conf->getPreparedPath() . $format . $this->_path;
+        foreach ( $name_path as $np ) {
+            $path .= $np . '/';
+        }
+        $image_path = $path . $image_name;
+
+        if ( !file_exists($image_path) ) {
+            //prepared image does not exists yet
+            if ( file_exists($this->_conf->getPreparedPath())
+                && is_dir($this->_conf->getPreparedPath())
+                && is_writable($this->_conf->getPreparedPath())
+            ) {
+                if ( !file_exists($path) ) {
+                    mkdir($path, 0755, true);
+                }
+                $this->_prepareImage($format);
+            } else {
+                Analog::error(
+                    str_replace(
+                        '%path',
+                        $this->_conf->getPreparedPath(),
+                        _('%path does not exists or is not writable!')
+                    )
+                );
+                //let's serve original image...
+                return array(
+                    $this->_full_path,
+                    filesize($this->_full_path)
+                );
+            }
+        }
+        return array(
+            $image_path,
+            filesize($image_path)
+        );
+
+    }
+
+    /**
+     * Converts image to specified format
+     *
+     * @param string $format Wanted image format
+     *
+     * @return void
+     */
+    private function _prepareImage($format)
+    {
+        if ( class_exists('Gmagick') ) {
+            Analog::warn('Gmagick is installed but not yet implemented!');
+        } else if ( class_exists('Imagick') ) {
+            Analog::warn('Imagick is installed but not yet implemented!');
+        } else {
+            //none of Gmagick or Imagick present, use GD
+            $reg = '/^(.*)\.([a-zZ-a]{3,4})/i';
+            if ( preg_match($reg, $this->_name, $matches) ) {
+                $ext = $matches[2];
+                $dest = $this->_conf->getPreparedPath() . $format  .
+                    $this->_path . $this->_name;
+                $this->_gdResizeImage(
+                    $this->_full_path,
+                    $ext,
+                    $dest,
+                    $format
+                );
+            }
+        }
+    }
+
+    /**
+    * Resize the image if it exceed max allowed sizes
+    *
+    * @param string $source the source image
+    * @param string $ext    file's extension
+    * @param string $dest   the destination image.
+    * @param string $format the format to use
+    *
+    * @return void
+    */
+    private function _gdResizeImage($source, $ext, $dest, $format)
+    {
+        if (function_exists("gd_info")) {
+            $gdinfo = gd_info();
+            $fmt = $this->_conf->getFormats()[$format];
+            $h = $fmt['height'];
+            $w = $fmt['width'];
+            if ( $dest == null ) {
+                $dest = $source;
+            }
+
+            switch(strtolower($ext)) {
+            case 'jpg':
+                if (!$gdinfo['JPEG Support']) {
+                    Analog::log(
+                        '[' . $class . '] GD has no JPEG Support - ' .
+                        'pictures could not be resized!',
+                        Analog::ERROR
+                    );
+                    return false;
+                }
+                break;
+            case 'png':
+                if (!$gdinfo['PNG Support']) {
+                    Analog::log(
+                        '[' . $class . '] GD has no PNG Support - ' .
+                        'pictures could not be resized!',
+                        Analog::ERROR
+                    );
+                    return false;
+                }
+                break;
+            case 'gif':
+                if (!$gdinfo['GIF Create Support']) {
+                    Analog::log(
+                        '[' . $class . '] GD has no GIF Support - ' .
+                        'pictures could not be resized!',
+                        Analog::ERROR
+                    );
+                    return false;
+                }
+                break;
+            default:
+                Analog::error(
+                    'Uknknown ext'
+                );
+                return false;
+            }
+
+            list($cur_width, $cur_height, $cur_type, $curattr)
+                = getimagesize($source);
+
+            $ratio = $cur_width / $cur_height;
+
+            // calculate image size according to ratio
+            if ($cur_width>$cur_height) {
+                $h = $w/$ratio;
+            } else {
+                $w = $h*$ratio;
+            }
+
+            $thumb = imagecreatetruecolor($w, $h);
+            switch(strtolower($ext)) {
+            case 'jpg':
+                $image = ImageCreateFromJpeg($source);
+                imagecopyresampled(
+                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
+                );
+                imagejpeg($thumb, $dest);
+                break;
+            case 'png':
+                $image = ImageCreateFromPng($source);
+                // Turn off alpha blending and set alpha flag. That prevent alpha
+                // transparency to be saved as an arbitrary color (black in my tests)
+                imagealphablending($thumb, false);
+                imagealphablending($image, false);
+                imagesavealpha($thumb, true);
+                imagesavealpha($image, true);
+                imagecopyresampled(
+                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
+                );
+                imagepng($thumb, $dest);
+                break;
+            case 'gif':
+                $image = ImageCreateFromGif($source);
+                imagecopyresampled(
+                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
+                );
+                imagegif($thumb, $dest);
+                break;
+            }
+        } else {
+            Analog::log(
+                '[' . $class . '] GD is not present - ' .
+                'pictures could not be resized!',
+                Analog::ERROR
+            );
+        }
+    }
+
 
     /**
      * Get image URL to display in web interface
