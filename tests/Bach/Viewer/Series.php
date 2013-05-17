@@ -96,6 +96,23 @@ class Series extends atoum
     }
 
     /**
+     * Test setNumberedImage
+     *
+     * @return void
+     */
+    public function testSetNumberedImage()
+    {
+        $set = $this->_series->setNumberedImage(100);
+        $this->boolean($set)->isFalse();
+
+        $set = $this->_series->setNumberedImage(1);
+        $this->boolean($set)->isTrue();
+
+        $img = $this->_series->getImage();
+        $this->string($img)->isIdenticalTo('doms.jpg');
+    }
+
+    /**
      * Test getRepresentative
      *
      * @return void
@@ -106,6 +123,19 @@ class Series extends atoum
 
         $this->string($repr)
             ->isIdenticalTo('doms.jpg');
+    }
+
+    /**
+     * Test getImage
+     *
+     * @return void
+     */
+    public function testGetImage()
+    {
+        $this->_series->setImage('iron_man.jpg');
+        $img = $this->_series->getImage();
+
+        $this->string($img)->isIdenticalTo('iron_man.jpg');
     }
 
     /**

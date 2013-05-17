@@ -142,6 +142,40 @@ class Series
     }
 
     /**
+     * Set image from its position in series
+     *
+     * @param int $pos Image position
+     *
+     * @return boolean
+     */
+    public function setNumberedImage($pos)
+    {
+        $pos = $pos - 1;
+        if ( isset($this->_content[$pos]) ) {
+            return $this->setImage($this->_content[$pos]);
+        } else {
+            Analog::error(
+                str_replace(
+                    '%pos',
+                    $pos,
+                    _('No image at position %pos!')
+                )
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Get current image
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->_current;
+    }
+
+    /**
      * Get previous image
      *
      * @return string

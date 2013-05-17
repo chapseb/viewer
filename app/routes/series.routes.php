@@ -54,12 +54,18 @@ $app->get(
 
         $img = null;
         if ( $req->get('img') !== null ) {
-            if ( !$series->setImage($req->get('img')) ) {
-                $img = $series->getRepresentative();
-            } else {
-                $img = $req->get('img');
+            //get image from its name
+            if ( $series->setImage($req->get('img')) ) {
+                $img = $series->getImage();
             }
-        } else {
+        } else if ( $req->get('num') !== null ) {
+            //get image from its position
+            if ( $series->setNumberedImage($req->get('num')) ) {
+                $img = $series->getImage();
+            }
+        }
+
+        if ( $img === null ) {
             $img = $series->getRepresentative();
         }
 
