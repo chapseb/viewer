@@ -16,7 +16,7 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, $formats, &$session) {
+    function ($path) use ($app, $conf, &$session) {
         $req = $app->request();
         $start = $req->get('s');
         if ( trim($start) === '' ) {
@@ -72,7 +72,7 @@ $app->get(
         $picture = new Picture(
             $img,
             $series->getFullPath(),
-            $formats
+            $conf->getFormats()
         );
 
         $session['series'] = serialize($series);

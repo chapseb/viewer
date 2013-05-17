@@ -15,8 +15,8 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/dbg/show/:uri',
-    function ($uri) use ($app, $formats) {
-        $picture = new Picture(base64_decode($uri), null, $formats);
+    function ($uri) use ($app, $conf) {
+        $picture = new Picture(base64_decode($uri), null, $conf->getFormats());
         var_dump($picture);
     }
 );

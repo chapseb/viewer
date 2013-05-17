@@ -32,7 +32,6 @@ if ( defined('APP_TESTS') ) {
 Analog::handler($logger);
 
 $conf = new Conf();
-$formats = $conf->getFormats();
 
 /** I18n stuff */
 // Set language to French

@@ -15,11 +15,11 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/show/:uri',
-    function ($uri) use ($app, $formats, $conf) {
+    function ($uri) use ($app, $conf) {
         $picture = new Picture(
             base64_decode($uri),
             null,
-            $formats,
+            $conf->getFormats(),
             $conf->getRoots()
         );
         //var_dump($picture);
@@ -29,14 +29,14 @@ $app->get(
 
 $app->get(
     '/viewer/:image_params+',
-    function ($img_params) use ($app, $formats, $conf) {
+    function ($img_params) use ($app, $conf) {
         $img = array_pop($img_params);
         $path = '/' . implode('/', $img_params);
         $picture = null;
         if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture('main.jpg', WEB_DIR . '/images/', $formats);
+            $picture = new Picture('main.jpg', WEB_DIR . '/images/', $conf->getFormats());
         } else {
-            $picture = new Picture($img, $path, $formats, $conf->getRoots());
+            $picture = new Picture($img, $path, $conf->getFormats(), $conf->getRoots());
         }
 
         $args = array(

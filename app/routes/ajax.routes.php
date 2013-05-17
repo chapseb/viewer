@@ -16,7 +16,7 @@ use \Bach\Viewer\Series;
 
 $app->get(
     '/ajax/img(/:series)/:image',
-    function ($series_path = null, $image) use ($app, $formats, $conf, &$session) {
+    function ($series_path = null, $image) use ($app, $conf, &$session) {
         $series = null;
         if ( isset($session['series']) ) {
             $series = unserialize($session['series']);
