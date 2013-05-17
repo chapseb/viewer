@@ -8,6 +8,7 @@ formats:
     thumb:
         width: 150
         height: 150
+prepared_images: /path/to/prepared_images
 iip:
     server: /path/to/configured/iipsrv.fcgi
 ui:

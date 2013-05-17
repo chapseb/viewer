@@ -35,6 +35,7 @@ class Conf
 
     private $_path;
     private $_local_path;
+    private $_prepared_path;
 
     /**
      * Main constructor
@@ -81,6 +82,12 @@ class Conf
     {
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
+
+        $this->_prepared_path = $this->_conf['prepared_images'];
+        if ( substr($this->_prepared_path, - 1) != '/' ) {
+            $this->_prepared_path .= '/';
+        }
+
         $this->_iip = $this->_conf['iip'];
         $this->_setRoots($this->_conf['roots']);
     }
@@ -163,6 +170,16 @@ class Conf
     public function getIIP()
     {
         return $this->_iip;
+    }
+
+    /**
+     * Retrieve prepared images path
+     *
+     * @return string
+     */
+    public function getPreparedPath()
+    {
+        return $this->_prepared_path;
     }
 
     /**

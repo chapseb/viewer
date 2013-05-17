@@ -165,4 +165,25 @@ class Conf extends atoum
         $iipserver = $iip['server'];
         $this->string($iipserver)->isIdenticalTo('/path/to/configured/iipsrv.fcgi');
     }
+
+    /**
+     * Test getPreparedPath
+     *
+     * @return void
+     */
+    public function testGetPreparedPath()
+    {
+        //first, test default configuration
+        $conf = new Viewer\Conf();
+        $ppath = $conf->getPreparedPath();
+
+        $this->string($ppath)
+            ->isIdenticalTo('/var/www/prepared_images/');
+
+        //then, test UT configuration
+        $ppath = $this->_conf->getPreparedPath();
+        $this->string($ppath)
+            ->isIdenticalTo('/path/to/prepared_images/');
+
+    }
 }
