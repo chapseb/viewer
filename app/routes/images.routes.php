@@ -21,7 +21,6 @@ $app->get(
             base64_decode($uri)
         );
         //var_dump($picture);
-        //$picture->display('default');
         if ( $format == '' ) {
             $format = 'default';
         }

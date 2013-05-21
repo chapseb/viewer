@@ -274,7 +274,7 @@ class Picture extends atoum
         $this->boolean($isPyramidal)->isFalse();
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/doms.jpg');
         $this->array($vformats)->hasSize(3);
-        $this->string($url)->isIdenticalTo('/show/' . base64_encode($fpath));
+        $this->string($url)->isIdenticalTo('/show/default/' . base64_encode($fpath));
         $this->string($surl)->isIdenticalTo(
             '/show/default/' . base64_encode($fpath)
         );

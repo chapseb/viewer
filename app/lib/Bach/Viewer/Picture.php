@@ -464,13 +464,11 @@ class Picture
      *
      * @return string
      */
-    public function getUrl($format = 'full')
+    public function getUrl($format = 'default')
     {
         //TODO: serve other formats, resize image, and so on
         $prefix = '/show/';
-        if ( $format !== 'full' ) {
-            $prefix .= $format . '/';
-        }
+        $prefix .= $format . '/';
         return $prefix . base64_encode($this->_full_path);
     }
 
