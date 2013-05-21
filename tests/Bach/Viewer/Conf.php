@@ -186,4 +186,53 @@ class Conf extends atoum
             ->isIdenticalTo('/tmp/');
 
     }
+
+    /**
+     * Test unknown prepare method
+     *
+     * @return void
+     */
+    public function testUnknownPrepareMethod()
+    {
+        $this->exception(
+            function () {
+                new Viewer\Conf(TESTS_DIR . '/config/config-unknownmethod.yml');
+            }
+        )->hasMessage('Prepare method  is not known.');
+
+    }
+
+    /**
+     * Test known prepare methods
+     *
+     * @return void
+     */
+    public function testGetKnownPrepareMethods()
+    {
+        $methods = $this->_conf->getKnownPrepareMethods();
+
+        $should = array(
+            'choose',
+            'gd',
+            'imagick',
+            'gmagick'
+        );
+
+        $this->array($methods)->isIdenticalTo($should);
+    }
+
+    /**
+     * Test configured prepared method
+     *
+     * @return void
+     */
+    public function testGetPrepareMethod()
+    {
+        $method = $this->_conf->getPrepareMethod();
+        $this->string($method)->isIdenticalTo('choose');
+
+        $conf = new Viewer\Conf(TESTS_DIR . '/config/config-woprepared.yml');
+        $method = $conf->getPrepareMethod();
+        $this->string($method)->isIdenticalTo('gmagick');
+    }
 }
