@@ -108,6 +108,106 @@ class Picture extends atoum
     }
 
     /**
+     * Test image display informations
+     *
+     * @return void
+     */
+    public function testGetDisplay()
+    {
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            'doms.jpg'
+        );
+
+        $display = $picture->getDisplay();
+
+        $this->array($display)
+            ->hasSize(2)
+            ->hasKey('headers')
+            ->hasKey('content');
+
+        $headers = $display['headers'];
+        $this->array($headers)
+            ->hasSize(2);
+
+        $mime = $headers['Content-Type'];
+        $this->string($mime)->isIdenticalTo('image/jpeg');
+
+        $length = $headers['Content-Length'];
+        $this->integer($length)->isIdenticalTo(20157);
+
+        //remove thumb if exists
+        //FIXME: maybe not the better way to do that,
+        //but if image exists, it is not possible to test
+        //image generation
+        if ( file_exists('/tmp/thumb/doms.jpg') && is_file('/tmp/thumb/doms.jpg') ) {
+            unlink('/tmp/thumb/doms.jpg');
+        }
+        if ( file_exists('/tmp/thumb/tech.png') && is_file('/tmp/thumb/tech.png') ) {
+            unlink('/tmp/thumb/tech.png');
+        }
+        if ( file_exists('/tmp/thumb/iron_man.gif')
+            && is_file('/tmp/thumb/iron_man.gif')
+        ) {
+            unlink('/tmp/thumb/iron_man.gif');
+        }
+
+        if ( file_exists('/tmp/thumb/') && is_dir('/tmp/thumb/') ) {
+            rmdir('/tmp/thumb');
+        }
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        $this->integer($length)->isIdenticalTo(5234);
+
+        //test with PNG image
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            'tech.png'
+        );
+
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        $this->integer($length)->isIdenticalTo(21898);
+
+        //test with GIF image
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            'iron_man.gif'
+        );
+
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        $this->integer($length)->isIdenticalTo(13449);
+
+    }
+
+    /**
+     * Test image transformation with unexistant prepared images path
+     *
+     * @return void
+     */
+    public function testMissingPreparedPath()
+    {
+        $config_path = APP_DIR . '/../tests/config/config-woprepared.yml';
+        $conf = new Viewer\Conf($config_path);
+        $conf->setRoots($this->_roots);
+
+        $picture = new Viewer\Picture(
+            $conf,
+            'doms.jpg'
+        );
+
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        //thumb does not exists, size is full image size
+        $this->integer($length)->isIdenticalTo(20157);
+    }
+
+    /**
      * Test image with COMPUTED exif informations only
      *
      * @return void

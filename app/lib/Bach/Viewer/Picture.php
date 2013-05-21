@@ -177,13 +177,13 @@ class Picture
     }
 
     /**
-     * Displays the image
+     * Get display informations (header, content, etc)
      *
      * @param string $format Format to display
      *
-     * @return void
+     * @return array
      */
-    public function display($format = 'full')
+    public function getDisplay($format = 'full')
     {
         $length = null;
         $file_path = null;
@@ -194,12 +194,14 @@ class Picture
             list($file_path, $length) = $this->_checkImageFormat($format);
         }
 
-        //TODO: serve other formats, resize image, and so on
-        header('Content-type: ' . $this->_mime);
-        header('Content-Length: ' . $length);
-        ob_clean();
-        flush();
-        readfile($file_path);
+        $ret = array(
+            'headers'   => array(
+                'Content-Type'      => $this->_mime,
+                'Content-Length'    => $length
+            ),
+            'content'   => file_get_contents($file_path)
+        );
+        return $ret;
     }
 
     /**
@@ -260,17 +262,30 @@ class Picture
      */
     private function _prepareImage($format)
     {
-        if ( class_exists('Gmagick') ) {
-            Analog::warn('Gmagick is installed but not yet implemented!');
-        } else if ( class_exists('Imagick') ) {
-            Analog::warn('Imagick is installed but not yet implemented!');
-        } else {
-            //none of Gmagick or Imagick present, use GD
-            $reg = '/^(.*)\.([a-zZ-a]{3,4})/i';
-            if ( preg_match($reg, $this->_name, $matches) ) {
-                $ext = $matches[2];
-                $dest = $this->_conf->getPreparedPath() . $format  .
-                    $this->_path . $this->_name;
+        $reg = '/^(.*)\.([a-zZ-a]{3,4})/i';
+        if ( preg_match($reg, $this->_name, $matches) ) {
+            $ext = $matches[2];
+            $dest = $this->_conf->getPreparedPath() . $format  .
+                $this->_path . $this->_name;
+
+            if ( class_exists('Gmagick') ) {
+                Analog::warn('Gmagick is installed but not yet implemented!');
+                $this->_gdResizeImage(
+                    $this->_full_path,
+                    $ext,
+                    $dest,
+                    $format
+                );
+            } else if ( class_exists('Imagick') ) {
+                Analog::warn('Imagick is installed but not yet implemented!');
+                $this->_gdResizeImage(
+                    $this->_full_path,
+                    $ext,
+                    $dest,
+                    $format
+                );
+            } else {
+                //none of Gmagick or Imagick present, use GD
                 $this->_gdResizeImage(
                     $this->_full_path,
                     $ext,
@@ -278,6 +293,14 @@ class Picture
                     $format
                 );
             }
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%file',
+                    $this->_name,
+                    _('Unknown file extension for %file')
+                )
+            );
         }
     }
 
@@ -298,9 +321,6 @@ class Picture
             $fmt = $this->_conf->getFormats()[$format];
             $h = $fmt['height'];
             $w = $fmt['width'];
-            if ( $dest == null ) {
-                $dest = $source;
-            }
 
             switch(strtolower($ext)) {
             case 'jpg':
@@ -372,7 +392,7 @@ class Picture
                 imagecopyresampled(
                     $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
                 );
-                imagepng($thumb, $dest);
+                imagepng($thumb, $dest, 9);
                 break;
             case 'gif':
                 $image = ImageCreateFromGif($source);

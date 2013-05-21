@@ -183,7 +183,7 @@ class Conf extends atoum
         //then, test UT configuration
         $ppath = $this->_conf->getPreparedPath();
         $this->string($ppath)
-            ->isIdenticalTo('/path/to/prepared_images/');
+            ->isIdenticalTo('/tmp/');
 
     }
 }

@@ -14,29 +14,26 @@
 use \Bach\Viewer\Picture;
 
 $app->get(
-    '/show/:uri',
-    function ($uri) use ($app, $conf) {
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri)
-        );
-        //var_dump($picture);
-        $picture->display('default');
-    }
-);
-
-$app->get(
-    '/show/:format/:uri',
+    '/show(/:format)/:uri',
     function ($format, $uri) use ($app, $conf) {
         $picture = new Picture(
             $conf,
             base64_decode($uri)
         );
         //var_dump($picture);
-        $picture->display($format);
+        //$picture->display('default');
+        if ( $format == '' ) {
+            $format = 'default';
+        }
+        $display = $picture->getDisplay($format);
+        $response = $app->response();
+        foreach ( $display['headers'] as $key=>$header ) {
+            echo $key;
+            $response[$key] = $header;
+        }
+        $response->body($display['content']);
     }
 );
-
 
 $app->get(
     '/viewer/:image_params+',
