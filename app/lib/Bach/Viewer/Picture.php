@@ -448,10 +448,11 @@ class Picture
                 break;
             }
         } else {
-            Analog::log(
-                '[' . $class . '] GD is not present - ' .
-                'pictures could not be resized!',
-                Analog::ERROR
+            throw new \RuntimeException(
+                _('Gd is not present!')
+            );
+            Analog::error(
+                _('Gd is not present!')
             );
         }
     }
