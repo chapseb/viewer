@@ -15,7 +15,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if ( _io.orig_height() < _io.display_height()
                 || _io.orig_width() < _io.display_width()
             ) {
-                console.log('max_zoom_set');
                 me.set_zoom(100);
             }
 
@@ -23,6 +22,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
             }
+
             $('#progressbar').fadeOut('slow');
         };
         this.createui();
@@ -44,6 +44,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#rrotate").click(function(){ me.angle(90); });
         this.zoom_object = $('#zoominfos');
 
+        //resize image
+        $('#formats').change(function(){
+            var _format = $("select option:selected").attr('value');
+            me.loadImage('/ajax/img/' + me.image_name + '/format/' + _format);
+        });
+
         //navbar
         $('#previmg,#nextimg').click(function(){
             var _this = $(this);
@@ -51,6 +57,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             var _re = /img=(.*)/;
             var _img = _str.match(_re)[1];
             me.display(_img);
+            $('#formats').val('default');
             return false;
         });
 

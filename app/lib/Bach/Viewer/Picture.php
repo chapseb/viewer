@@ -489,7 +489,7 @@ class Picture
                 }
             }
             if ( !isset($formats['full']) ) {
-                $visibles[_("full")] = _('full') . ' ' . $this->_width .
+                $visibles["full"] = _('full') . ' ' . $this->_width .
                     'x' . $this->_height;
             }
         }

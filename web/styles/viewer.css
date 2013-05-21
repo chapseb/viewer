@@ -44,6 +44,11 @@ h1 {
     position: relative;
     margin: 0;
 }
+
+#image_formats {
+    position: absolute;
+    left: .5em;
+}
 /** /Main viewer styles */
 
 /** === Series navigation */
@@ -84,9 +89,9 @@ nav a {
 }
 
 #series_pos {
-    float: right;
-    margin-top: .5em;
-    margin-right:.5em;
+    position: absolute;
+    top: .5em;
+    right:.5em;
     font-weight: bold;
     font-size: 0.85em;
 }

@@ -17,17 +17,22 @@
         <section>
             <figure id="viewer">
                 <header>
+                    {% if not picture.isPyramidal %}
+                    <div id="image_formats">
+                        {% trans "Image size:" %}
+                        <select name="formats" id="formats">
+                            {% for key, fmt in picture.getVisibleFormats() %}
+                            <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
                     {% if series %}<div id="series_pos"><span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}</div>{% endif %}
                     <h1>{{ img }}</h1>
                 </header>
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
-                <!--<select name="formats">
-                    {% for key, fmt in picture.getVisibleFormats() %}
-                    <option value="{{ key }}">{{ fmt }}</option>
-                    {% endfor %}
-                </select>-->
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
                 <!-- Browse series, if series there is -->
                 {% if series %}

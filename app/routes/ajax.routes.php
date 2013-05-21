@@ -39,6 +39,14 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/img/:name/format/:format',
+    function ($name, $format) use ($app, $session) {
+        $picture = unserialize($session['picture']);
+        $app->redirect($picture->getUrl($format));
+    }
+);
+
+$app->get(
     '/ajax/series/infos(/:image)',
     function ($img = null) use ($app, $session) {
         $series = unserialize($session['series']);

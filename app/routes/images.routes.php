@@ -54,6 +54,8 @@ $app->get(
 
         if ( $picture->isPyramidal() ) {
             $args['iipserver'] = $conf->getIIP()['server'];
+        } else {
+            $args['image_format'] = 'default';
         }
 
         $app->render(
