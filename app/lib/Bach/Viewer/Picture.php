@@ -29,6 +29,10 @@ class Picture
     const DEFAULT_WIDTH = 1000;
     const DEFAULT_HEIGHT = 1000;
 
+    const METHOD_GMAGICK = 0;
+    const METHOD_IMAGICK = 1;
+    const METHOD_GD = 2;
+
     private $_supported_types = array(
         IMAGETYPE_GIF,
         IMAGETYPE_JPEG,
@@ -262,45 +266,77 @@ class Picture
      */
     private function _prepareImage($format)
     {
-        $reg = '/^(.*)\.([a-zZ-a]{3,4})/i';
-        if ( preg_match($reg, $this->_name, $matches) ) {
-            $ext = $matches[2];
-            $dest = $this->_conf->getPreparedPath() . $format  .
-                $this->_path . $this->_name;
+        $dest = $this->_conf->getPreparedPath() . $format  .
+            $this->_path . $this->_name;
 
-            if ( class_exists('Gmagick') ) {
-                Analog::warn('Gmagick is installed but not yet implemented!');
-                $this->_gdResizeImage(
-                    $this->_full_path,
-                    $ext,
-                    $dest,
-                    $format
-                );
-            } else if ( class_exists('Imagick') ) {
-                Analog::warn('Imagick is installed but not yet implemented!');
-                $this->_gdResizeImage(
-                    $this->_full_path,
-                    $ext,
-                    $dest,
-                    $format
-                );
+        //chek method that will be used
+        $method = null;
+        $prepare_method = $this->_conf->getPrepareMethod();
+
+        if ( $prepare_method != 'choose' ) {
+            //explitely set methods
+            if ( $prepare_method === 'gmagick'
+                && class_exists('Gmagick')
+            ) {
+                $method = self::METHOD_GMAGICK;
             } else {
-                //none of Gmagick or Imagick present, use GD
-                $this->_gdResizeImage(
-                    $this->_full_path,
-                    $ext,
-                    $dest,
-                    $format
+                Analog::warning(
+                    _('Prepare method was explicitely set to Gmagick, but it is missing!')
+                );
+            }
+
+            if ( $prepare_method === 'imagick'
+                && class_exists('Imagick')
+            ) {
+                $method = self::METHOD_IMAGICK;
+            } else {
+                Analog::warning(
+                    _('Prepare method was explicitely set to Imagick, but it is missing!')
                 );
             }
         } else {
-            throw new \RuntimeException(
-                str_replace(
-                    '%file',
-                    $this->_name,
-                    _('Unknown file extension for %file')
-                )
+            //automatically set method
+            if ( class_exists('Gmagick') ) {
+                $method = self::METHOD_GMAGICK;
+            } else if ( class_exists('Imagick') ) {
+                $method = self::METHOD_IMAGICK;
+            } else {
+                $method = self::METHOD_GD;
+            }
+        }
+
+        if ( $method === null ) {
+            Analog::info(
+                _('Falling back to Gd method.')
             );
+            $method = self::METHOD_GD;
+        }
+
+        switch ( $method ) {
+        case self::METHOD_GMAGICK:
+            Analog::warn('Gmagick is installed but not yet implemented!');
+            $this->_gdResizeImage(
+                $this->_full_path,
+                $dest,
+                $format
+            );
+            break;
+        case self::METHOD_IMAGICK:
+            Analog::warn('Imagick is installed but not yet implemented!');
+            $this->_gdResizeImage(
+                $this->_full_path,
+                $dest,
+                $format
+            );
+            break;
+        case self::METHOD_GD:
+        default:
+            $this->_gdResizeImage(
+                $this->_full_path,
+                $dest,
+                $format
+            );
+            break;
         }
     }
 
@@ -308,13 +344,12 @@ class Picture
     * Resize the image if it exceed max allowed sizes
     *
     * @param string $source the source image
-    * @param string $ext    file's extension
     * @param string $dest   the destination image.
     * @param string $format the format to use
     *
     * @return void
     */
-    private function _gdResizeImage($source, $ext, $dest, $format)
+    private function _gdResizeImage($source, $dest, $format)
     {
         if (function_exists("gd_info")) {
             $gdinfo = gd_info();
@@ -322,8 +357,8 @@ class Picture
             $h = $fmt['height'];
             $w = $fmt['width'];
 
-            switch(strtolower($ext)) {
-            case 'jpg':
+            switch( $this->_type ) {
+            case IMAGETYPE_JPEG:
                 if (!$gdinfo['JPEG Support']) {
                     Analog::log(
                         '[' . $class . '] GD has no JPEG Support - ' .
@@ -333,7 +368,7 @@ class Picture
                     return false;
                 }
                 break;
-            case 'png':
+            case IMAGETYPE_PNG:
                 if (!$gdinfo['PNG Support']) {
                     Analog::log(
                         '[' . $class . '] GD has no PNG Support - ' .
@@ -343,7 +378,7 @@ class Picture
                     return false;
                 }
                 break;
-            case 'gif':
+            case IMAGETYPE_GIF:
                 if (!$gdinfo['GIF Create Support']) {
                     Analog::log(
                         '[' . $class . '] GD has no GIF Support - ' .
@@ -355,7 +390,7 @@ class Picture
                 break;
             default:
                 Analog::error(
-                    'Uknknown ext'
+                    'Current image type cannot be resized'
                 );
                 return false;
             }
@@ -373,15 +408,15 @@ class Picture
             }
 
             $thumb = imagecreatetruecolor($w, $h);
-            switch(strtolower($ext)) {
-            case 'jpg':
+            switch( $this->_type ) {
+            case IMAGETYPE_JPEG:
                 $image = ImageCreateFromJpeg($source);
                 imagecopyresampled(
                     $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
                 );
                 imagejpeg($thumb, $dest);
                 break;
-            case 'png':
+            case IMAGETYPE_PNG:
                 $image = ImageCreateFromPng($source);
                 // Turn off alpha blending and set alpha flag. That prevent alpha
                 // transparency to be saved as an arbitrary color (black in my tests)
@@ -394,12 +429,22 @@ class Picture
                 );
                 imagepng($thumb, $dest, 9);
                 break;
-            case 'gif':
+            case IMAGETYPE_GIF:
                 $image = ImageCreateFromGif($source);
                 imagecopyresampled(
                     $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
                 );
                 imagegif($thumb, $dest);
+                break;
+            case IMAGETYPE_TIFF_II:
+            case IMAGETYPE_TIFF_MM:
+                /** FIXME: Gd cannot resize TIFF images.
+                 * IIP is able to serve a complete image using JPEG
+                 * maybe we can get original image there and resize using jpg.
+                 */
+                throw new \RuntimeException(
+                    _('TIFF images cannot be resized using Gd library!')
+                );
                 break;
             }
         } else {
