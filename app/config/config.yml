@@ -2,13 +2,17 @@ formats:
     huge:
         width: 2000
         height: 2000
+    #default format *MUST* be present
     default:
         width: 800
         height: 800
     thumb:
         width: 150
         height: 150
-prepared_images: /var/www/prepared_images/
+prepared_images:
+    #method is one of choose, gd, gmagick, imagick
+    method: choose
+    path: /var/www/prepared_images/
 iip:
     server: /cgi-bin/iipsrv.fcgi
 ui:

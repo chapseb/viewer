@@ -1,1 +1,3 @@
-prepared_images: /path/to/unexistant/dir
+prepared_images:
+    method: choose
+    path: /path/to/unexistant/dir

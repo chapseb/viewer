@@ -36,6 +36,8 @@ class Conf
     private $_path;
     private $_local_path;
     private $_prepared_path;
+    private $_prepare_method;
+    private $_known_methods;
 
     /**
      * Main constructor
@@ -70,6 +72,8 @@ class Conf
             );
         }
 
+        $this->_known_methods = array('choose', 'gd', 'imagick', 'gmagick');
+
         $this->_check();
     }
 
@@ -83,9 +87,26 @@ class Conf
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
 
-        $this->_prepared_path = $this->_conf['prepared_images'];
+        $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
             $this->_prepared_path .= '/';
+        }
+
+        if ( isset($this->_conf['prepared_images']['method']) ) {
+            $method = $this->_conf['prepared_images']['method'];
+            if ( !in_array($method, $this->_known_methods) ) {
+                throw new \RuntimeException(
+                    str_replace(
+                        '%method',
+                        $this->_prepare_method,
+                        _('Prepare method %method is not known.')
+                    )
+                );
+            } else {
+                $this->_prepare_method = $method;
+            }
+        } else {
+            $this->_prepare_method = 'choose';
         }
 
         $this->_iip = $this->_conf['iip'];
@@ -180,6 +201,26 @@ class Conf
     public function getPreparedPath()
     {
         return $this->_prepared_path;
+    }
+
+    /**
+     * Retrieve know prepare methods
+     *
+     * @return array
+     */
+    public function getKnownPrepareMethods()
+    {
+        return $this->_known_methods;
+    }
+
+    /**
+     * Retrieve prepare method
+     *
+     * @return string
+     */
+    public function getPrepareMethod()
+    {
+        return $this->_prepare_method;
     }
 
     /**
