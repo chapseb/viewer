@@ -6,9 +6,6 @@
         <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
         {% else %}
         <link rel="stylesheet" type="text/css" media="all" href="/styles/iip.css" />
-        <!--[if lt IE 10]>
-        <link rel="stylesheet" type="text/css" media="all" href="/styles/ie.css" />
-        <![endif]-->
         {% endif %}
         <link rel="stylesheet" href="/styles/viewer.css"/>
 {% endblock %}
@@ -95,6 +92,9 @@
             jQuery.noConflict();
             //jquery stuff
             (function($) {
+                if ( typeof _isOldIE != 'undefined' ) {
+                    $('#lrotate,#rrotate,#fullscreen').remove();
+                }
                 {% if not(enable_right_click) %}
                 $(this).bind("contextmenu", function(e) {
                     e.preventDefault();
