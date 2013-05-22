@@ -15,11 +15,20 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/show(/:format)/:uri',
-    function ($format, $uri) use ($app, $conf) {
+    function ($format, $uri) use ($app, $conf, &$session) {
         $picture = new Picture(
             $conf,
             base64_decode($uri)
         );
+
+        if ( !isset($session['picture']) ) {
+            $session['picture'] = serialize($picture);
+        } else {
+            $sess_pic = unserialize($session['picture']);
+            if ( $sess_pic->getFullPath() != $picture->getFullPath() ) {
+                $session['picture'] = serialize($picture);
+            }
+        }
         //var_dump($picture);
         if ( $format == '' ) {
             $format = 'default';
