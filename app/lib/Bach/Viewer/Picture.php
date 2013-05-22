@@ -353,7 +353,8 @@ class Picture
     {
         if (function_exists("gd_info")) {
             $gdinfo = gd_info();
-            $fmt = $this->_conf->getFormats()[$format];
+            $fmts = $this->_conf->getFormats();
+            $fmt = $fmts[$format];
             $h = $fmt['height'];
             $w = $fmt['width'];
 

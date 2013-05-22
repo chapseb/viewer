@@ -74,9 +74,10 @@ $app->hook(
     function () use ($app, $conf) {
         //let's send view parameters before dispatching
         $v = $app->view();
+        $ui = $conf->getUI();
         $v->setData(
             'enable_right_click',
-            $conf->getUI()['enable_right_click']
+            $ui['enable_right_click']
         );
     }
 );
