@@ -11,10 +11,168 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: app/cache/5f/aa/a3fc467ff2e5638853ba54a06d43.php:25
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:33
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:65
 msgid "Bach Viewer"
 msgstr "Visionneuse Bach"
 
-#: app/lib/Bach/Viewer/Picture.php:122
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:71
+msgid "Image size:"
+msgstr "Taille de l'image&nbsp;:"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:135
+msgid "Go to previous image"
+msgstr "Aller à l'image précédente"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:137
+msgid "Previous"
+msgstr "Précédente"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:143
+msgid "Go to next image"
+msgstr "Aller à l'image suivante"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:145
+msgid "Next"
+msgstr "Suivante"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
+msgid "Zoom out"
+msgstr "Zoom arrière"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
+msgid "Zoom in"
+msgstr "Zoom avant"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:164
+msgid "Show full size image"
+msgstr "Afficher l'image en pleine taille"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
+msgid "Fit image to screen"
+msgstr "Ajuster l'image à l'écran"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
+msgid "Rotate 90 degrees by left"
+msgstr "Effectuer une rotation de 90° en sens anti-horaire"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
+msgid "Rotate 90 degrees by right"
+msgstr "Effectuer une rotation de 90° en sens horaire"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
+msgid "Enter/exit fullscreen"
+msgstr "Entrer/Sortir du mode plein écran"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:193
+msgid "Loading image, please wait..."
+msgstr "Chargement de l'image, veuillez patienter..."
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:32
+msgid "Bach's viewer - Page not found"
+msgstr "Visionneuse Bach - Page non trouvée"
+
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:48
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:52
+msgid "The page you're looking for does not exist, or has been removed."
+msgstr "La page que vous cherchez n'existe pas, ou a été supprimée."
+
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:54
+msgid "Back to home!"
+msgstr "Retour à l'accueil&nbsp;!"
+
+#: app/lib/Bach/Viewer/Picture.php:95
+msgid "Image path set to \"%path\""
+msgstr "Chemin de l'image défini à « %path »"
+
+#: app/lib/Bach/Viewer/Picture.php:109
+#, php-format
+msgid "File %file does not exists!"
+msgstr "Le fichier %file n'existe pas !"
+
+#: app/lib/Bach/Viewer/Picture.php:132
+msgid "Unable to get image width!"
+msgstr "Impossible de récupérer la largeur de l'image !"
+
+#: app/lib/Bach/Viewer/Picture.php:142
+msgid "Unable to get image height!"
+msgstr "Impossible de récupérer la heuteur de l'image !"
+
+#: app/lib/Bach/Viewer/Picture.php:169
+msgid "Unsupported image format!"
+msgstr "Format d'image non supporté !"
+
+#: app/lib/Bach/Viewer/Picture.php:178
+msgid "Image format not supported if not pyramidal"
+msgstr "Format d'image non supporté si non pyramidal."
+
+#: app/lib/Bach/Viewer/Picture.php:243
+msgid "%path does not exists or is not writable!"
+msgstr "%path n'existe pas ou n'est pas accessible en écriture !!"
+
+#: app/lib/Bach/Viewer/Picture.php:284
+msgid "Prepare method was explicitely set to Gmagick, but it is missing!"
+msgstr ""
+"La méthode de préparation est définie à Gmagick, mais il est manquant !"
+
+#: app/lib/Bach/Viewer/Picture.php:294
+msgid "Prepare method was explicitely set to Imagick, but it is missing!"
+msgstr ""
+"La méthode de préparation est définie à Imagick, mais il est manquant !"
+
+#: app/lib/Bach/Viewer/Picture.php:310
+msgid "Falling back to Gd method."
+msgstr "Retour à la méthode Gd."
+
+#: app/lib/Bach/Viewer/Picture.php:447
+msgid "TIFF images cannot be resized using Gd library!"
+msgstr ""
+"Les images TIFF ne peuvent être redimensionnées avec la bibliothèque Gd !"
+
+#: app/lib/Bach/Viewer/Picture.php:453 app/lib/Bach/Viewer/Picture.php:457
+msgid "Gd is not present!"
+msgstr "Gd n'est pas présent !"
+
+#: app/lib/Bach/Viewer/Picture.php:495
 msgid "full"
 msgstr "complet"
+
+#: app/lib/Bach/Viewer/Conf.php:102
+msgid "Prepare method %method is not known."
+msgstr "La méthode de préparation %method est inconnue."
+
+#: app/lib/Bach/Viewer/Conf.php:138
+msgid "Added root path: %root"
+msgstr "Chemin ajouté aux racines : %root"
+
+#: app/lib/Bach/Viewer/Conf.php:148
+msgid "The root path \"%root\" does not exists or is not a directory!"
+msgstr ""
+"Le chemin de la racine « %root » n'existe pas ou n'est pas un répertoire !"
+
+#: app/lib/Bach/Viewer/Series.php:55
+msgid "Series path set to \"%path\""
+msgstr "Chemin des séries défini à « %path »"
+
+#: app/lib/Bach/Viewer/Series.php:64
+msgid "No matching root found!"
+msgstr "Aucune racine correspondante trouvée !"
+
+#: app/lib/Bach/Viewer/Series.php:141
+msgid "Image %image is not part of current series!"
+msgstr "L'image « %image » ne fait pas partie de la série courante !"
+
+#: app/lib/Bach/Viewer/Series.php:165
+msgid "No image at position %pos!"
+msgstr "Aucune image à la position %pos !"
+
+#: app/lib/Bach/Viewer/Series.php:243
+msgid "Series has not been initialized yet."
+msgstr "Les séries n'ont pas encore été initialisées."
