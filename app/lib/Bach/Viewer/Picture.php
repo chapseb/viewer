@@ -448,10 +448,11 @@ class Picture
                 break;
             }
         } else {
-            throw new \RuntimeException(
+            Analog::error(
                 _('Gd is not present!')
             );
-            Analog::error(
+
+            throw new \RuntimeException(
                 _('Gd is not present!')
             );
         }
