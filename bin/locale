@@ -1,4 +1,19 @@
 #!/bin/bash
+
+TMP=/tmp/viewer_cache_temp
+
+#ensure cache dir is empty
+if [ -d $TMP ]; then
+    rm -rf $TMP
+fi
+mkdir $TMP
+
+#generate templates
+php bin/extract_strings.php --tmp=$TMP
+
+#retrieve strings
+find $TMP app/lib -name "*.php" | xargs xgettext --default-domain=messages -p ./app/locale --from-code=UTF-8 -n --omit-header -L PHP -o messages.pot
+
 #Generate gettext files
 pushd app/locale > /dev/null
 for l in fr_FR.utf8 en_US
@@ -7,3 +22,4 @@ do
     msgfmt $l.po -o $l/LC_MESSAGES/BachViewer.mo
 done
 popd > /dev/null
+rm -rf $TMP
