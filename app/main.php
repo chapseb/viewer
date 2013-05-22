@@ -34,10 +34,33 @@ Analog::handler($logger);
 $conf = new Conf();
 
 /** I18n stuff */
-// Set language to French
-// FIXME: use user language
-putenv('LC_ALL=fr_FR.utf8');
-setlocale(LC_ALL, 'fr_FR.utf8');
+$lang = null;
+$langs = array(
+    'en-US',
+    'fr-FR'
+);
+
+/** Try to detect user language */
+if ( function_exists('http_negotiate_language') ) {
+    $nego = http_negotiate_language($langs);
+    switch ( strtolower($nego) ) {
+    case 'en-us':
+        $lang = 'en_US';
+        break;
+    case 'fr-fr':
+        $lang = 'fr_FR.utf8';
+        break;
+    }
+} else {
+    if ( substr($langs, 0, 2) == 'fr' ) {
+        $lang = 'fr_FR.utf8';
+    } else {
+        $lang = 'en_US';
+    }
+}
+
+putenv('LC_ALL=' . $lang);
+setlocale(LC_ALL, $lang);
 
 //Specify the location of the translation tables
 bindtextdomain('BachViewer', APP_DIR . '/locale');
