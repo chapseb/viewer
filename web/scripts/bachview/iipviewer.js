@@ -37,6 +37,17 @@ var BIIPMooViewer = new Class({
                 if( IIPMooViewer.sync ) IIPMooViewer.windows(_this).invoke( 'rotate', _r );
             }
         });
+
+        //replace infos, since we do not provide annotations
+        $$('div.info').destroy();
+        new Element( 'div', {
+            'class': 'info',
+            'styles': { opacity: 0 },
+            'events': {
+                click: function(){ this.fade('out'); }
+            },
+            'html': '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="'+this.prefix+'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 Ajax High Resolution Image Viewer - Version '+this.version+'<br/><ul><li>'+IIPMooViewer.lang.navigate+'</li><li>'+IIPMooViewer.lang.zoomIn+'</li><li>'+IIPMooViewer.lang.zoomOut+'</li><li>'+IIPMooViewer.lang.rotate+'</li><li>'+IIPMooViewer.lang.fullscreen+'</li><li>'+IIPMooViewer.lang.navigation+'</li></ul><br/>'+IIPMooViewer.lang.more+' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
+        }).inject( this.container );
     },
 
 
