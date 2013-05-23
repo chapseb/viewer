@@ -6,7 +6,7 @@ A free advanced image viewer.
 Requirements
 ------------
 
-Bachview requires PHP >= 5.3.7 and some 3rd party project:
+Bachview requires PHP >= 5.3 and some 3rd party project:
 - Slim for the routing part,
 - Analog for the logging part,
 - Twig for the templating part.
@@ -19,10 +19,11 @@ bachview
     - *app*: main application source files
     - *vendor*: 3rd party libraries needeed
     - *web*: web files that should be available from the webserver (main routing, css, js, images and so on)
-    - *composer.json*: composer configuration file, for convenience
+    - *composer.json*: composer configuration file
+    - *composer.lock*: composer versions file
 
-Installation
-------------
+Installation with composer
+--------------------------
 
 You'll have first to download composer:
 $ curl -sS https://getcomposer.org/installer | php
@@ -47,5 +48,8 @@ Configuration
 Main configuration file is located under *app/config* directory, and is named
 config.yml (YAML syntax, see http://yaml.org/).
 
-Please be carefull editing this file, you would throw fatal errors if you remove
-a required entry.
+If you want to change the configuration, please copy config.yml file to
+local.config.yml, and edit this new one.
+
+You are not required to copy all the file, just the parts that change, default
+configuration will apply.
