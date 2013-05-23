@@ -76,6 +76,34 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.zoom_by(1, mouse_pos);
             return false;
         });
+
+        //bind keys
+        $('body').bind('keydown', function(event) {
+            if (event.which == 107) { //+
+                me.zoom_by(1);
+                event.preventDefault();
+            }
+            if (event.which == 109) { //-
+                me.zoom_by(-1);
+                event.preventDefault();
+            }
+            if ( event.which == 82 ) { //r
+                if ( event.shiftKey ) { //shift pressed
+                    me.angle(-90);
+                } else {
+                    me.angle(90);
+                }
+                event.preventDefault();
+            }
+            if ( event.which == 34 ) { //page down
+                $('#previmg').click();
+                event.preventDefault();
+            }
+            if ( event.which == 33 ) { //page up
+                $('#nextimg').click();
+                event.preventDefault();
+            }
+        });
     },
 
     /* update scale info in the container */
