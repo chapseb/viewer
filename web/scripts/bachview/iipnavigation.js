@@ -4,7 +4,15 @@ var BNavigation = new Class({
     /**
      * Overrides IIP navigation
      */
-    create: function( container ){
+    initialize: function( options ) {
+        this.parent(options);
+        this.options.navWinSize = options.navWinSize || 0.3;
+    },
+
+    /**
+     * Overrides IIP navigation
+     */
+    create: function( container ) {
         this.parent(container);
 
         // Add events to our buttons

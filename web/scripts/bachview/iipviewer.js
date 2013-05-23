@@ -37,5 +37,25 @@ var BIIPMooViewer = new Class({
                 if( IIPMooViewer.sync ) IIPMooViewer.windows(_this).invoke( 'rotate', _r );
             }
         });
+    },
+
+
+    /*
+     * Calculate navigation view size
+     */
+    calculateNavSize: function()    {
+
+        var thumb_width = Math.round(this.view.w * this.navigation.options.navWinSize);
+
+        // For panoramic images, use a large navigation window
+        /*if( this.max_size.w > 2*this.max_size.h ) thumb_width = Math.round( this.view.w/2 );*/
+
+        // Make sure our height is not more than 50% of view height
+        if( (this.max_size.h/this.max_size.w)*thumb_width > this.view.h*0.5 ){
+            thumb_width = Math.round( this.view.h * 0.5 * this.max_size.w/this.max_size.h );
+        }
+
+        this.navigation.size.x = thumb_width;
+        this.navigation.size.y = Math.round( (this.max_size.h/this.max_size.w)*thumb_width );
     }
 });
