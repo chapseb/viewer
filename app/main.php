@@ -94,7 +94,7 @@ define('DEFAULT_PICTURE', 'main.jpg');
 
 $app->hook(
     'slim.before.dispatch',
-    function () use ($app, $conf) {
+    function () use ($app, $conf, $lang) {
         //let's send view parameters before dispatching
         $v = $app->view();
         $ui = $conf->getUI();
@@ -102,6 +102,7 @@ $app->hook(
             'enable_right_click',
             $ui['enable_right_click']
         );
+        $v->setData('lang', $lang);
     }
 );
 

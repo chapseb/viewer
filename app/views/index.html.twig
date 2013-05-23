@@ -80,7 +80,11 @@
         <script type="text/javascript" src="/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
         <script type="text/javascript" src="/scripts/bachview/iipviewer.js"></script>
         <script type="text/javascript" src="/scripts/iipmooviewer/protocols/iip.js"></script>
+        {% if lang == 'fr_FR.utf8' %}
         <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.fr.js"></script>
+        {% else %}
+        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.en.js"></script>
+        {% endif %}
         <!--<script type="text/javascript" src="/scripts/iipmooviewer/touch.js"></script>-->
         <script type="text/javascript" src="/scripts/iipmooviewer/navigation.js"></script>
         <script type="text/javascript" src="/scripts/bachview/iipnavigation.js"></script>
