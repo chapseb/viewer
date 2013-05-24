@@ -64,7 +64,7 @@ class Conf
         );
 
         if ( file_exists($this->_local_path) ) {
-            $this->_conf = array_merge(
+            $this->_conf = array_replace_recursive(
                 $this->_conf,
                 $yaml->parse(
                     file_get_contents($this->_local_path)
