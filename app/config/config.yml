@@ -1,7 +1,4 @@
 formats:
-    huge:
-        width: 2000
-        height: 2000
     #default format *MUST* be present
     default:
         width: 800
