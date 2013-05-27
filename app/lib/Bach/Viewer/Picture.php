@@ -459,6 +459,15 @@ class Picture
         }
     }
 
+    /**
+     * Get image name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
 
     /**
      * Get image URL to display in web interface

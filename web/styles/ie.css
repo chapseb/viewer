@@ -1,3 +1,7 @@
 aside#progressbar > div {
     background-color: white;
 }
+
+.zone {
+    filter:alpha(opacity=40);
+}

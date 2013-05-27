@@ -40,8 +40,15 @@ $app->get(
 
 $app->get(
     '/ajax/img/:name/format/:format',
-    function ($name, $format) use ($app, $session) {
+    function ($name, $format) use ($app, $conf, $session) {
         $picture = unserialize($session['picture']);
+        if ( $name !== 'undefined'
+            && substr($picture->getName(), strlen($name)) !== $name
+        ) {
+            //names differs, load image
+            $series = unserialize($session['series']);
+            $picture = new Picture($conf, $name, $series->getFullPath());
+        }
         $app->redirect($picture->getUrl($format));
     }
 );
