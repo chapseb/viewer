@@ -268,11 +268,13 @@ class Picture extends atoum
         $vformats = $picture->getVisibleFormats();
         $url = $picture->getUrl();
         $surl = $picture->getUrl('default');
+        $name = $picture->getName();
 
         $this->integer($width)->isEqualTo(150);
         $this->integer($height)->isEqualTo(200);
         $this->boolean($isPyramidal)->isFalse();
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/doms.jpg');
+        $this->string($name)->isIdenticalTo('doms.jpg');
         $this->array($vformats)->hasSize(3);
         $this->string($url)->isIdenticalTo('/show/default/' . base64_encode($fpath));
         $this->string($surl)->isIdenticalTo(
