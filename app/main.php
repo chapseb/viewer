@@ -52,6 +52,7 @@ if ( function_exists('http_negotiate_language') ) {
         break;
     }
 } else {
+    $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
     if ( substr($langs, 0, 2) == 'fr' ) {
         $lang = 'fr_FR.utf8';
     } else {
@@ -89,7 +90,6 @@ if ( defined('APP_CACHE') && APP_CACHE !== false ) {
     );
 }
 
-//TODO: parametize
 define('DEFAULT_PICTURE', 'main.jpg');
 
 $app->hook(
