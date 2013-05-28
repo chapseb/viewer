@@ -1,10 +1,21 @@
 ( function( $, undefined ) {
 $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
-    /* Overrides iviewer method to add specific UI */
+    /* Overrides iviewer method to:
+     *  - add specific UI
+     *  - add actions on some events
+     *  - handle navigation overview
+     */
     _create: function() {
         var me = this;
         $.ui.iviewer.prototype._create.apply(this, arguments);
+
+        //add navigation overview
+        this.drawNavigation();
+        //add navigation overview image
+        this.nav_img_object = new $.ui.iviewer.ImageObject(this.options.zoom_animation);
+        this.nav_img_object.object()
+                .prependTo($('div.navwin'));
 
         this.options.onStartLoad = function(){
             $('#progressbar').fadeIn();
@@ -15,13 +26,26 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if ( _io.orig_height() < _io.display_height()
                 || _io.orig_width() < _io.display_width()
             ) {
+                //set intial zoom to 100% max
                 me.set_zoom(100);
             }
-
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
             }
+
+            //load navigation overview image
+            var _src;
+            if ( me.image_name ) {
+                _src = '/ajax/img/' + me.image_name + '/format/thumb';
+            } else {
+                _src  = me.options.src.replace(/show\/.+\//, 'show/thumb/');
+            }
+            me.nav_img_object.load(_src, function() {
+                //remove buggy styles...
+                $('.navwin > img').removeAttr('style');
+                me._setOverviewMaskSize();
+            });
 
             $('#progressbar').fadeOut('slow');
         };
@@ -34,12 +58,77 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me._setOverviewMaskSize();
         }
 
+        this.options.angle = function(ev, angle) {
+            me.nav_img_object.angle(angle.angle);
+
+            var _margin = 0;
+            var _orig = '50% 50%';
+
+            var _w = me.nav_img_object.display_width();
+            var _h = me.nav_img_object.display_height();
+
+            var _nav_win_h;
+            var _nav_win_w;
+
+            if ( me.nav_img_object._swapDimensions ) {
+
+                if ( angle.angle == 270 ) {
+                    //set origin to 0-0 and add a margin of full image height if angle is 270deg
+                    _orig = '0px 0px';
+                    _margin = _h;
+                } else {
+                    //if angle is 90deg, set origin to half displayed width
+                    _orig = _w/2 + 'px ' + _w/2 + 'px';
+                }
+
+                //invert w and h
+                _nav_win_h = _w;
+                _nav_win_w = _h;
+
+                $('.navwin img')
+                    .width(_h)
+                    .height(_w)
+                    .css({
+                        'transform-origin': _orig,
+                        'margin-top': _margin
+                    });
+            } else {
+                _nav_win_h = _h;
+                _nav_win_w = _w;
+            }
+
+            $('.navwin img')
+                .width(_nav_win_w)
+                .height(_nav_win_h)
+                .css({
+                    'transform-origin': _orig,
+                    'margin-top': _margin
+                });
+
+
+            $('.navwin').width(_w).height(_h);
+
+            me._setOverviewMaskSize();
+        }
+
         this.createui();
     },
 
+    /* Overrides iviewer method to add specific UI */
+    destroy: function() {
+        $.ui.iviewer.prototype.destroy.apply(this, arguments);
+        this.nav_img_object.object().remove();
+    },
+
+    /** Overrides iviewr method to rotate navigation image */
+    angle: function(deg, abs) {
+         var me = this;
+        $.ui.iviewer.prototype.angle.apply(this, arguments);
+    },
+
     /**
-    *   create zoom buttons info box
-    **/
+     * Create zoom buttons info box
+     */
     createui: function()
     {
         var me=this;
@@ -114,8 +203,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 event.preventDefault();
             }
         });
-
-        this.drawNavigation();
     },
 
     /* update scale info in the container */
@@ -175,15 +262,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _navContainerBar = $('<div class="toolbar"></div>');
         _navContainer.append(_navContainerBar);
         var _navWin = $('<div class="navwin"></div>');
-        var _src;
-        if ( this.image_name ) {
-            _src = '/ajax/img/' + this.image_name + '/format/thumb';
-        } else {
-            _src  = this.options.src.replace(/show\/.+\//, 'show/thumb/');
-        }
-        var _navWinImage = $('<img class="navimage" src="' + _src  + '"/>');
-
-        _navWin.append(_navWinImage);
         var _navWinZone = $('<div class="zone"></div>');
         _navWinZone.hide();
         _navWin.append(_navWinZone);
@@ -198,7 +276,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     _setOverviewMaskSize: function()
     {
         var _zone = $('#overview > .navwin > .zone');
-        var _image = $('#overview > .navwin > img');
+        var _img_height = this.nav_img_object.display_height();
+        var _img_width = this.nav_img_object.display_width();
         var _bar = $('#overview > .toolbar');
 
         var _borders = _zone.css([
@@ -232,28 +311,28 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //is image taller than window?
         if ( this.img_object._x >= 0 && this.img_object._y >= 0 ) {
             //image is smaller than window. Zone is full sized, and top-left placed.
-            _width = _image.width();
-            _height = _image.height();
+            _width = _img_width;
+            _height = _img_height;
         } else {
             //image is taller than window. Calculate zone size and position
             if ( this.img_object._y < 0 ) {
-                _topPos = this.img_object._y * -1 / this.img_object.display_height() * _image.height()
+                _topPos = this.img_object._y * -1 / this.img_object.display_height() * _img_height;
             }
 
             if ( this.img_object._x < 0 ) {
-                _leftPos = this.img_object._x * -1 / this.img_object.display_width() * _image.width();
+                _leftPos = this.img_object._x * -1 / this.img_object.display_width() * _img_width;
             }
 
             if ( this.img_object.display_height() > this.container[0].clientHeight ) {
-                _height = this.container[0].clientHeight / this.img_object.display_height() * _image.height();
+                _height = this.container[0].clientHeight / this.img_object.display_height() * _img_height;
             } else {
-                _height = _image.height();
+                _height = _img_height;
             }
 
             if ( this.img_object.display_width() > this.container[0].clientWidth ) {
-                _width = this.container[0].clientWidth / this.img_object.display_width() * _image.width();
+                _width = this.container[0].clientWidth / this.img_object.display_width() * _img_width;
             } else {
-                _width = _image.width();
+                _width = _img_width;
             }
         }
 
