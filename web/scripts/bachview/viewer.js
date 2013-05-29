@@ -334,10 +334,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _posy = _this.height() - _h + _bar.height();
             }
 
+            //move zone
             _zone.css({
                 'top': _posy,
                 'left': _posx
             });
+
+            //update image position
+            var _ratio = me.img_object.display_width() / _this.width();
+            me.setCoords(
+                _posx * _ratio * -1,
+                _posy * _ratio * -1
+            );
         }).on('dblclick', function(e){
             //prevent double click to be passed to viewer container
             e.stopPropagation();
