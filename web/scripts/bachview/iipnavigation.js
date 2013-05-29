@@ -20,14 +20,17 @@ var BNavigation = new Class({
         $$('#zoomin').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
         $$('#zoomout').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
         $$('#fitsize').addEvent( 'click', function(){ _this.fireEvent('reload'); });
-        $$('#rrotate').addEvent( 'click', function(){
+        //rotation is buggy, see https://github.com/ruven/iipmooviewer/issues/13
+        $$('#lrotate').destroy();
+        $$('#rrotate').destroy();
+        /*$$('#rrotate').addEvent( 'click', function(){
             _r = 90;
             _this.fireEvent('rotate', _r);
         });
         $$('#lrotate').addEvent( 'click', function(){
             _r = -90;
             _this.fireEvent('rotate', _r);
-        });
+        });*/
     },
 
     /**
@@ -47,6 +50,5 @@ var BNavigation = new Class({
         {
             $$('#zoominfos').set('text', percent + "%");
         }
-    },
-
+    }
 });

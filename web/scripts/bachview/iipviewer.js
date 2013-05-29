@@ -68,5 +68,87 @@ var BIIPMooViewer = new Class({
 
         this.navigation.size.x = thumb_width;
         this.navigation.size.y = Math.round( (this.max_size.h/this.max_size.w)*thumb_width );
+    },
+
+  /**
+   * Overrides IIPMooViewer to disable buggy rotation, see https://github.com/ruven/iipmooviewer/issues/13
+   */
+  key: function(e){
+
+    var event = new DOMEvent(e);
+
+    var d = Math.round(this.view.w/4);
+
+    switch( e.code ){
+    case 37: // left
+      this.nudge(-d,0);
+      if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'nudge', -d, 0 );
+      event.preventDefault(); // Prevent default only for navigational keys
+      break;
+    case 38: // up
+      this.nudge(0,-d);
+      if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'nudge', 0, -d );
+      event.preventDefault();
+      break;
+    case 39: // right
+      this.nudge(d,0);
+      if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'nudge', d, 0 );
+      event.preventDefault();
+      break;
+    case 40: // down
+      this.nudge(0,d);
+      if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'nudge', 0, d );
+      event.preventDefault();
+      break;
+    case 107: // plus
+      if(!e.control){
+	this.zoomIn();
+	if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke('zoomIn');
+	event.preventDefault();
+      }
+      break;
+    case 109: // minus
+    case 189: // minus
+      if(!e.control){
+	this.zoomOut();
+	if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke('zoomOut');
+	event.preventDefault();
+      }
+      break;
+    case 72: // h
+      if( this.navigation ) this.navigation.toggleWindow();
+      if( this.credit ) this.container.getElement('div.credit').get('reveal').toggle();
+      break;
+    //rotation is buggy, see https://github.com/ruven/iipmooviewer/issues/13
+    /*case 82: // r
+      if(!e.control){
+	var r = this.view.rotation;
+	if(e.shift) r -= 90 % 360;
+	else r += 90 % 360;
+
+	this.rotate( r );
+	if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'rotate', r );
+      }
+      break;*/
+    case 65: // a
+      if( this.annotations ) this.toggleAnnotations();
+      break;
+    case 27: // esc
+      if( this.fullscreen && this.fullscreen.isFullscreen ) if(!IIPMooViewer.sync) this.toggleFullScreen();
+      this.container.getElement('div.info').fade('out');
+      break;
+    case 70: // f fullscreen, but if we have multiple views
+      if(!IIPMooViewer.sync) this.toggleFullScreen();
+      break;
+    case 67: // For control-c, show our current view location
+      if(e.control) prompt( "URL of current view:", window.location.href.split("#")[0] + '#' +
+			    (this.view.x+this.view.w/2)/this.wid + ',' +
+			    (this.view.y+this.view.h/2)/this.hei + ',' +
+			    this.view.res );
+      break;
+    default:
+      break;
     }
+
+  }
 });
