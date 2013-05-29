@@ -257,6 +257,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
     drawNavigation: function()
     {
+        var me = this;
+
         if ($('#overview') ) {
             $('#overview').remove();
         }
@@ -264,6 +266,82 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _navContainerBar = $('<div class="toolbar"></div>');
         _navContainer.append(_navContainerBar);
         var _navWin = $('<div class="navwin"></div>');
+        _navWin.on('click', function(e) {
+            var _this = $(this);
+            var _container = $('#overview');
+            var _zone = $('.zone');
+            var _bar = $('#overview > .toolbar');
+
+            console.log(_this);
+            console.log('move zone to: ' + e.pageX + ', ' + e.pageY);
+
+            var _borders = _zone.css([
+                'border-top-width',
+                'border-right-width',
+                'border-bottom-width',
+                'border-left-width'
+            ]);
+            var _borderTop = parseInt(_borders['border-top-width'], 10);
+            if ( isNaN(_borderTop) ) {
+                _borderTop = 0;
+            }
+            var _borderBottom = parseInt(_borders['border-bottom-width'], 10);
+            if ( isNaN(_borderBottom) ) {
+                _borderBottom = 0;
+            }
+            var _borderLeft = parseInt(_borders['border-left-width'], 10);
+            if ( isNaN(_borderLeft) ) {
+                _borderLeft = 0;
+            }
+            var _borderRight = parseInt(_borders['border-right-width'], 10);
+            if ( isNaN(_borderRight) ) {
+                _borderRight = 0;
+            }
+
+            //Calculate zone size, with borders
+            var _w = _zone.width() + _borderLeft + _borderRight;
+            var _h = _zone.height() + _borderTop + _borderBottom;
+
+            var _container_position = _container.position();
+            var _margins = _container.css([
+                'margin-top',
+                'margin-left'
+            ]);
+            var _marginTop = parseInt(_margins['margin-top'], 10);
+            if ( isNaN(_marginTop) ) {
+                _marginTop = 0;
+            }
+            var _marginLeft = parseInt(_margins['margin-left'], 10);
+            if ( isNaN(_marginLeft) ) {
+                _marginLeft = 0;
+            }
+
+            var _origLeft = _container_position.left + _marginLeft;
+            var _origTop = _container_position.top + _marginTop;
+
+            var _posx = e.pageX - _origLeft - _w/2;
+            var _posy = e.pageY - _origTop - _h/2;
+
+            if ( _posx < 0 ) {
+                _posx = 0;
+            } else if ( _posx + _w > _this.width() ) {
+                _posx = _this.width() - _w;
+            }
+
+            if ( _posy - _bar.height() < 0 ) {
+                _posy = 0 + _bar.height();
+            } else if ( _posy + _h > _this.height() + _bar.height() ) {
+                _posy = _this.height() - _h + _bar.height();
+            }
+
+            _zone.css({
+                'top': _posy,
+                'left': _posx
+            });
+        }).on('dblclick', function(e){
+            //prevent double click to be passed to viewer container
+            e.stopPropagation();
+        });
         var _navWinZone = $('<div class="zone"></div>');
         _navWinZone.hide();
         _navWin.append(_navWinZone);
@@ -271,6 +349,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $('#viewer').append(_navContainer);
         _navContainer.draggable({
             handle: 'div.toolbar',
+            containment: 'parent'
+        });
+        _navWinZone.draggable({
             containment: 'parent'
         });
     },
