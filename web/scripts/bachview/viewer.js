@@ -45,6 +45,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 //remove buggy styles...
                 $('.navwin > img').removeAttr('style');
                 me._setOverviewMaskSize();
+            }, function() {
+                me._trigger("onErrorLoad", 0, src);
             });
 
             $('#progressbar').fadeOut('slow');
