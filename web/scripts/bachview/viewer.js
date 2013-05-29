@@ -188,7 +188,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 me.zoom_by(-1);
                 event.preventDefault();
             }
-            if ( event.which == 82 ) { //r
+            if ( event.which == 82 && !event.ctrlKey ) { //r
                 if ( event.shiftKey ) { //shift pressed
                     me.angle(-90);
                 } else {
