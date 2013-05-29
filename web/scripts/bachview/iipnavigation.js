@@ -20,6 +20,9 @@ var BNavigation = new Class({
         $$('#zoomin').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
         $$('#zoomout').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
         $$('#fitsize').addEvent( 'click', function(){ _this.fireEvent('reload'); });
+        $$("#fullsize").addEvent('click', function(){
+            _iipviewer.zoomTo(_iipviewer.num_resolutions -1);
+        });
         //rotation is buggy, see https://github.com/ruven/iipmooviewer/issues/13
         $$('#lrotate').destroy();
         $$('#rrotate').destroy();
