@@ -310,8 +310,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _topPos = 0;
         var _leftPos = 0;
 
+        var _container = $(this.container[0]);
         //is image taller than window?
-        if ( this.img_object._x >= 0 && this.img_object._y >= 0 ) {
+        if ( this.img_object.display_width() <= _container.width()  && this.img_object.display_height() <= _container.height() ) {
             //image is smaller than window. Zone is full sized, and top-left placed.
             _width = _img_width;
             _height = _img_height;
