@@ -28,5 +28,25 @@ var BNavigation = new Class({
             _r = -90;
             _this.fireEvent('rotate', _r);
         });
-    }
+    },
+
+    /**
+     * Overrides IIP navigation
+     */
+    update: function(x,y,w,h){
+        this.parent(x,y,w,h);
+        this.update_status();
+    },
+
+    /* update scale info in the container */
+    update_status: function()
+    {
+        var _current_size = _iipviewer.max_size.w / Math.pow(2, _iipviewer.num_resolutions -1 - _iipviewer.view.res);
+        var percent = (_current_size * 100 /  _iipviewer.max_size.w).round(2);
+        if(percent)
+        {
+            $$('#zoominfos').set('text', percent + "%");
+        }
+    },
+
 });

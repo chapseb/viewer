@@ -163,7 +163,7 @@
                 var image = '{{ picture.getFullPath()  }}';
 
                 // Create our iipmooviewer object
-                new BIIPMooViewer( "pviewer", {
+                var _iipviewer = new BIIPMooViewer( "pviewer", {
                     {% if enable_right_click %}
                     disableContextMenu: false,
                     {% endif %}
