@@ -266,11 +266,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _navContainerBar = $('<div class="toolbar"></div>');
         _navContainer.append(_navContainerBar);
         var _navWin = $('<div class="navwin"></div>');
+        var _navWinZone = $('<div class="zone"></div>');
+
         _navWin.on('click', function(e) {
-            var _this = $(this);
-            var _container = $('#overview');
-            var _zone = $('.zone');
-            var _bar = $('#overview > .toolbar');
+            var _this = _navWin;
+            var _container = _navContainer;
+            var _zone = _navWinZone;
+            var _bar = _navContainerBar;
 
             var _borders = _zone.css([
                 'border-top-width',
@@ -347,7 +349,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             //prevent double click to be passed to viewer container
             e.stopPropagation();
         });
-        var _navWinZone = $('<div class="zone"></div>');
         _navWinZone.hide();
         _navWin.append(_navWinZone);
         _navContainer.append(_navWin);
