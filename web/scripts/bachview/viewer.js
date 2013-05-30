@@ -343,7 +343,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             var _ratio = me.img_object.display_width() / _this.width();
             me.setCoords(
                 _posx * _ratio * -1,
-                _posy * _ratio * -1
+                (_posy - _bar.height()) * _ratio * -1
             );
         }).on('dblclick', function(e){
             //prevent double click to be passed to viewer container
@@ -370,7 +370,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
                 me.setCoords(
                     _posx * _ratio * -1,
-                    _posy * _ratio * -1
+                    (_posy - _navContainerBar.height()) * _ratio * -1
                 );
              },
         });
