@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:33
-#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:65
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:78
 msgid "Bach Viewer"
 msgstr "Bach Viewer"
 
@@ -71,6 +71,18 @@ msgstr "Loading image, please wait..."
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
 msgid "Loading..."
 msgstr "Loading..."
+
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:52
+msgid "Warning!"
+msgstr "Warning!"
+
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:56
+msgid ""
+"Your browser is too old and is not supported by the image viewer.<br/>Please "
+"consider upgrading your browser, or use an alternative, more recent one."
+msgstr ""
+"Your browser is too old and is not supported by the image viewer.<br/>Please "
+"consider upgrading your browser, or use an alternative, more recent one."
 
 #: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:32
 msgid "Bach's viewer - Page not found"
@@ -137,7 +149,7 @@ msgstr "TIFF images cannot be resized using Gd library!"
 msgid "Gd is not present!"
 msgstr "Gd is not present!"
 
-#: app/lib/Bach/Viewer/Picture.php:495
+#: app/lib/Bach/Viewer/Picture.php:504
 msgid "full"
 msgstr "full"
 

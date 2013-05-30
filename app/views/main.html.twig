@@ -15,6 +15,13 @@
         {% block head %}{% endblock %}
     </head>
     <body>
+        <!--[if lt IE 8]>
+        <link rel="stylesheet" href="/styles/oldie.css" />
+        <div id="alert-oldie">
+            <h1>{%trans "Warning!" %}</h1>
+            <p> {% trans "Your browser is too old and is not supported by the image viewer.<br/>Please consider upgrading your browser, or use an alternative, more recent one."%}</p>
+        </div>
+        <![endif]-->
         {% block precontent %}{% endblock %}
         {% block content %}{% endblock %}
         {% block scripts %}{% endblock %}

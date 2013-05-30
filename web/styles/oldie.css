@@ -1,0 +1,17 @@
+section {
+    display: none;
+}
+
+h1 {
+    text-align: center;
+}
+
+#alert-oldie{
+    padding: .5em 1em 1em;
+    background: #900;
+    font-size: 1.1em;
+    color: #fff;
+}
+#alert-oldie a{
+    color: #fff;
+}
