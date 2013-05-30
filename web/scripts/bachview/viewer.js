@@ -358,7 +358,21 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             containment: 'parent'
         });
         _navWinZone.draggable({
-            containment: 'parent'
+            containment: 'parent',
+             drag: function() {
+                //get zone coords
+                var _coords = _navWinZone.css(['top', 'left']);
+
+                //update image position
+                var _ratio = me.img_object.display_width() / _navWin.width();
+                var _posy = parseFloat(_coords['top']);
+                var _posx = parseFloat(_coords['left']);
+
+                me.setCoords(
+                    _posx * _ratio * -1,
+                    _posy * _ratio * -1
+                );
+             },
         });
     },
 
