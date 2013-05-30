@@ -39,7 +39,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
-                $('.navwin > img').removeAttr('style');
+                $('.navwin > img').removeAttr('style')
+                    .height(me.nav_img_object.display_height())
+                    .width(me.nav_img_object.display_width());
                 me._setOverviewMaskSize();
             }, function() {
                 me._trigger("onErrorLoad", 0, src);
@@ -375,7 +377,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.nav_img_object = new $.ui.iviewer.ImageObject(this.options.zoom_animation);
         this.nav_img_object.object()
             .prependTo($('div.navwin'));
-
     },
 
     _setOverviewMaskSize: function()
