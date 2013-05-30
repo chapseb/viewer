@@ -12,10 +12,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         //add navigation overview
         this.drawNavigation();
-        //add navigation overview image
-        this.nav_img_object = new $.ui.iviewer.ImageObject(this.options.zoom_animation);
-        this.nav_img_object.object()
-                .prependTo($('div.navwin'));
 
         this.options.onStartLoad = function(){
             $('#progressbar').fadeIn();
@@ -374,6 +370,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 );
              },
         });
+
+        //add navigation overview image
+        this.nav_img_object = new $.ui.iviewer.ImageObject(this.options.zoom_animation);
+        this.nav_img_object.object()
+            .prependTo($('div.navwin'));
+
     },
 
     _setOverviewMaskSize: function()
