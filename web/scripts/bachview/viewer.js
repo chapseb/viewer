@@ -272,9 +272,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             var _zone = $('.zone');
             var _bar = $('#overview > .toolbar');
 
-            console.log(_this);
-            console.log('move zone to: ' + e.pageX + ', ' + e.pageY);
-
             var _borders = _zone.css([
                 'border-top-width',
                 'border-right-width',
