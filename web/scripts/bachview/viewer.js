@@ -176,6 +176,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             return false;
         });
 
+        //prevent double click to be passed to viewer container
+        $("#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
+            e.stopPropagation();
+        });
+
+
         //bind keys
         $('body').bind('keydown', function(event) {
             if (event.which == 107) { //+
