@@ -7,55 +7,64 @@ msgstr ""
 msgid "Image size:"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:135
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:107
+#, php-format
+msgid "You are currently browsing '%series_name%' series."
+msgstr ""
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:111
+msgid "Series %series_name%:"
+msgstr ""
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:148
 msgid "Go to previous image"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:137
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:150
 msgid "Previous"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:143
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
 msgid "Go to next image"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:145
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:158
 msgid "Next"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:169
 msgid "Zoom out"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
 msgid "Zoom in"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:164
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
 msgid "Show full size image"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
 msgid "Fit image to screen"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:186
 msgid "Rotate 90 degrees by left"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:190
 msgid "Rotate 90 degrees by right"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:194
 msgid "Enter/exit fullscreen"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:193
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:206
 msgid "Loading image, please wait..."
 msgstr ""
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:211
 msgid "Loading..."
 msgstr ""
 

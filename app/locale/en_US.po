@@ -1,15 +1,17 @@
+# , 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Johan Cwiklinski <trasher@x-tnd.be>\n"
-"Language-Team: \n"
-"Language: \n"
+"PO-Revision-Date: 2013-06-05 10:47+0200\n"
+"Last-Translator: \n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:33
 #: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:78
@@ -20,55 +22,64 @@ msgstr "Bach Viewer"
 msgid "Image size:"
 msgstr "Image size:"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:135
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:107
+#, php-format
+msgid "You are currently browsing '%series_name%' series."
+msgstr "You are currently browsing '%series_name%' series."
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:111
+msgid "Series %series_name%:"
+msgstr "Series %series_name%:"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:148
 msgid "Go to previous image"
 msgstr "Go to previous image"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:137
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:150
 msgid "Previous"
 msgstr "Previous"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:143
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
 msgid "Go to next image"
 msgstr "Go to next image"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:145
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:158
 msgid "Next"
 msgstr "Next"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:169
 msgid "Zoom out"
 msgstr "Zoom out"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
 msgid "Zoom in"
 msgstr "Zoom in"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:164
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
 msgid "Show full size image"
 msgstr "Show full size image"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
 msgid "Fit image to screen"
 msgstr "Fit image to screen"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:186
 msgid "Rotate 90 degrees by left"
 msgstr "Rotate 90 degrees by left"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:190
 msgid "Rotate 90 degrees by right"
 msgstr "Rotate 90 degrees by right"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:194
 msgid "Enter/exit fullscreen"
 msgstr "Enter/exit fullscreen"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:193
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:206
 msgid "Loading image, please wait..."
 msgstr "Loading image, please wait..."
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:211
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -184,3 +195,4 @@ msgstr "No image at position %pos!"
 #: app/lib/Bach/Viewer/Series.php:243
 msgid "Series has not been initialized yet."
 msgstr "Series has not been initialized yet."
+

@@ -1,15 +1,17 @@
+# , 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Johan Cwiklinski <trasher@x-tnd.be>\n"
-"Language-Team: \n"
-"Language: \n"
+"PO-Revision-Date: 2013-06-05 10:46+0200\n"
+"Last-Translator: \n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:33
 #: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:78
@@ -20,55 +22,64 @@ msgstr "Visionneuse Bach"
 msgid "Image size:"
 msgstr "Taille de l'image&nbsp;:"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:135
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:107
+#, php-format
+msgid "You are currently browsing '%series_name%' series."
+msgstr "Vous parcourez actuellement la série « %series_name% »."
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:111
+msgid "Series %series_name%:"
+msgstr "Série « %series_name% » :"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:148
 msgid "Go to previous image"
 msgstr "Aller à l'image précédente"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:137
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:150
 msgid "Previous"
 msgstr "Précédente"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:143
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
 msgid "Go to next image"
 msgstr "Aller à l'image suivante"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:145
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:158
 msgid "Next"
 msgstr "Suivante"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:169
 msgid "Zoom out"
 msgstr "Zoom arrière"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
 msgid "Zoom in"
 msgstr "Zoom avant"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:164
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
 msgid "Show full size image"
 msgstr "Afficher l'image en pleine taille"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
 msgid "Fit image to screen"
 msgstr "Ajuster l'image à l'écran"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:186
 msgid "Rotate 90 degrees by left"
 msgstr "Effectuer une rotation de 90° en sens anti-horaire"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:190
 msgid "Rotate 90 degrees by right"
 msgstr "Effectuer une rotation de 90° en sens horaire"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:194
 msgid "Enter/exit fullscreen"
 msgstr "Entrer/Sortir du mode plein écran"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:193
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:206
 msgid "Loading image, please wait..."
 msgstr "Chargement de l'image, veuillez patienter..."
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:211
 msgid "Loading..."
 msgstr "Chargement..."
 
