@@ -146,7 +146,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $('#formats').change(function(){
             var _format = $("select option:selected").attr('value');
             me.loadImage('/ajax/img/' + me.image_name + '/format/' + _format);
-        });
+        }).val('default');
 
         //navbar
         $('#previmg,#nextimg').click(function(){
