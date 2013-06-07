@@ -167,22 +167,14 @@
             })(jQuery);
             //mootools stuff, if any
             {% if iip %}
-                // IIPMooViewer options: See documentation at http://iipimage.sourceforge.net for more details
-                // Server path: set if not using default path
-                var server = '{{ iipserver  }}';
-
-                // The *full* image path on the server. This path does *not* need to be in the web
-                // server root directory. On Windows, use Unix style forward slash paths without
-                // the "c:" prefix
-                var image = '{{ picture.getFullPath()  }}';
-
                 // Create our iipmooviewer object
                 var _iipviewer = new BIIPMooViewer( "pviewer", {
                     {% if enable_right_click %}
                     disableContextMenu: false,
                     {% endif %}
-                    server: server,
-                    image: image,
+                    server: '{{ iipserver }}',
+                    image: '{{ picture.getFullPath() }}',
+                    imageName: '{{ picture.getName() }}',
                     showNavButtons: false,
                     prefix: '/images/'
                 });

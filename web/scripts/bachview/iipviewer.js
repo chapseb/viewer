@@ -9,6 +9,10 @@ var BIIPMooViewer = new Class({
         if ( options.disableContextMenu == false ) {
             this.disableContextMenu = false;
         }
+
+        //path
+        this.fpath = options.image.replace(options.imageName, '');
+
         // Navigation window options
         this.navigation = null;
         if( (typeof(BNavigation)==="function") ){

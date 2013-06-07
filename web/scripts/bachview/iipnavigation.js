@@ -74,6 +74,14 @@ var BNavigation = new Class({
             _r = -90;
             _this.fireEvent('rotate', _r);
         });*/
+        //navbar
+        $$('#previmg,#nextimg').addEvent('click', function(e){
+            var _str = this.get('href');
+            var _re = /img=(.*)/;
+            var _img = _str.match(_re)[1];
+            _iipviewer.changeImage(_img, _iipviewer.fpath + _img);
+            e.preventDefault();
+        });
     },
 
     /**
