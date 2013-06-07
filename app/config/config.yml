@@ -11,7 +11,7 @@ prepared_images:
     method: choose
     path: /var/www/prepared_images/
 iip:
-    server: /cgi-bin/iipsrv.fcgi
+    server: /iipsrv
 ui:
     enable_right_click: true
 roots:
