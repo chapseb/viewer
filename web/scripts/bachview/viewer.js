@@ -10,6 +10,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var me = this;
         $.ui.iviewer.prototype._create.apply(this, arguments);
 
+        this.image_name = this.options.imageName;
+
         //add navigation overview
         this.drawNavigation();
 
@@ -149,7 +151,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
                             var _src = '/ajax/img/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
-                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;"></a>');
+                            var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
+                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            if ( me.image_name == _thumbs[i].name ) {
+                                _a.addClass('current');
+                            }
                             _a.on('click', function(){
                                 me.display(me._imgNameFromLink($(this)));
                                 $('#formats').val('default');
