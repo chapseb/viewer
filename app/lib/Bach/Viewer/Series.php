@@ -254,4 +254,37 @@ class Series
             return $infos;
         }
     }
+
+    /**
+     * Get list of cseries thumbnails
+     *
+     * @param array $fmt Thumbnail format form configuration
+     *
+     * @return array
+     */
+    public function getThumbs($fmt)
+    {
+        $ret = array();
+        $thumbs = array();
+
+        $ret['meta'] = $fmt;
+
+        foreach ( $this->_content as $c ) {
+            $p = new Picture(null, $c, $this->_full_path);
+            $path = null;
+            if ( $p->isPyramidal() ) {
+                $path = $p->getFullPath();
+            } else {
+                $path = $c;
+            }
+
+            $thumbs[] = array(
+                'name'  => $c,
+                'path'  => $path
+            );
+        }
+        $ret['thumbs'] = $thumbs;
+
+        return $ret;
+    }
 }

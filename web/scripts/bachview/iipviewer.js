@@ -150,5 +150,41 @@ var BIIPMooViewer = new Class({
       break;
     }
 
-  }
+  },
+
+    /**
+     * Update series informations:
+     * - navigation on previous/next images
+     * - position in current series
+     * - title
+     */
+    updateSeriesInfos: function()
+    {
+        var _url = '/ajax/series/infos';
+        if ( this.image_name != undefined ) {
+            _url += '/' + this.image_name;
+        }
+
+        var _req = new Request.JSON({
+            url: _url,
+            onSuccess: function(data){
+                $$('#previmg').set('href', '?img=' + data.prev);
+                $$('#nextimg').set('href', '?img=' + data.next);
+                $$('#current_pos').set('text', data.position);
+                $$('header > h1').set('text', data.current);
+            },
+            onFailure: function(){
+            alert('An error occured loading series informations, navigation may fail.');
+            }
+        }).get();
+    },
+
+    /**
+     * Overrides IIP navigation
+     */
+    changeImage: function( name, path ) {
+        this.image_name = name;
+        this.parent(path);
+        this.updateSeriesInfos();
+    }
 });

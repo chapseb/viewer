@@ -134,6 +134,41 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var me=this;
 
         //toolbar
+        $('#thumbnails').click(function(){
+            var _thumbview = $('#thumbnails_view');
+            if ( _thumbview.length > 0 ) {
+                _thumbview.remove();
+            } else {
+                _thumbview = $('<div id="thumbnails_view"></div>');
+
+                $.get(
+                    '/ajax/series/thumbs',
+                    function(data){
+                        var _thumbs = data['thumbs'];
+                        var _meta = data['meta'];
+                        for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
+                            var _src = '/ajax/img/' + _thumbs[i].name + '/format/thumb';
+                            var _img = $('<img src="' + _src  + '" alt=""/>');
+                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;"></a>');
+                            _a.on('click', function(){
+                                me.display(me._imgNameFromLink($(this)));
+                                $('#formats').val('default');
+                                _thumbview.remove();
+                                return false;
+                            });
+                            _img.appendTo(_a);
+                            _a.appendTo(_thumbview);
+                        }
+                        _thumbview.prependTo('body');
+                    },
+                    'json'
+                ).fail(function(){
+                    alert('An error occured loading series thumbnails.');
+                });
+
+
+            }
+        });
         $("#zoomin").click(function(){ me.zoom_by(1); });
         $("#zoomout").click(function(){ me.zoom_by(-1); });
         $("#fitsize").click(function(){ me.fit(); });
@@ -150,11 +185,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         //navbar
         $('#previmg,#nextimg').click(function(){
-            var _this = $(this);
-            var _str = _this.attr('href');
-            var _re = /img=(.*)/;
-            var _img = _str.match(_re)[1];
-            me.display(_img);
+            me.display(me._imgNameFromLink($(this)));
             $('#formats').val('default');
             me.drawNavigation();
             return false;
@@ -177,7 +208,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
             e.stopPropagation();
         });
 
@@ -237,7 +268,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     /**
-     * Update series informations (mainly navigation on previous/next images)
+     * Update series informations:
+     * - navigation on previous/next images
+     * - position in current series
+     * - title
      */
     updateSeriesInfos: function()
     {
@@ -467,6 +501,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( _zone.is(':hidden') ) {
             _zone.show();
         }
+    },
+
+    _imgNameFromLink: function(link) {
+        var _str = link.attr('href');
+        var _re = /img=(.*)/;
+        var _img = _str.match(_re)[1];
+        return _img;
     }
 }));
 

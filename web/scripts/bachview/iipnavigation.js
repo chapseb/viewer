@@ -17,6 +17,48 @@ var BNavigation = new Class({
 
         // Add events to our buttons
         var _this = this;
+        $$('#thumbnails').addEvent('click', function(){
+            var _thumbview = $$('#thumbnails_view');
+            if ( _thumbview.length > 0 ) {
+                _thumbview.destroy();
+            } else {
+                _thumbview = new Element('div', {id: 'thumbnails_view'});
+
+                var _req = new Request.JSON({
+                    url: '/ajax/series/thumbs',
+                    onSuccess: function(data){
+                        var _thumbs = data['thumbs'];
+                        var _meta = data['meta'];
+                        for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
+                            var _src =  _iipviewer.server + '?FIF=' + _thumbs[i].path + '&SDS=0,90&CNT=1.0&WID=' + _meta.width  + '&HEI=' + _meta.height  + '&QLT=99&CVT=jpeg'
+                            var _img = new Element('img', {
+                                src: _src,
+                                alt: ''
+                            });
+                            var _a = new Element('a', {
+                                href: '?img=' + _thumbs[i].name,
+                                style: 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;'
+                            });
+                            _a.store('name', _thumbs[i].name);
+                            _a.store('path', _thumbs[i].path);
+                            _a.addEvent('click', function(e){
+                                _iipviewer.changeImage(this.retrieve('name'), this.retrieve('path'));
+                                _thumbview.destroy();
+                                e.preventDefault();
+                            });
+                            _img.inject(_a);
+                            _a.inject(_thumbview);
+                        }
+                        var _body = $$('body');
+                        _body = _body[0];
+                        _thumbview.inject(_body, 'top');
+                    },
+                    onFailure: function(){
+                        alert('An error occured loading series thumbnails.');
+                    }
+                }).get();
+            }
+        });
         $$('#zoomin').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
         $$('#zoomout').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
         $$('#fitsize').addEvent( 'click', function(){ _this.fireEvent('reload'); });

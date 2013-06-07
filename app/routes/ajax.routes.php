@@ -65,3 +65,14 @@ $app->get(
         echo json_encode($infos);
     }
 );
+
+$app->get(
+    '/ajax/series/thumbs',
+    function () use ($app, $conf, $session) {
+        $series = unserialize($session['series']);
+        $formats = $conf->getFormats();
+        $fmt = $formats['thumb'];
+        $thumbs = $series->getThumbs($fmt);
+        echo json_encode($thumbs);
+    }
+);

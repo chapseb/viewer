@@ -23,7 +23,7 @@ header, aside {
     position: absolute;
     left: 0;
     width: 100%;
-    z-index: 5;
+    z-index: 10;
     color: white;
     text-align: center;
     vertical-align: middle;
@@ -32,6 +32,7 @@ header, aside {
 header {
     top:-1px;
     height: 36px;
+    z-index: 8;
 }
 
 h1 {
@@ -61,7 +62,7 @@ nav {
 nav a {
     display: inline-block;
     position: absolute;
-    z-index: 10;
+    z-index: 5;
     background-repeat: no-repeat;
     background-image: url(../images/nav.png);
     background-position:top left;
@@ -117,6 +118,10 @@ aside li {
 
 aside li:hover {
     background-color: black!important;
+}
+
+#thumbnails {
+    background-image: url(../images/buttons/thumbs.png);
 }
 
 #zoomin {
@@ -189,7 +194,7 @@ aside#progressbar > div > p {
 .navcontainer {
   /*position: absolute;*/
   float:right;
-  z-index: 10;
+  z-index: 5;
   text-align: center;
   background: transparent;
   /*top: 35px;
@@ -222,7 +227,7 @@ aside#progressbar > div > p {
   border: 1px outset red;
   border: none;
   top: 10px;
-  z-index: 10;
+  z-index: 5;
   opacity: 0.9;
   width: 100%;
   height: auto;
@@ -233,9 +238,36 @@ aside#progressbar > div > p {
   background: #888;
   border: 2px solid yellow;
   cursor: move;
-  z-index: 15;
+  z-index: 6;
   opacity: 0.4;
 }
 /** /Overview */
 
+/** Thumbnails */
+#thumbnails_view {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    position: absolute;
+    z-index: 9;
+    overflow: auto;
+    text-align: center;
+}
 
+#thumbnails_view a {
+    display: inline-block;
+    margin: .5em;
+    padding: .3em;
+    text-align:center;
+    vertical-align: middle;
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 6px;
+}
+
+#thumbnails_view a:hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, .4);
+}
+
+#thumbnails_view a img {
+    vertical-align: middle;
+}

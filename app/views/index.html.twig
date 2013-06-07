@@ -49,6 +49,9 @@
                 <!-- Toolbar -->
                 <aside>
                     <ul>
+                        {% if series %}
+                        <li id="thumbnails" title="{% trans "Show thumbnails" %}"></li>
+                        {% endif %}
                         <li id="zoomout" title="{% trans "Zoom out" %}"></li>
                         <li id="zoomin" title="{% trans "Zoom in" %}"></li>
                         <li id="fullsize" title="{% trans "Show full size image" %}"></li>
