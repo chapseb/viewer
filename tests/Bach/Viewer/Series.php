@@ -214,4 +214,48 @@ class Series extends atoum
         $fpath = $this->_series->getFullPath();
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/');
     }
+
+    /**
+     * Test getThumbs
+     *
+     * @return void
+     */
+    public function testGetThumbs()
+    {
+        $formats = $this->_conf->getFormats();
+        $fmt = $formats['thumb'];
+        $thumbs_array = $this->_series->getThumbs($fmt);
+
+        $this->array($thumbs_array)
+            ->hasSize(2)
+            ->hasKey('meta')
+            ->hasKey('thumbs');
+
+        $meta = $thumbs_array['meta'];
+        $this->array($meta)
+            ->isIdenticalTo($fmt);
+
+        $thumbs = $thumbs_array['thumbs'];
+
+        $this->array($thumbs)
+            ->hasSize(7);
+
+        //check standard image
+        $standard = $thumbs[0];
+        $standard_name = $standard['name'];
+        $standard_path = $standard['path'];
+        $this->string($standard_name)
+            ->isIdenticalTo('doms.jpg');
+        $this->string($standard_path)
+            ->isIdenticalTo('doms.jpg');
+
+        // check tiled image
+        $tiled = $thumbs[3];
+        $tiled_name = $tiled['name'];
+        $tiled_path = $tiled['path'];
+        $this->string($tiled_name)
+            ->isIdenticalTo('iron_man_tiled.tif');
+        $this->string($tiled_path)
+            ->isIdenticalTo($this->_roots[0] . '/iron_man_tiled.tif');
+    }
 }
