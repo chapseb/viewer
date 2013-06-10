@@ -154,7 +154,7 @@ class Conf extends atoum
             ->hasKey('server');
 
         $iipserver = $iip['server'];
-        $this->string($iipserver)->isIdenticalTo('/cgi-bin/iipsrv.fcgi');
+        $this->string($iipserver)->isIdenticalTo('/iipsrv');
 
         //then, test UT configuration
         $iip = $this->_conf->getIIP();
