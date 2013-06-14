@@ -15,6 +15,24 @@ var BNavigation = new Class({
     create: function( container ) {
         this.parent(container);
 
+        //Redefine sizes
+        this.navcontainer.setStyle('width', 'auto');
+        $$('.navwin').setStyle('width', this.size.x);
+
+        //add toolbar btn
+        var tbbtn = new Element( 'div', {
+            'class': 'toolbarbtn',
+        });
+        var _tbs = $$('.toolbar');
+        tbbtn.inject(_tbs[0]);
+
+        this.outerZone = new Element('div', {
+            'class': 'outerzone'
+        });
+        this.outerZone.inject(this.zone, 'before');
+
+        $$('.loadBarContainer').setStyle('width', this.size.x);
+
         // Add events to our buttons
         var _this = this;
         $$('#thumbnails').addEvent('click', function(){
@@ -82,6 +100,10 @@ var BNavigation = new Class({
             _iipviewer.changeImage(_img, _iipviewer.fpath + _img);
             e.preventDefault();
         });
+        var me = this;
+        $$('.toolbarbtn').addEvent('click', function(e) {
+            me.toggleWindow();
+        })
     },
 
     /**
@@ -90,6 +112,42 @@ var BNavigation = new Class({
     update: function(x,y,w,h){
         this.parent(x,y,w,h);
         this.update_status();
+
+        var me = this;
+        //resize outer zone
+        this.zone.get('morph').chain(function() {
+            var _navWin = $$('.navwin')[0];
+            var _toolbar = $$('.toolbar')[0];
+
+            var _styles = me.zone.getStyles(
+                'width',
+                'height',
+                'border-top-width',
+                'border-bottom-width',
+                'border-left-width',
+                'border-right-width',
+                'top',
+                'left'
+            );
+
+            var _outerHeight = _styles.height.toInt();
+            var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
+            var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
+
+            var _outerWidth = _styles.width.toInt();
+            var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
+            var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
+
+            me.outerZone.setStyles({
+                'border-top-width':     _outerTopBorder,
+                'border-left-width':    _outerLeftBorder,
+                'border-bottom-width':  _outerBottomBorder,
+                'border-right-width':   _outerRightBorder,
+                'height':               _outerHeight,
+                'width':                _outerWidth
+            });
+
+        });
     },
 
     /* update scale info in the container */
@@ -101,5 +159,55 @@ var BNavigation = new Class({
         {
             $$('#zoominfos').set('text', percent + "%");
         }
-    }
+    },
+
+
+    /*
+     * Handle click or drag scroll events
+     * Overrides IIP navigation
+    */
+    scroll: function(e){
+        this.parent(e);
+            var _navWin = $$('.navwin')[0];
+            var _toolbar = $$('.toolbar')[0];
+
+            var _styles = this.zone.getStyles(
+                'width',
+                'height',
+                'border-top-width',
+                'border-bottom-width',
+                'border-left-width',
+                'border-right-width',
+                'top',
+                'left'
+            );
+
+            var _outerHeight = _styles.height.toInt();
+            var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
+            var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
+
+            var _outerWidth = _styles.width.toInt();
+            var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
+            var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
+
+            this.outerZone.setStyles({
+                'border-top-width':     _outerTopBorder,
+                'border-left-width':    _outerLeftBorder,
+                'border-bottom-width':  _outerBottomBorder,
+                'border-right-width':   _outerRightBorder,
+                'height':               _outerHeight,
+                'width':                _outerWidth
+            });
+    },
+
+
+    /*
+     * Toggle the visibility of our navigation window
+     * Overrides IIP navigation
+    */
+    toggleWindow: function(){
+        $$('.navwin').toggle();
+        $$('.toolbar').toggleClass('invisible');
+        $$('.loadBarContainer').toggleClass('invisible');
+  }
 });

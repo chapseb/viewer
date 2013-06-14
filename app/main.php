@@ -130,6 +130,9 @@ $app->hook(
             $ui['enable_right_click']
         );
         $v->setData('lang', $lang);
+
+        $fmts = $conf->getFormats();
+        $v->setData('thumb_format', $fmts['thumb']);
     }
 );
 

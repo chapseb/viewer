@@ -41,7 +41,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
-                $('.navwin > img').removeAttr('style')
+                $('.navwin, .navwin > img, .outerzone').removeAttr('style')
                     .height(me.nav_img_object.display_height())
                     .width(me.nav_img_object.display_width());
                 me._setOverviewMaskSize();
@@ -158,7 +158,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             }
                             _a.on('click', function(){
                                 me.display(me._imgNameFromLink($(this)));
-                                $('#formats').val('default');
+                                $('#formats > select').val('default');
                                 _thumbview.remove();
                                 return false;
                             });
@@ -184,7 +184,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.zoom_object = $('#zoominfos');
 
         //resize image
-        $('#formats').change(function(){
+        $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
             if ( series_path != '') {
                 var _src = app_url + '/ajax/img/' + series_path + '/' + me.image_name  + '/format/' + _format;
@@ -197,7 +197,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //navbar
         $('#previmg,#nextimg').click(function(){
             me.display(me._imgNameFromLink($(this)));
-            $('#formats').val('default');
+            $('#formats > select').val('default');
             me.drawNavigation();
             return false;
         });
@@ -218,11 +218,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             return false;
         });
 
+        $('.toolbarbtn').on('click', function() {
+            $('.navwin').toggle();
+        });
+
         //prevent double click to be passed to viewer container
         $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
             e.stopPropagation();
         });
-
 
         //bind keys
         $('body').bind('keydown', function(event) {
@@ -254,7 +257,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     /* update scale info in the container */
-    /* Overrideserrides iviewer method to remove ui check */
+    /* Overrides iviewer method to remove ui check */
     update_status: function()
     {
         var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height());
@@ -296,7 +299,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 $('#previmg').attr('href', '?img=' + data.prev);
                 $('#nextimg').attr('href', '?img=' + data.next);
                 $('#current_pos').html(data.position);
-                $('header > h1').html(data.current);
+                $('header > h2').html(data.current);
             },
             'json'
         ).fail(function(){
@@ -313,8 +316,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
         var _navContainer = $('<div class="navcontainer" id="overview"></div>');
         var _navContainerBar = $('<div class="toolbar"></div>');
+        var _navContainerBarButton = $('<div class="toolbarbtn"></div>');
+        _navContainerBar.append(_navContainerBarButton);
         _navContainer.append(_navContainerBar);
         var _navWin = $('<div class="navwin"></div>');
+        var _outerZone = $('<div class="outerzone"></div>');
         var _navWinZone = $('<div class="zone"></div>');
 
         _navWin.on('click', function(e) {
@@ -382,10 +388,21 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _posy = _this.height() - _h + _bar.height();
             }
 
+            var _outerBottomBorder = _navWin.height() - Math.round(_posy) + _bar.height() + _borderTop - _outerZone.height() + _borderBottom;
+
+            var _outerRightBorder = _navWin.width() - Math.round(_posx) + _borderLeft - _outerZone.width() + _borderRight;
+
             //move zone
+            _outerZone.css({
+                'border-top-width':     Math.round(_posy) - _bar.height() + _borderTop,
+                'border-left-width':    Math.round(_posx) + _borderLeft,
+                'border-bottom-width':  _outerBottomBorder,
+                'border-right-width':   _outerRightBorder
+            });
+
             _zone.css({
-                'top': _posy,
-                'left': _posx
+                'top': Math.round(_posy),
+                'left': Math.round(_posx)
             });
 
             //update image position
@@ -399,6 +416,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             e.stopPropagation();
         });
         _navWinZone.hide();
+        _navWin.append(_outerZone);
         _navWin.append(_navWinZone);
         _navContainer.append(_navWin);
         $('#viewer').append(_navContainer);
@@ -411,6 +429,23 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
              drag: function() {
                 //get zone coords
                 var _coords = _navWinZone.css(['top', 'left']);
+                var _outerSizes = _outerZone.css(['width', 'height']);
+
+                //update outer zone coordinates
+                var _outerHeight = parseFloat(_outerSizes['height']);
+                var _outerBottomBorder = _navWin.height() - parseInt(_coords['top']) + _navContainerBar.height() - parseInt(_outerSizes['height']) + 1;
+
+                var _outerWidth = parseFloat(_outerSizes['width']);
+                var _outerRightBorder = _navWin.width() - parseInt(_coords['left']) - parseInt(_outerSizes['width']) + 1;
+
+                _outerZone.css({
+                    'border-top-width':     parseFloat(_coords['top']) - _navContainerBar.height(),
+                    'border-left-width':    parseFloat(_coords['left']),
+                    'border-bottom-width':  _outerBottomBorder,
+                    'border-right-width':   _outerRightBorder,
+                    'height':               _outerHeight,
+                    'width':                _outerWidth
+                });
 
                 //update image position
                 var _ratio = me.img_object.display_width() / _navWin.width();
@@ -433,9 +468,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     _setOverviewMaskSize: function()
     {
         var _zone = $('#overview > .navwin > .zone');
+        var _outerZone = $('#overview > .navwin > .outerzone');
         var _img_height = this.nav_img_object.display_height();
         var _img_width = this.nav_img_object.display_width();
         var _bar = $('#overview > .toolbar');
+        var _navWin = $('.navwin');
 
         var _borders = _zone.css([
             'border-top-width',
@@ -474,37 +511,45 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         } else {
             //image is taller than window. Calculate zone size and position
             if ( this.img_object._y < 0 ) {
-                _topPos = this.img_object._y * -1 / this.img_object.display_height() * _img_height;
+                _topPos = Math.round(this.img_object._y * -1 / this.img_object.display_height() * _img_height);
             }
 
             if ( this.img_object._x < 0 ) {
-                _leftPos = this.img_object._x * -1 / this.img_object.display_width() * _img_width;
+                _leftPos = Math.round(this.img_object._x * -1 / this.img_object.display_width() * _img_width);
             }
 
             if ( this.img_object.display_height() > this.container[0].clientHeight ) {
-                _height = this.container[0].clientHeight / this.img_object.display_height() * _img_height;
+                _height = Math.round(this.container[0].clientHeight / this.img_object.display_height() * _img_height);
             } else {
                 _height = _img_height;
             }
 
             if ( this.img_object.display_width() > this.container[0].clientWidth ) {
-                _width = this.container[0].clientWidth / this.img_object.display_width() * _img_width;
+                _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
             } else {
                 _width = _img_width;
             }
         }
 
-        //add bar size
-        _topPos = _topPos + _bar.height();
+        var _outerHeight = _height;
+        var _outerBottomBorder = _navWin.height() - _topPos - _height + 1;
 
-        //remove borders sizes
-        _width = _width - _borderLeft - _borderRight;
-        _height = _height - _borderTop - _borderBottom;
+        var _outerWidth = _width;
+        var _outerRightBorder = _navWin.width() - _leftPos - _width + 1;
+
+        _outerZone.css({
+            'border-top-width':     _topPos,
+            'border-left-width':    _leftPos,
+            'border-bottom-width':  _outerBottomBorder,
+            'border-right-width':   _outerRightBorder,
+            'height':               _outerHeight,
+            'width':                _outerWidth
+        });
 
         _zone.width(_width);
         _zone.height(_height);
         _zone.css({
-            'top': _topPos,
+            'top': _topPos + _bar.height(),
             'left': _leftPos,
             'position': 'absolute'
         });

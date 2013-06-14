@@ -354,7 +354,7 @@ var Navigation = new Class({
     this.zone.morph({
       fps: 30,
       left: pleft,
-      top: ptop + 8, // 8 is the height of toolbar
+      top: ptop + 10, // 8 is the height of toolbar
       width: (width-border>0)? width - border : 1, // Watch out for zero sizes!
       height: (height-border>0)? height - border : 1
     });

@@ -2,7 +2,7 @@
 html, body, section, #pviewer {
     height: 100%;
     font-family: "Cantarell", Verdana, Arial, sans-serif;
-    background: #000;
+    background: #414141;
 }
 
 #pviewer {
@@ -19,24 +19,39 @@ section {
 }
 
 header, aside {
-    background: url(../images/bar.png) top left repeat-x;
     position: absolute;
     left: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 8;
     color: white;
     text-align: center;
     vertical-align: middle;
 }
 
 header {
-    top:-1px;
-    height: 36px;
-    z-index: 8;
+    background-color: black;
+    background-color: rgba(0, 0, 0, .8);
+    border-bottom: 1px solid #660912;
+    color: #9b9b9b;
+    font-weight: bold;
+    font-size: 0.85em;
+    padding: .3em 0;
+    min-height: 25px;
 }
 
 h1 {
-    margin: .4em 0;
+    position: absolute;
+    left: .2em;
+    color: white;
+    font-size: 1.9em;
+    top: .2em;
+    font-weight: bolder;
+}
+
+h2 {
+    display: inline-block;
+    margin: 0 1em;
+    vertical-align: middle;
 }
 
 #viewer {
@@ -50,6 +65,28 @@ h1 {
     position: absolute;
     left: .5em;
 }
+
+
+#formats {
+    display:inline-block;
+    background: url(../images/buttons/ico-select-down.png) no-repeat right #262525;
+    border: 1px solid #660912;
+    border-radius: 6px;
+    width: 12em;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+#formats select {
+    display: inline-block;
+    background: transparent;
+    color: #a3a2a2;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 0;
+    width: 14em;
+}
+
 /** /Main viewer styles */
 
 /** === Series navigation */
@@ -63,102 +100,181 @@ nav a {
     display: inline-block;
     position: absolute;
     z-index: 5;
+    background: url(../images/buttons/spr-nav-arrows.png);
+    background: url(../images/buttons/spr-nav-arrows.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-arrows.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-arrows.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-arrows.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-arrows.png), linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
     background-repeat: no-repeat;
-    background-image: url(../images/nav.png);
     background-position:top left;
-    width: 36px;
-    height: 36px;
+    width: 25px;
+    height: 27px;
     overflow: hidden;
     text-indent: 40px;
+    border-style: solid;
+    border-color: #646464;
+    box-shadow: 0 0 .5em #646464;
+    outline: none;
+}
+
+nav a:hover {
+    background: #1b1a1a url(../images/buttons/spr-nav-arrows.png);
+    background: url(../images/buttons/spr-nav-arrows.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-arrows.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-arrows.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-arrows.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-arrows.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
 }
 
 #previmg {
+    border-radius: 0 6px 6px 0;
+    border-width: 1px 1px 1px 0;
     left: 0;
+    background-position: bottom left;
 }
 
 #previmg:hover {
-    background-position:bottom left;
+    background-position: top left;
 }
 
 #nextimg {
+    border-width: 1px 0px 1px 1px;
+    border-radius: 6px 0 0 6px;
     right: 0;
-    background-position:top right;
-}
-
-#nextimg:hover {
     background-position:bottom right;
 }
 
+#nextimg:hover {
+    background-position:top right;
+}
+
 #series_pos {
-    position: absolute;
-    top: .5em;
-    right:.5em;
-    font-weight: bold;
-    font-size: 0.85em;
+    /*color: white;*/
+    font-weight: normal;
+    vertical-align: middle;
 }
 /** /Series navigation */
 
 /** === Common toolbar */
 aside {
     bottom: 0;
-    height: 31px;
+    height: 40px;
     cursor: default;
 }
 
-aside li {
+aside ul {
     display: inline-block;
-    width: 29px;
-    height: 29px;
-    margin-top: 1px;
+}
+
+aside li, #fullscreen  {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
     background-position: center center;
     background-repeat: no-repeat;
     background-color: transparent;
     cursor: pointer;
 }
 
-aside li:hover {
-    background-color: black!important;
+aside li:first-child {
+    border-left: 1px solid #2f1414;
+    border-radius: 10px 0px 0px 0px;
+}
+
+aside li:last-child {
+    border-right: 1px solid #2f1414;
+    border-radius: 0px 10px 0px 0px;
+}
+
+aside li {
+    font-size: 0;
+    background: #1b1a1a url(../images/buttons/spr-nav-list.png);
+    background: url(../images/buttons/spr-nav-list.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-list.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-list.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-list.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-list.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    border-top: 1px solid #2f1414;
+}
+
+aside li:hover, #thumbnails:hover, #moreparams:hover {
+    background: #0d0d0d url(../images/buttons/spr-nav-list.png);
+    background: url(../images/buttons/spr-nav-list.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/spr-nav-list.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/spr-nav-list.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/spr-nav-list.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/spr-nav-list.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+}
+
+#thumbnails, #moreparams {
+    background: #2d2c2c url(../images/buttons/spr-nav-list.png);
+    background: url(../images/buttons/spr-nav-list.png), -webkit-linear-gradient(to bottom, rgba(45, 44, 44, .8), rgba(30, 29, 29, .8));
+    background: url(../images/buttons/spr-nav-list.png), -moz-linear-gradient(to bottom, rgba(45, 44, 44, .8), rgba(30, 29, 29, .8));
+    background: url(../images/buttons/spr-nav-list.png), -ms-linear-gradient(to bottom, rgba(45, 44, 44, .8), rgba(30, 29, 29, .8));
+    background: url(../images/buttons/spr-nav-list.png), -o-linear-gradient(to bottom, rgba(45, 44, 44, .8), rgba(30, 29, 29, .8));
+    background: url(../images/buttons/spr-nav-list.png), linear-gradient(to bottom, rgba(45, 44, 44, .8), rgba(30, 29, 29, .8));
 }
 
 #thumbnails {
-    background-image: url(../images/buttons/thumbs.png);
+    background-position: 0 0;
 }
 
 #zoomin {
-    background-image: url(../images/iviewer/iviewer.zoom_in.gif);
+    background-position: -265px 0;
 }
 
 #zoomout {
-    background-image: url(../images/iviewer/iviewer.zoom_out.gif);
+    background-position: -145px 0;
 }
 
 #fullsize {
-    background-image: url(../images/iviewer/iviewer.zoom_zero.gif);
+    background-position: -355px 0;
 }
 
 #fitsize {
-    background-image: url(../images/iviewer/iviewer.zoom_fit.gif);
+    background-position: -310px 0;
 }
 
 #lrotate {
-    background-image: url(../images/iviewer/iviewer.rotate_left.png);
+    background-position: -50px 0;
 }
 
 #rrotate {
-    background-image: url(../images/iviewer/iviewer.rotate_right.png);
+    background-position: -95px 0;
+}
+
+#moreparams {
+    background-position: -405px 0!important;
 }
 
 #fullscreen {
-    background-image: url(../images/buttons/fullscreen.png);
-    background-position: 8px 7px;
+    width: 20px;
+    height: 20px;
+    background-image: url(../images/buttons/ico-full-screen.png);
+    position: absolute;
+    right: .2em;
+    top: .5em;
+}
+
+#fullscreen > span {
+    display: none;
 }
 
 #zoominfos {
-    font: 1em/28px Sans;
+    background-image: none;
+    background: -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     color: #fff;
     text-align: center;
-    width: 60px;
-    vertical-align: 20%
+    width: 80px;
+    height: 40px;
+    vertical-align: top;
+    font-size: 1em;
+    line-height: 40px;
 }
 /** /Common toolbar */
 
@@ -178,6 +294,7 @@ aside#progressbar > div {
     right: 0;
     margin: -30px auto 0;
     color: black;
+    background: white;
     background: rgba(255, 255, 255, 0.7);
     border-radius: 6px;
     width: 1%;
@@ -192,54 +309,62 @@ aside#progressbar > div > p {
 
 /** Overview */
 .navcontainer {
-  /*position: absolute;*/
   float:right;
   z-index: 5;
   text-align: center;
   background: transparent;
-  /*top: 35px;
-  right: 10px;*/
-  margin: 35px 10px 0 0;
-}
-.navcontainer .toolbar {
-  height: 8px;
-  cursor: move;
-  width: 100%;
-  opacity: 0.8;
-  /* Cross browser CSS gradients from http://www.colorzilla.com/gradient-editor/ */
-  background: #a9aba6; /* Old browsers */
-  background: -moz-linear-gradient(top, #a9aba6 0%, #c0c2be 22%, #d5d5d2 33%, #e2e1dd 44%, #ededed 56%, #bebec1 67%, #c3c3c2 78%, #a1a4a0 89%, #878686 100%) repeat-x; /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a9aba6), color-stop(22%,#c0c2be), color-stop(33%,#d5d5d2), color-stop(44%,#e2e1dd), color-stop(56%,#ededed), color-stop(67%,#bebec1), color-stop(78%,#c3c3c2), color-stop(89%,#a1a4a0), color-stop(100%,#878686)) repeat-x; /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #a9aba6 0%,#c0c2be 22%,#d5d5d2 33%,#e2e1dd 44%,#ededed 56%,#bebec1 67%,#c3c3c2 78%,#a1a4a0 89%,#878686 100%) repeat-x; /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #a9aba6 0%,#c0c2be 22%,#d5d5d2 33%,#e2e1dd 44%,#ededed 56%,#bebec1 67%,#c3c3c2 78%,#a1a4a0 89%,#878686 100%) repeat-x; /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #a9aba6 0%,#c0c2be 22%,#d5d5d2 33%,#e2e1dd 44%,#ededed 56%,#bebec1 67%,#c3c3c2 78%,#a1a4a0 89%,#878686 100%) repeat-x; /* IE10+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#6f706d',GradientType=0 ); /* IE6-9 */
-  background: linear-gradient(top, #a9aba6 0%,#c0c2be 22%,#d5d5d2 33%,#e2e1dd 44%,#ededed 56%,#bebec1 67%,#c3c3c2 78%,#a1a4a0 89%,#878686 100%) repeat-x; /* W3C */
+  margin: 55px 20px 0 0;
 }
 
-.navcontainer .toolbar:hover { opacity: 1.0 }
+.navcontainer .toolbar {
+    height: 10px;
+    cursor: move;
+    width: 100%;
+    background: #000;
+    border-radius: 6px 6px 0 0;
+}
+
+.navcontainer .toolbar .toolbarbtn {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    background: url(../images/buttons/ico-zoom-off.png) top left no-repeat;
+    top: -18px;
+    left:50%;
+    margin-left:-18px;
+    z-index:10;
+    cursor: pointer;
+}
+
+.navwin, .navwin > img {
+  border-radius: 0 0 6px 6px;
+}
 
 .navwin {
-  font-size: 90%;
   left: 0;
-  font-weight: bold;
-  text-align: left;
-  border: 1px outset red;
-  border: none;
   top: 10px;
   z-index: 5;
-  opacity: 0.9;
   width: 100%;
   height: auto;
+  border: 1px solid black;
 }
 
 .navwin img { border: 0; width: 100%; height: 100% }
+
+.navwin .outerzone {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .5);
+    border-radius: 6px;
+}
+
 .navwin .zone {
-  background: #888;
-  border: 2px solid yellow;
+  background: transparent;
+  border: 1px solid #660912;
   cursor: move;
   z-index: 6;
-  opacity: 0.4;
 }
 /** /Overview */
 
@@ -247,7 +372,8 @@ aside#progressbar > div > p {
 #thumbnails_view {
     width: 100%;
     height: 100%;
-    background-color: rgba(255,255,255,0.9);
+    background-color: black;
+    background-color: rgba(0, 0, 0, .9);
     position: absolute;
     z-index: 9;
     overflow: auto;
@@ -260,7 +386,6 @@ aside#progressbar > div > p {
     padding: .3em;
     text-align:center;
     vertical-align: middle;
-    background-color: rgba(255,255,255,0.5);
     border-radius: 6px;
 }
 
@@ -269,10 +394,19 @@ aside#progressbar > div > p {
 }
 
 #thumbnails_view a:hover {
-    box-shadow: 0 0 3px rgba(0, 0, 0, .4);
+    box-shadow: 0 0 3px rgba(255, 0, 0, .6);
+    background-color: rgba(0, 0, 0, .9);
 }
 
 #thumbnails_view a img {
     vertical-align: middle;
 }
 /** Thumbnails */
+
+.navcontainer .toolbar.invisible {
+    background: none!important;
+}
+
+.navcontainer .loadBarContainer.invisible {
+    visibility: hidden!important;
+}

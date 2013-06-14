@@ -14,26 +14,28 @@
         <section>
             <figure id="viewer">
                 <header>
+                    <h1>BACH</h1>
+                    {% if series %}
+                        {% set series_name = series.getPath() %}
+                        <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
+                            {% trans %}
+                            Series {{ series_name }}:
+                            {% endtrans %}
+                            <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
+                        </span>
+                    {% endif %}
+                    <h2>{{ img }}</h2>
+
                     {% if not picture.isPyramidal %}
-                    <div id="image_formats">
-                        {% trans "Image size:" %}
-                        <select name="formats" id="formats">
+                    <div id="formats">
+                        <select name="formats">
                             {% for key, fmt in picture.getVisibleFormats() %}
                             <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     {% endif %}
-                    {% if series %}
-                        {% set series_name = series.getPath() %}
-                        <div id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
-                            {% trans %}
-                            Series {{ series_name }}:
-                            {% endtrans %}
-                            <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
-                        </div>
-                    {% endif %}
-                    <h1>{{ img }}</h1>
+                    <a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>
                 </header>
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
@@ -50,19 +52,20 @@
                 <aside>
                     <ul>
                         {% if series %}
-                        <li id="thumbnails" title="{% trans "Show thumbnails" %}"></li>
+                        <li id="thumbnails" title="{% trans "Show thumbnails" %}">
                         {% endif %}
-                        <li id="zoomout" title="{% trans "Zoom out" %}"></li>
-                        <li id="zoomin" title="{% trans "Zoom in" %}"></li>
-                        <li id="fullsize" title="{% trans "Show full size image" %}"></li>
-                        <li id="fitsize" title="{% trans "Fit image to screen" %}"></li>
-                        <li id="zoominfos"></li>
                         {# rotation is buggy for IIP, see https://github.com/ruven/iipmooviewer/issues/13 #}
                         {% if not iip %}
-                        <li id="lrotate" title="{% trans "Rotate 90 degrees by left" %}"></li>
-                        <li id="rrotate" title="{% trans "Rotate 90 degrees by right" %}"></li>
+                        <li id="lrotate" title="{% trans "Rotate 90 degrees by left" %}">
+                        <li id="rrotate" title="{% trans "Rotate 90 degrees by right" %}">
                         {% endif %}
-                        <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
+                        <li id="zoomout" title="{% trans "Zoom out" %}">
+                        <li id="zoominfos">
+                        <li id="zoomin" title="{% trans "Zoom in" %}">
+                        <li id="fitsize" title="{% trans "Fit image to screen" %}">
+                        <li id="fullsize" title="{% trans "Show full size image" %}">
+                        <li id="moreparams" title="{% trans "More parameters" %}">
+                        <!--<li id="fullscreen" title=""></li>-->
                     </ul>
                 </aside>
                 {% if not(iip) %}
@@ -177,6 +180,7 @@
                     server: '{{ iipserver }}',
                     image: '{{ picture.getFullPath() }}',
                     imageName: '{{ picture.getName() }}',
+                    navWinSize: {{ thumb_format.width }},
                     showNavButtons: false,
                     prefix: '/images/'
                 });
