@@ -79,6 +79,11 @@ $app = new Slim(
     )
 );
 
+$app_base_url = '';
+if ( $_SERVER['PHP_SELF'] != '/index.php' && $_SERVER['PHP_SELF'] != '/debug.php' ) {
+    $app_base_url = '/private/anaphore/visionneuse-local/web/index.php';
+}
+
 Twig::$twigExtensions = array(
     new Twig_Extensions_Extension_I18n()
 );
@@ -94,10 +99,19 @@ define('DEFAULT_PICTURE', 'main.jpg');
 
 $app->hook(
     'slim.before.dispatch',
-    function () use ($app, $conf, $lang) {
+    function () use ($app, $conf, $lang, $app_base_url) {
         //let's send view parameters before dispatching
         $v = $app->view();
         $ui = $conf->getUI();
+        $v->setData('app_base_url', $app_base_url);
+        $v->setData(
+            'app_web_url',
+            str_replace(
+                array('/index.php', '/debug.php'),
+                array('', ''),
+                $app_base_url
+            )
+        );
         $v->setData(
             'enable_right_click',
             $ui['enable_right_click']
@@ -122,8 +136,8 @@ $app->notFound(
 //main route
 $app->get(
     '/',
-    function () use ($app) {
-        $app->redirect('/viewer/' . DEFAULT_PICTURE);
+    function () use ($app, $app_base_url) {
+        $app->redirect($app_base_url . '/viewer/' . DEFAULT_PICTURE);
     }
 );
 

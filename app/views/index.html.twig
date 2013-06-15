@@ -3,11 +3,11 @@
 {% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}
 {% block head %}
         {% if not(iip) %}
-        <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.iviewer.css"/>
         {% else %}
-        <link rel="stylesheet" type="text/css" media="all" href="/styles/iip.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ app_web_url }}/styles/iip.css" />
         {% endif %}
-        <link rel="stylesheet" href="/styles/viewer.css"/>
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/viewer.css"/>
 {% endblock %}
 
 {% block content %}
@@ -80,29 +80,29 @@
 {% endblock %}
 
 {% block scripts %}
-        <script type="text/javascript" src="/scripts/jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery-1.9.1.min.js"></script>
         {% if not(iip) %}
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.core.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.widget.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.mouse.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/jquery.mousewheel.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/viewer.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.widget.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.mouse.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/viewer.js"></script>
         {% else %}
-        <script type="text/javascript" src="/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
-        <script type="text/javascript" src="/scripts/mootools/mootools-more-1.4.0.1.js"></script>
-        <script type="text/javascript" src="/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/iipviewer.js"></script>
-        <script type="text/javascript" src="/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-more-1.4.0.1.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipviewer.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/iip.js"></script>
         {% if lang == 'fr_FR.utf8' %}
-        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.fr.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.fr.js"></script>
         {% else %}
-        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.en.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.en.js"></script>
         {% endif %}
-        <!--<script type="text/javascript" src="/scripts/iipmooviewer/touch.js"></script>-->
-        <script type="text/javascript" src="/scripts/iipmooviewer/navigation.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/iipnavigation.js"></script>
+        <!--<script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/touch.js"></script>-->
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/navigation.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipnavigation.js"></script>
         {% endif %}
         <script>
             //global variables

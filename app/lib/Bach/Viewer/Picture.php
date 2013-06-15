@@ -55,18 +55,21 @@ class Picture
     private $_pyramidal = false;
     private $_conf;
     private $_exif;
+    private $_app_base_url;
 
     /**
      * Main constructor
      *
-     * @param Conf   $conf Viewer configuration
-     * @param string $name Image name
-     * @param string $path Image path, if known
+     * @param Conf   $conf         Viewer configuration
+     * @param string $name         Image name
+     * @param string $app_base_url Application base URL
+     * @param string $path         Image path, if known
      */
-    public function __construct($conf, $name, $path=null)
+    public function __construct($conf, $name, $app_base_url, $path=null)
     {
         $this->_conf = $conf;
         $this->_name = $name;
+        $this->_app_base_url = $app_base_url;
 
         if ( $path !== null ) {
             $this->_path = $path;
@@ -478,8 +481,7 @@ class Picture
      */
     public function getUrl($format = 'default')
     {
-        //TODO: serve other formats, resize image, and so on
-        $prefix = '/show/';
+        $prefix = $this->_app_base_url . '/show/';
         $prefix .= $format . '/';
         return $prefix . base64_encode($this->_full_path);
     }

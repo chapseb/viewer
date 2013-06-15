@@ -16,7 +16,7 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, &$session) {
+    function ($path) use ($app, $conf, &$session, $app_base_url) {
         $req = $app->request();
         $start = $req->get('s');
         if ( trim($start) === '' ) {
@@ -41,6 +41,7 @@ $app->get(
             $series = new Series(
                 $conf->getRoots(),
                 implode('/', $path),
+                $app_base_url,
                 $start,
                 $end
             );
@@ -72,6 +73,7 @@ $app->get(
         $picture = new Picture(
             $conf,
             $img,
+            $app_base_url,
             $series->getFullPath()
         );
 

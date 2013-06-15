@@ -16,7 +16,7 @@ use \Bach\Viewer\Series;
 
 $app->get(
     '/ajax/img(/:series)/:image',
-    function ($series_path = null, $image) use ($app, $conf, &$session) {
+    function ($series_path = null, $image) use ($app, $conf, &$session, $app_base_url) {
         $series = null;
         if ( isset($session['series']) ) {
             $series = unserialize($session['series']);
@@ -25,11 +25,12 @@ $app->get(
         if ( $series_path !== null ) {
             $series = new Series(
                 $conf->getRoots(),
-                $series_path
+                $series_path,
+                $app_base_url
             );
         }
         $series->setImage($image);
-        $picture = new Picture($conf, $image, $series->getFullPath());
+        $picture = new Picture($conf, $image, $app_base_url, $series->getFullPath());
 
         $session['series'] = serialize($series);
         $session['picture'] = serialize($picture);
@@ -40,14 +41,14 @@ $app->get(
 
 $app->get(
     '/ajax/img/:name/format/:format',
-    function ($name, $format) use ($app, $conf, $session) {
+    function ($name, $format) use ($app, $conf, $session, $app_base_url) {
         $picture = unserialize($session['picture']);
         if ( $name !== 'undefined'
             && substr($picture->getName(), strlen($name)) !== $name
         ) {
             //names differs, load image
             $series = unserialize($session['series']);
-            $picture = new Picture($conf, $name, $series->getFullPath());
+            $picture = new Picture($conf, $name, $app_base_url, $series->getFullPath());
         }
         $app->redirect($picture->getUrl($format));
     }

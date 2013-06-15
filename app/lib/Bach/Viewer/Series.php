@@ -36,12 +36,13 @@ class Series
     /**
      * Main constructor
      *
-     * @param array  $roots Configured roots
-     * @param string $path  Series path
-     * @param string $start Sub series start point (optional)
-     * @param string $end   Sub series end point (optional)
+     * @param array  $roots        Configured roots
+     * @param string $path         Series path
+     * @param string $app_base_url Application base URL
+     * @param string $start        Sub series start point (optional)
+     * @param string $end          Sub series end point (optional)
      */
-    public function __construct($roots, $path, $start = null, $end = null)
+    public function __construct($roots, $path, $app_base_url, $start = null, $end = null)
     {
         $this->_path = $path;
 
@@ -72,6 +73,7 @@ class Series
                         $picture = new Picture(
                             null,
                             $entry,
+                            $app_base_url,
                             $this->_full_path
                         );
                         $this->_content[] = $entry;
