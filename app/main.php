@@ -26,7 +26,17 @@ if ( defined('APP_TESTS') ) {
     $viewer_log = '';
     $logger = \Analog\Handler\Variable::init($viewer_log);
 } else {
-    $log_file = APP_DIR . '/logs/viewer.log';
+    $log_dir = APP_DIR . '/logs/';
+    if ( !file_exists($log_dir) ) {
+        throw new \RuntimeException(
+            'Log directory (' . $log_dir  . ') does not exists!'
+        );
+    } else if ( !is_writeable($log_dir)  ) {
+        throw new \RuntimeException(
+            'Log directory (' . $log_dir . ') is not writeable!'
+        );
+    }
+    $log_file = $log_dir . 'viewer.log';
     $logger = \Analog\Handler\File::init($log_file);
 }
 Analog::handler($logger);
