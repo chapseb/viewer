@@ -90,8 +90,11 @@ $app = new Slim(
 );
 
 $app_base_url = '';
-if ( $_SERVER['PHP_SELF'] != '/index.php' && $_SERVER['PHP_SELF'] != '/debug.php' ) {
-    $app_base_url = '/private/anaphore/visionneuse-local/web/index.php';
+if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php')) 
+    && strncmp($_SERVER['PHP_SELF'], '/debug.php', strlen('/debug.php'))
+) {
+    preg_match('/.*(index|debug)\.php/', $_SERVER['PHP_SELF'], $matches);
+    $app_base_url = $matches[0];
 }
 
 Twig::$twigExtensions = array(
