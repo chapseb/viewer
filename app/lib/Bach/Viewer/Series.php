@@ -272,7 +272,7 @@ class Series
         $ret['meta'] = $fmt;
 
         foreach ( $this->_content as $c ) {
-            $p = new Picture(null, $c, $this->_full_path);
+            $p = new Picture(null, $c, null, $this->_full_path);
             $path = null;
             if ( $p->isPyramidal() ) {
                 $path = $p->getFullPath();
