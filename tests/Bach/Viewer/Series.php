@@ -52,7 +52,8 @@ class Series extends atoum
 
         $this->_series = new Viewer\Series(
             $this->_conf->getRoots(),
-            ''
+            '',
+            null
         );
 
 
@@ -69,14 +70,16 @@ class Series extends atoum
             function () {
                 $series = New Viewer\Series(
                     array(),
-                    '/'
+                    '/',
+                    null
                 );
             }
         )->hasMessage('No matching root found!');
 
         $series = New Viewer\Series(
             $this->_conf->getRoots(),
-            '/'
+            '/',
+            null
         );
     }
 

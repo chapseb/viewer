@@ -19,7 +19,7 @@ use Bach\Viewer;
 require_once __DIR__ . '../../../../app/lib/Bach/Viewer/Conf.php';
 
 /**
- * Series tests
+ * Picture tests
  *
  * @category Main
  * @package  TestViewer
@@ -53,7 +53,8 @@ class Picture extends atoum
 
         $this->_series = new Viewer\Series(
             $this->_conf->getRoots(),
-            ''
+            '',
+            null
         );
     }
 
@@ -68,7 +69,8 @@ class Picture extends atoum
             function () {
                 $picture = new Viewer\Picture(
                     $this->_conf,
-                    'blahblah'
+                    'blahblah',
+                    null
                 );
             }
         )->hasMessage('File /blahblah does not exists!');
@@ -78,6 +80,7 @@ class Picture extends atoum
                 $picture = new Viewer\Picture(
                     $this->_conf,
                     'saint-benezet.ico',
+                    null,
                     $this->_series->getFullPath()
                 );
             }
@@ -88,6 +91,7 @@ class Picture extends atoum
                 $picture = new Viewer\Picture(
                     $this->_conf,
                     'doms.tiff',
+                    null,
                     $this->_series->getFullPath()
                 );
             }
@@ -97,13 +101,15 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             $this->_series->getRepresentative(),
+            null,
             $this->_series->getFullPath()
         );
 
         //test unique image
         $picture = new Viewer\Picture(
             $this->_conf,
-            'doms.jpg'
+            'doms.jpg',
+            null
         );
     }
 
@@ -116,7 +122,8 @@ class Picture extends atoum
     {
         $picture = new Viewer\Picture(
             $this->_conf,
-            'doms.jpg'
+            'doms.jpg',
+            null
         );
 
         $display = $picture->getDisplay();
@@ -163,7 +170,8 @@ class Picture extends atoum
         //test with PNG image
         $picture = new Viewer\Picture(
             $this->_conf,
-            'tech.png'
+            'tech.png',
+            null
         );
 
         $display = $picture->getDisplay('thumb');
@@ -174,7 +182,8 @@ class Picture extends atoum
         //test with GIF image
         $picture = new Viewer\Picture(
             $this->_conf,
-            'iron_man.gif'
+            'iron_man.gif',
+            null
         );
 
         $display = $picture->getDisplay('thumb');
@@ -197,7 +206,8 @@ class Picture extends atoum
 
         $picture = new Viewer\Picture(
             $conf,
-            'doms.jpg'
+            'doms.jpg',
+            null
         );
 
         $display = $picture->getDisplay('thumb');
@@ -217,6 +227,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             'tech.jpg',
+            null,
             $this->_series->getFullPath()
         );
         $width = $picture->getWidth();
@@ -238,6 +249,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             'iron_man_tiled.tif',
+            null,
             $this->_series->getFullPath()
         );
         $width = $picture->getWidth();
@@ -259,6 +271,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             $this->_series->getRepresentative(),
+            null,
             $this->_series->getFullPath()
         );
         $width = $picture->getWidth();
