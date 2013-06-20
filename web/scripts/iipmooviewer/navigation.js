@@ -308,7 +308,8 @@ var Navigation = new Class({
       // From a drag
       xmove = e.offsetLeft;
       ymove = e.offsetTop-10;
-      if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
+      //[JC - 2013-06-20] the following line is CSS related and CSS has been heavily changed... I don't know what was the purpose of this one.
+      //if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
     }
 
     if( xmove > (this.size.x - zone_w) ) xmove = this.size.x - zone_w;
