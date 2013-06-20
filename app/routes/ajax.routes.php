@@ -40,15 +40,38 @@ $app->get(
 );
 
 $app->get(
-    '/ajax/img/:name/format/:format',
-    function ($name, $format) use ($app, $conf, $session, $app_base_url) {
+    '/ajax/img(/:series)/:name/format/:format',
+    function ($series_path = null, $name, $format) use ($app, $conf, $session, $app_base_url) {
         $picture = unserialize($session['picture']);
         if ( $name !== 'undefined'
             && substr($picture->getName(), strlen($name)) !== $name
         ) {
-            //names differs, load image
-            $series = unserialize($session['series']);
-            $picture = new Picture($conf, $name, $app_base_url, $series->getFullPath());
+            if ( $series_path !== null && $series_path !== '' ) {
+                //names differs, load image
+                //TODO: check series path are the same form params and from session
+                $series = unserialize($session['series']);
+                $picture = new Picture(
+                    $conf,
+                    $name,
+                    $app_base_url,
+                    $series->getFullPath()
+                );
+            } else {
+                if ( $name === DEFAULT_PICTURE ) {
+                    $picture = new Picture(
+                        $conf,
+                        $name,
+                        $app_base_url,
+                        WEB_DIR . '/images/'
+                    );
+                } else {
+                    $picture = new Picture(
+                        $conf,
+                        $name,
+                        $app_base_url
+                    );
+                }
+            }
         }
         $app->redirect($picture->getUrl($format));
     }

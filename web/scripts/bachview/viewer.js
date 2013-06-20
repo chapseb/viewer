@@ -34,8 +34,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             //load navigation overview image
             var _src;
-            if ( me.image_name ) {
-                _src = app_url + '/ajax/img/' + me.image_name + '/format/thumb';
+            if ( me.image_name && series_path != '' ) {
+                _src = app_url + '/ajax/img/'  + series_path  + '/' + me.image_name + '/format/thumb';
             } else {
                 _src  = me.options.src.replace(/show\/.+\//, 'show/thumb/');
             }
@@ -149,7 +149,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         var _thumbs = data['thumbs'];
                         var _meta = data['meta'];
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
-                            var _src = app_url + '/ajax/img/' + _thumbs[i].name + '/format/thumb';
+                            var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
                             var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
@@ -186,7 +186,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //resize image
         $('#formats').change(function(){
             var _format = $("select option:selected").attr('value');
-            me.loadImage(app_url + '/ajax/img/' + me.image_name + '/format/' + _format);
+            if ( series_path != '') {
+                var _src = app_url + '/ajax/img/' + series_path + '/' + me.image_name  + '/format/' + _format;
+            } else {
+                _src  = me.options.src.replace(/show\/.+\//, 'show/' + _format + '/');
+            }
+            me.loadImage(_src);
         }).val('default');
 
         //navbar
