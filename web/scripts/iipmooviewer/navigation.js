@@ -216,8 +216,6 @@ var Navigation = new Class({
         var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
         var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
 
-        console.log('Set styles: ' + _outerTopBorder + ' ' + _outerLeftBorder);
-
         _this.outerZone.setStyles({
             'border-top-width':     _outerTopBorder,
             'border-left-width':    _outerLeftBorder,
@@ -226,8 +224,6 @@ var Navigation = new Class({
             'height':               _outerHeight,
             'width':                _outerWidth
         });
-
-
       },
 	  onComplete: this.scroll.bind(this)
         });
