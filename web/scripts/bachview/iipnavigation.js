@@ -172,36 +172,36 @@ var BNavigation = new Class({
     */
     scroll: function(e){
         this.parent(e);
-            var _navWin = $$('.navwin')[0];
-            var _toolbar = $$('.toolbar')[0];
+        var _navWin = $$('.navwin')[0];
+        var _toolbar = $$('.toolbar')[0];
 
-            var _styles = this.zone.getStyles(
-                'width',
-                'height',
-                'border-top-width',
-                'border-bottom-width',
-                'border-left-width',
-                'border-right-width',
-                'top',
-                'left'
-            );
+        var _styles = this.zone.getStyles(
+            'width',
+            'height',
+            'border-top-width',
+            'border-bottom-width',
+            'border-left-width',
+            'border-right-width',
+            'top',
+            'left'
+        );
 
-            var _outerHeight = _styles.height.toInt();
-            var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
-            var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
+        var _outerHeight = _styles.height.toInt();
+        var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
+        var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
 
-            var _outerWidth = _styles.width.toInt();
-            var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
-            var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
+        var _outerWidth = _styles.width.toInt();
+        var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
+        var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
 
-            this.outerZone.setStyles({
-                'border-top-width':     _outerTopBorder,
-                'border-left-width':    _outerLeftBorder,
-                'border-bottom-width':  _outerBottomBorder,
-                'border-right-width':   _outerRightBorder,
-                'height':               _outerHeight,
-                'width':                _outerWidth
-            });
+        this.outerZone.setStyles({
+            'border-top-width':     _outerTopBorder,
+            'border-left-width':    _outerLeftBorder,
+            'border-bottom-width':  _outerBottomBorder,
+            'border-right-width':   _outerRightBorder,
+            'height':               _outerHeight,
+            'width':                _outerWidth
+        });
     },
 
 
