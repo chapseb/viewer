@@ -328,12 +328,16 @@ aside#progressbar > div > p {
     position: absolute;
     width: 34px;
     height: 34px;
-    background: url(../images/buttons/ico-zoom-off.png) top left no-repeat;
+    background: url(../images/buttons/ico-zoom-on.png) top left no-repeat;
     top: -18px;
     left:50%;
     margin-left:-18px;
     z-index:10;
     cursor: pointer;
+}
+
+.navcontainer .toolbar .toolbarbtn.off {
+    background: url(../images/buttons/ico-zoom-off.png) top left no-repeat;
 }
 
 .navwin, .navwin > img {

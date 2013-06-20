@@ -213,5 +213,6 @@ var BNavigation = new Class({
         $$('.navwin').toggle();
         $$('.toolbar').toggleClass('invisible');
         $$('.loadBarContainer').toggleClass('invisible');
+        $$('.toolbarbtn').toggleClass('off');
   }
 });

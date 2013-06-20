@@ -220,6 +220,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         $('.toolbarbtn').on('click', function() {
             $('.navwin').toggle();
+            $(this).toggleClass('off');
         });
 
         //prevent double click to be passed to viewer container
