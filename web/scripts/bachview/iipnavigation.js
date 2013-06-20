@@ -104,6 +104,10 @@ var BNavigation = new Class({
         $$('.toolbarbtn').addEvent('click', function(e) {
             me.toggleWindow();
         })
+
+        $$('.navwin').addEvent('click', function(e) {
+            me.scroll(e);
+        });
     },
 
     /**
