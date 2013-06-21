@@ -12,7 +12,7 @@ mkdir $TMP
 php bin/extract_strings.php --tmp=$TMP
 
 #retrieve strings
-find $TMP app/lib -name "*.php" | xargs xgettext --default-domain=messages -p ./app/locale --from-code=UTF-8 -n --omit-header -L PHP -o messages.pot
+find $TMP app/lib app/routes -name "*.php" | xargs xgettext --default-domain=messages -p ./app/locale --from-code=UTF-8 -n --omit-header -L PHP -o messages.pot
 
 #Generate gettext files
 pushd app/locale > /dev/null

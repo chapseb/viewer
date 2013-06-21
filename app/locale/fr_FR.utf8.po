@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-21 14:08+0200\n"
+"PO-Revision-Date: 2013-06-21 14:16+0200\n"
 "Last-Translator: \n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
@@ -214,6 +214,21 @@ msgstr "Aucune image à la position %pos !"
 #: app/lib/Bach/Viewer/Series.php:248
 msgid "Series has not been initialized yet."
 msgstr "Les séries n'ont pas encore été initialisées."
+
+#: app/routes/series.routes.php:35
+msgid "Sub series cannot be instancied; missing one of start or end param!"
+msgstr ""
+"La sous-série ne peut être instanciée : il manque l'un des paramètres de "
+"début ou de fin !"
+
+#: app/routes/series.routes.php:50
+msgid "Cannot load series: "
+msgstr "Impossible de charger la série :"
+
+#: app/routes/series.routes.php:62
+#, php-format
+msgid "Series \"%s\" is empty!"
+msgstr "La série « %s » est vide !"
 
 #~ msgid "Image size:"
 #~ msgstr "Taille de l'image&nbsp;:"

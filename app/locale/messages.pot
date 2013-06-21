@@ -192,3 +192,16 @@ msgstr ""
 #: app/lib/Bach/Viewer/Series.php:248
 msgid "Series has not been initialized yet."
 msgstr ""
+
+#: app/routes/series.routes.php:35
+msgid "Sub series cannot be instancied; missing one of start or end param!"
+msgstr ""
+
+#: app/routes/series.routes.php:50
+msgid "Cannot load series: "
+msgstr ""
+
+#: app/routes/series.routes.php:62
+#, php-format
+msgid "Series \"%s\" is empty!"
+msgstr ""
