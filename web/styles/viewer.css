@@ -1,7 +1,7 @@
 /** === Main viewer styles */
 html, body, section, #pviewer {
     height: 100%;
-    font-family: "Cantarell", Verdana, Arial, sans-serif;
+    font-family: Verdana, Arial, sans-serif;
     background: #414141;
 }
 
