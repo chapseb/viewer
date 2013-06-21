@@ -1,5 +1,9 @@
+aside#progressbar {
+    filter:alpha(opacity=50);
+}
+
 aside#progressbar > div {
-    background-color: white;
+    filter:alpha(opacity=70);
 }
 
 .outerzone {
