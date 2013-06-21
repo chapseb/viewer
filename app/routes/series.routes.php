@@ -53,6 +53,17 @@ $app->get(
             $app->pass();
         }
 
+        //check if series has content, throw an error if not
+        if ( $series->getCount() === 0 ) {
+            throw new \RuntimeException(
+                str_replace(
+                    '%s',
+                    $series->getPath(),
+                    _('Series "%s" is empty!')
+                )
+            );
+        }
+
         $img = null;
         if ( $req->get('img') !== null ) {
             //get image from its name
