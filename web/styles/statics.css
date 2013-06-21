@@ -4,8 +4,16 @@ html {
     color: white;
 }
 
+p {
+    margin: .2em 0 .3em 0;
+}
+
 a {
     color: white;
+}
+
+em {
+    font-style: italic;
 }
 
 body {

@@ -143,9 +143,28 @@ Route::setDefaultConditions(
     )
 );
 
+//404 handler
 $app->notFound(
     function () use ($app) {
         $app->render('404.html.twig');
+    }
+);
+
+//custom error handler
+$app->error(
+    function (\Exception $e) use ($app) {
+        $etype = get_class($e);
+        Analog::error(
+            'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
+            '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
+            "\nStack trace:\n" . $e->getTraceAsString()
+        );
+        $app->render(
+            '50x.html.twig',
+            array(
+                'exception' => $e
+            )
+        );
     }
 );
 
