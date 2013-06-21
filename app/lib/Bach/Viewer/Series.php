@@ -68,7 +68,10 @@ class Series
             $this->_content = array();
             $handle = opendir($this->_full_path);
             while ( false !== ($entry = readdir($handle)) ) {
-                if ($entry != "." && $entry != "..") {
+                if ($entry != "."
+                    && $entry != ".."
+                    && !is_dir($this->_full_path . '/' . $entry)
+                ) {
                     try {
                         $picture = new Picture(
                             null,
