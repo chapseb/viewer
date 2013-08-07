@@ -62,12 +62,17 @@ if ( function_exists('http_negotiate_language') ) {
         break;
     }
 } else {
-    $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-    if ( substr($langs, 0, 2) == 'fr' ) {
-        $lang = 'fr_FR.utf8';
-    } else {
-        $lang = 'en_US';
+    if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
+        $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        if ( substr($langs, 0, 2) == 'fr' ) {
+            $lang = 'fr_FR.utf8';
+        }
     }
+}
+
+//fallback to english
+if ( $lang === null ) {
+    $lang = 'en_US';
 }
 
 putenv('LC_ALL=' . $lang);

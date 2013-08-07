@@ -44,7 +44,9 @@ $app->get(
     function ($series_path = null, $name, $format) use ($app, $conf, $session, $app_base_url) {
         $picture = unserialize($session['picture']);
         if ( $name !== 'undefined'
+            && $picture
             && substr($picture->getName(), strlen($name)) !== $name
+            || !$picture
         ) {
             if ( $series_path !== null && $series_path !== '' ) {
                 //names differs, load image
