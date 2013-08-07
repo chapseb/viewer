@@ -15,6 +15,7 @@ use \Slim\Slim;
 use \Slim\Route;
 use \Slim\Extras\Views\Twig;
 use \Bach\Viewer\Conf;
+use \Bach\Viewer\Picture;
 use \Analog\Analog;
 
 session_start();
@@ -157,19 +158,40 @@ $app->notFound(
 
 //custom error handler
 $app->error(
-    function (\Exception $e) use ($app) {
-        $etype = get_class($e);
-        Analog::error(
-            'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
-            '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
-            "\nStack trace:\n" . $e->getTraceAsString()
-        );
-        $app->render(
-            '50x.html.twig',
-            array(
-                'exception' => $e
-            )
-        );
+    function (\Exception $e) use ($app, $conf, $app_base_url) {
+        $resuUri = $app->request()->getResourceUri();
+        if ( substr($resuUri, 0, 10) === '/ajax/img/' && APP_DEBUG !== true ) {
+            $format = 'default';
+            preg_match('/.*\/format\/(.*)/', $resuUri, $matches);
+            if ( isset($matches[1]) ) {
+                $format = $matches[1];
+            }
+            $picture = new Picture(
+                $conf,
+                'main.jpg',
+                $app_base_url,
+                WEB_DIR . '/images/'
+            );
+            $display = $picture->getDisplay($format);
+            $response = $app->response();
+            foreach ( $display['headers'] as $key=>$header ) {
+                $response[$key] = $header;
+            }
+            $response->body($display['content']);
+        } else {
+            $etype = get_class($e);
+            Analog::error(
+                'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
+                '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
+                "\nStack trace:\n" . $e->getTraceAsString()
+            );
+            $app->render(
+                '50x.html.twig',
+                array(
+                    'exception' => $e
+                )
+            );
+        }
     }
 );
 
