@@ -80,6 +80,26 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/representative/:series/format/:format',
+    function ($series_path = null, $format) use ($app, $conf, $session, $app_base_url) {
+
+        $series = new Series(
+            $conf->getRoots(),
+            $series_path,
+            $app_base_url
+        );
+
+        $picture = new Picture(
+            $conf,
+            $series->getRepresentative(),
+            $app_base_url,
+            $series->getFullPath()
+        );
+        $app->redirect($picture->getUrl($format));
+    }
+);
+
+$app->get(
     '/ajax/series/infos(/:image)',
     function ($img = null) use ($app, $session) {
         $series = unserialize($session['series']);

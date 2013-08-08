@@ -160,7 +160,10 @@ $app->notFound(
 $app->error(
     function (\Exception $e) use ($app, $conf, $app_base_url) {
         $resuUri = $app->request()->getResourceUri();
-        if ( substr($resuUri, 0, 10) === '/ajax/img/' && APP_DEBUG !== true ) {
+        if ( (substr($resuUri, 0, 10) === '/ajax/img/'
+            || substr($resuUri, 0, 21) === '/ajax/representative/')
+            && APP_DEBUG !== true
+        ) {
             $format = 'default';
             preg_match('/.*\/format\/(.*)/', $resuUri, $matches);
             if ( isset($matches[1]) ) {
