@@ -43,6 +43,7 @@ $app->get(
     '/ajax/img(/:series)/:name/format/:format',
     function ($series_path = null, $name, $format) use ($app, $conf, $session, $app_base_url) {
         $picture = unserialize($session['picture']);
+
         if ( $name !== 'undefined'
             && $picture
             && substr($picture->getName(), strlen($name)) !== $name
@@ -50,8 +51,17 @@ $app->get(
         ) {
             if ( $series_path !== null && $series_path !== '' ) {
                 //names differs, load image
-                //TODO: check series path are the same form params and from session
                 $series = unserialize($session['series']);
+
+                if ( !$series || $series->getPath() !== $series_path ) {
+                    //check if series path are the same form params and from session
+                    $series = new Series(
+                        $conf->getRoots(),
+                        $series_path,
+                        $app_base_url
+                    );
+                }
+
                 $picture = new Picture(
                     $conf,
                     $name,
