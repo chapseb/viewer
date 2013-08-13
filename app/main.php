@@ -145,7 +145,8 @@ $app->hook(
 //set default conditions
 Route::setDefaultConditions(
     array(
-        'image' => '.+\.[a-zA-Z]{3,4}'
+        'image'     => '.+\.[a-zA-Z]{3,4}',
+        'series'    => '.+'
     )
 );
 
