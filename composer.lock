@@ -60,12 +60,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "79765b1044fc9f1ee7d0c8b4e7676cef3c34f527"
+                "reference": "c6ec75d4cf132728e80ec8ed1470b83cb53fc1c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/79765b1044fc9f1ee7d0c8b4e7676cef3c34f527",
-                "reference": "79765b1044fc9f1ee7d0c8b4e7676cef3c34f527",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/c6ec75d4cf132728e80ec8ed1470b83cb53fc1c9",
+                "reference": "c6ec75d4cf132728e80ec8ed1470b83cb53fc1c9",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2013-05-29 08:58:12"
+            "time": "2013-08-13 13:30:57"
         },
         {
             "name": "psr/log",
