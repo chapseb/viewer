@@ -48,7 +48,10 @@ $app->get(
     '/viewer/:image_params+',
     function ($img_params) use ($app, $conf, $app_base_url) {
         $img = array_pop($img_params);
-        $path = '/' . implode('/', $img_params);
+        $path = null;
+        if ( count($img_params) > 0 ) {
+            $path = '/' . implode('/', $img_params);
+        }
         $picture = null;
         if ( $img === DEFAULT_PICTURE ) {
             $picture = new Picture($conf, 'main.jpg', $app_base_url, WEB_DIR . '/images/');

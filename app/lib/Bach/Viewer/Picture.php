@@ -72,15 +72,16 @@ class Picture
         $this->_app_base_url = $app_base_url;
 
         if ( $path !== null ) {
+
             $this->_path = $path;
+            //normalize path
+            if (  substr($this->_path, - 1) !== '/'
+                && !substr($this->_name, 0, 1) !== '/'
+            ) {
+                $this->_path = $this->_path . '/';
+            }
         }
 
-        //normalize path
-        if ( substr($this->_path, - 1) !== '/'
-            && !substr($this->_name, 0, 1) !== '/'
-        ) {
-            $this->_path = $this->_path . '/';
-        }
         $this->_full_path = $this->_path . $this->_name;
 
         if ( !file_exists($this->_full_path) ) {
