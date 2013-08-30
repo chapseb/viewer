@@ -1488,7 +1488,9 @@ var IIPMooViewer = new Class({
 
     var ax = this.wid<this.view.w ? Array(Math.round((this.view.w-this.wid)/2), Math.round((this.view.w-this.wid)/2)) : Array(this.view.w-this.wid,0);
     var ay = this.hei<this.view.h ? Array(Math.round((this.view.h-this.hei)/2), Math.round((this.view.h-this.hei)/2)) : Array(this.view.h-this.hei,0);
-    this.touch.options.limit = { x: ax, y: ay };
+    if ( this.touch ) {
+        this.touch.options.limit = { x: ax, y: ay };
+    }
   },
 
 
