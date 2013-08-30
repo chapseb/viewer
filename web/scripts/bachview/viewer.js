@@ -136,7 +136,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var me=this;
 
         //toolbar
-        $('#thumbnails').click(function(){
+        $('#thumbnails').bind('click touchstart', function(){
             var _thumbview = $('#thumbnails_view');
             if ( _thumbview.length > 0 ) {
                 _thumbview.remove();
@@ -156,7 +156,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
-                            _a.on('click', function(){
+                            _a.bind('click touch', function(){
                                 me.display(me._imgNameFromLink($(this)));
                                 $('#formats > select').val('default');
                                 _thumbview.remove();
@@ -175,12 +175,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             }
         });
-        $("#zoomin").click(function(){ me.zoom_by(1); });
-        $("#zoomout").click(function(){ me.zoom_by(-1); });
-        $("#fitsize").click(function(){ me.fit(); });
-        $("#fullsize").click(function(){ me.set_zoom(100); });
-        $("#lrotate").click(function(){ me.angle(-90); });
-        $("#rrotate").click(function(){ me.angle(90); });
+        $("#zoomin").bind('click touchstart', function(){ me.zoom_by(1); });
+        $("#zoomout").bind('click touchstart', function(){ me.zoom_by(-1); });
+        $("#fitsize").bind('click touchstart', function(){ me.fit(); });
+        $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
+        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
+        $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
         this.zoom_object = $('#zoominfos');
 
         //resize image
@@ -195,7 +195,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }).val('default');
 
         //navbar
-        $('#previmg,#nextimg').click(function(){
+        $('#previmg,#nextimg').bind('click touchstart', function(){
             me.display(me._imgNameFromLink($(this)));
             $('#formats > select').val('default');
             me.drawNavigation();
@@ -218,7 +218,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             return false;
         });
 
-        $('.toolbarbtn').on('click', function() {
+        $('.toolbarbtn').bind('click touchstart', function() {
             $('.navwin').toggle();
             $(this).toggleClass('off');
         });
@@ -324,7 +324,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _outerZone = $('<div class="outerzone"></div>');
         var _navWinZone = $('<div class="zone"></div>');
 
-        _navWin.on('click', function(e) {
+        _navWin.bind('click touchstart', function(e) {
             var _this = _navWin;
             var _container = _navContainer;
             var _zone = _navWinZone;
