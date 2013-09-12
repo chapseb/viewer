@@ -185,7 +185,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         //prevent this to execute on ios...
         var agent = navigator.userAgent.toLowerCase();
-        if ( !(agent.indexOf('iphone') > 0 || agent.indexOf('ipad') >= 0) ) {
+        if ( !(agent.indexOf('iphone') > 0 || agent.indexOf('ipad') >= 0) && navigator.platform != 'Win32' ) {
             var tflagin = false;
             var tflagout = false;
             var _hammer = $('#viewer').hammer({
