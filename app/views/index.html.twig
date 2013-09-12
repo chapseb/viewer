@@ -12,31 +12,31 @@
 
 {% block content %}
         <section>
-            <figure id="viewer">
-                <header>
-                    <h1>BACH</h1>
-                    {% if series %}
-                        {% set series_name = series.getPath() %}
-                        <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
-                            {% trans %}
-                            Series {{ series_name }}:
-                            {% endtrans %}
-                            <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
-                        </span>
-                    {% endif %}
-                    <h2>{{ img }}</h2>
+            <header>
+                <h1>BACH</h1>
+                {% if series %}
+                    {% set series_name = series.getPath() %}
+                    <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
+                        {% trans %}
+                        Series {{ series_name }}:
+                        {% endtrans %}
+                        <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
+                    </span>
+                {% endif %}
+                <h2>{{ img }}</h2>
 
-                    {% if not picture.isPyramidal %}
-                    <div id="formats">
-                        <select name="formats">
-                            {% for key, fmt in picture.getVisibleFormats() %}
-                            <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% endif %}
-                    <a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>
-                </header>
+                {% if not picture.isPyramidal %}
+                <div id="formats">
+                    <select name="formats">
+                        {% for key, fmt in picture.getVisibleFormats() %}
+                        <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>
+            </header>
+            <figure id="viewer">
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
