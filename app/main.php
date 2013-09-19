@@ -172,7 +172,7 @@ $app->error(
             }
             $picture = new Picture(
                 $conf,
-                'main.jpg',
+                DEFAULT_PICTURE,
                 $app_base_url,
                 WEB_DIR . '/images/'
             );
