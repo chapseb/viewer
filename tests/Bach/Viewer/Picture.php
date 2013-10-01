@@ -73,7 +73,7 @@ class Picture extends atoum
                     null
                 );
             }
-        )->hasMessage('File /blahblah does not exists!');
+        )->hasMessage('File blahblah does not exists!');
 
         $this->exception(
             function () {
