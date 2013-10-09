@@ -34,7 +34,6 @@
                     </select>
                 </div>
                 {% endif %}
-                <a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>
             </header>
             <figure id="viewer">
                 <noscript>
@@ -169,6 +168,14 @@
                             document.webkitCancelFullScreen();
                         }
                     }
+                }
+                if (document.fullScreenEnabled != undefined
+                    || document.mozFullScreenEnabled != undefined
+                    || document.webkitFullscreenEnabled != undefined
+                ){
+                    $('#formats').parent().append(
+                        $('<a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>')
+                    );
                 }
             })(jQuery);
             //mootools stuff, if any
