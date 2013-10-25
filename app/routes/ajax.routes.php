@@ -51,7 +51,10 @@ $app->get(
         ) {
             if ( $series_path !== null && $series_path !== '' ) {
                 //names differs, load image
-                $series = unserialize($session['series']);
+                $series = null;
+                if ( isset($session['series']) ) {
+                    $series = unserialize($session['series']);
+                }
 
                 if ( !$series || $series->getPath() !== $series_path ) {
                     //check if series path are the same form params and from session
