@@ -23,13 +23,27 @@
  * @link      http://anaphore.eu
  */
 
-use \mageekguy\atoum\report\fields\runner\coverage;
+use \mageekguy\atoum;
 
-$coverageHtmlField = new coverage\html('Bach Viewer', __DIR__ . '/../coverage');
-$coverageHtmlField->setRootUrl('file://' . realpath(__DIR__ . '/../coverage'));
+$tests_dir = __DIR__ . '/../../tests-results/';
+$coverage_dir = $tests_dir . 'code-coverage/';
+
+if ( !file_exists($tests_dir) ) {
+    mkdir($tests_dir);
+    mkdir($tests_dir . 'code-coverage');
+}
+
+$coverageHtmlField = new atoum\report\fields\runner\coverage\html(
+    'Bach Viewer',
+    $coverage_dir
+);
+$coverageHtmlField->setRootUrl('file://' . realpath($coverage_dir));
+
+$xunitWriter = new atoum\writers\file($tests_dir . '/atoum.xunit.xml');
+$cloverWriter = new atoum\writers\file($tests_dir . '/clover.xml');
 
 //Not relevant for now
-/*$coverageTreemapField = new coverage\treemap(
+/*$coverageTreemapField = new atoum\report\fields\runner\coverage\treemap(
     'Bach Viewer',
     __DIR__ . '/../treemap'
 );
@@ -37,6 +51,14 @@ $coverageTreemapField
     ->setTreemapUrl('file://' . realpath(__DIR__ . '/../treemap'))
     ->setHtmlReportBaseUrl($coverageHtmlField->getRootUrl());*/
 
+$xunitReport = new atoum\reports\asynchronous\xunit();
+$xunitReport->addWriter($xunitWriter);
+
+$clover = new atoum\reports\asynchronous\clover();
+$clover->addWriter($cloverWriter);
+
+$runner->addReport($xunitReport);
+$runner->addReport($clover);
 $script
     ->addDefaultReport()
     ->addField($coverageHtmlField)
