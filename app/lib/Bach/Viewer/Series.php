@@ -26,6 +26,7 @@ use \Analog\Analog;
  */
 class Series
 {
+    private $_conf;
     private $_path;
     private $_full_path;
     private $_start;
@@ -36,14 +37,18 @@ class Series
     /**
      * Main constructor
      *
-     * @param array  $roots Configured roots
-     * @param string $path  Series path
-     * @param string $start Sub series start point (optional)
-     * @param string $end   Sub series end point (optional)
+     * @param array  $conf         Viewer configuration
+     * @param string $path         Series path
+     * @param string $app_base_url Application base URL
+     * @param string $start        Sub series start point (optional)
+     * @param string $end          Sub series end point (optional)
      */
-    public function __construct($roots, $path, $start = null, $end = null)
-    {
+    public function __construct(
+        $conf, $path, $app_base_url, $start = null, $end = null
+    ) {
         $this->_path = $path;
+        $this->_conf = $conf;
+        $roots = $conf->getRoots();
 
         foreach ( $roots as $root ) {
             if ( file_exists($root . $path) && is_dir($root . $path) ) {
@@ -67,11 +72,15 @@ class Series
             $this->_content = array();
             $handle = opendir($this->_full_path);
             while ( false !== ($entry = readdir($handle)) ) {
-                if ($entry != "." && $entry != "..") {
+                if ($entry != "."
+                    && $entry != ".."
+                    && !is_dir($this->_full_path . '/' . $entry)
+                ) {
                     try {
                         $picture = new Picture(
-                            null,
+                            $this->_conf,
                             $entry,
+                            $app_base_url,
                             $this->_full_path
                         );
                         $this->_content[] = $entry;
@@ -253,5 +262,38 @@ class Series
             );
             return $infos;
         }
+    }
+
+    /**
+     * Get list of cseries thumbnails
+     *
+     * @param array $fmt Thumbnail format form configuration
+     *
+     * @return array
+     */
+    public function getThumbs($fmt)
+    {
+        $ret = array();
+        $thumbs = array();
+
+        $ret['meta'] = $fmt;
+
+        foreach ( $this->_content as $c ) {
+            $p = new Picture($this->_conf, $c, null, $this->_full_path);
+            $path = null;
+            if ( $p->isPyramidal() ) {
+                $path = $p->getFullPath();
+            } else {
+                $path = $c;
+            }
+
+            $thumbs[] = array(
+                'name'  => $c,
+                'path'  => $path
+            );
+        }
+        $ret['thumbs'] = $thumbs;
+
+        return $ret;
     }
 }

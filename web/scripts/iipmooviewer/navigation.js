@@ -123,6 +123,8 @@ var Navigation = new Class({
       }
     }
 
+    //[JC 2013-06-20] _this was previously declared in the if...
+    var _this = this;
 
     // Create our nav buttons if requested
     if( this.options.showNavButtons ){
@@ -133,7 +135,7 @@ var Navigation = new Class({
 
       // Create our buttons as SVG with fallback to PNG
       var prefix = this.prefix;
-      ['reset','zoomIn','zoomOut'].each( function(k){
+      ['reset','zoomIn','zoomOut','rotateLeft','rotateRight'].each( function(k){
 	new Element('img',{
 	  'src': prefix + k + (Browser.buggy?'.png':'.svg'),
 	  'class': k,
@@ -152,10 +154,11 @@ var Navigation = new Class({
       navbuttons.set('slide', {duration: 300, transition: Fx.Transitions.Quad.easeInOut, mode:'vertical'});
 
       // Add events to our buttons
-      var _this = this;
       navbuttons.getElement('img.zoomIn').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
       navbuttons.getElement('img.zoomOut').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
       navbuttons.getElement('img.reset').addEvent( 'click', function(){ _this.fireEvent('reload'); });
+      navbuttons.getElement('img.rotateLeft').addEvent( 'click', function(){ _this.fireEvent('rotate',-90); });
+      navbuttons.getElement('img.rotateRight').addEvent( 'click', function(){ _this.fireEvent('rotate',90); });
 
     }
 
@@ -191,6 +194,39 @@ var Navigation = new Class({
 	    _this.position = {x: pos.x, y: pos.y-10};
 	    _this.zone.get('morph').cancel();
 	  },
+      //[JC 2013-06-20] Update outerZone
+      onDrag: function() {
+        var _navWin = $$('.navwin')[0];
+        var _toolbar = $$('.toolbar')[0];
+
+        var _styles = _this.zone.getStyles(
+            'width',
+            'height',
+            'border-top-width',
+            'border-bottom-width',
+            'border-left-width',
+            'border-right-width',
+            'top',
+            'left'
+        );
+
+        var _outerHeight = _styles.height.toInt();
+        var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
+        var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
+
+        var _outerWidth = _styles.width.toInt();
+        var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
+        var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
+
+        _this.outerZone.setStyles({
+            'border-top-width':     _outerTopBorder,
+            'border-left-width':    _outerLeftBorder,
+            'border-bottom-width':  _outerBottomBorder,
+            'border-right-width':   _outerRightBorder,
+            'height':               _outerHeight,
+            'width':                _outerWidth
+        });
+      },
 	  onComplete: this.scroll.bind(this)
         });
     }
@@ -308,7 +344,8 @@ var Navigation = new Class({
       // From a drag
       xmove = e.offsetLeft;
       ymove = e.offsetTop-10;
-      if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
+      //[JC - 2013-06-20] the following line is CSS related and CSS has been heavily changed... I don't know what was the purpose of this one.
+      //if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
     }
 
     if( xmove > (this.size.x - zone_w) ) xmove = this.size.x - zone_w;
@@ -354,7 +391,7 @@ var Navigation = new Class({
     this.zone.morph({
       fps: 30,
       left: pleft,
-      top: ptop + 8, // 8 is the height of toolbar
+      top: ptop + 10, // 8 is the height of toolbar
       width: (width-border>0)? width - border : 1, // Watch out for zero sizes!
       height: (height-border>0)? height - border : 1
     });

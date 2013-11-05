@@ -16,7 +16,7 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, &$session) {
+    function ($path) use ($app, $conf, &$session, $app_base_url) {
         $req = $app->request();
         $start = $req->get('s');
         if ( trim($start) === '' ) {
@@ -39,8 +39,9 @@ $app->get(
         $series = null;
         try {
             $series = new Series(
-                $conf->getRoots(),
+                $conf,
                 implode('/', $path),
+                $app_base_url,
                 $start,
                 $end
             );
@@ -50,6 +51,17 @@ $app->get(
                 Analog::ERROR
             );
             $app->pass();
+        }
+
+        //check if series has content, throw an error if not
+        if ( $series->getCount() === 0 ) {
+            throw new \RuntimeException(
+                str_replace(
+                    '%s',
+                    $series->getPath(),
+                    _('Series "%s" is empty!')
+                )
+            );
         }
 
         $img = null;
@@ -72,6 +84,7 @@ $app->get(
         $picture = new Picture(
             $conf,
             $img,
+            $app_base_url,
             $series->getFullPath()
         );
 

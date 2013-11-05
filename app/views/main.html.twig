@@ -3,20 +3,20 @@
     <head>
         <meta charset="utf-8"/>
         <title>{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="/styles/reset.css"/>
-        <!--[if lte IE 8]>
-            <script src="/scripts/html5-ie.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" href="{{ app_web_url  }}/styles/reset.css"/>
+        <!--[if lte IE 9]>
+            <script src="{{ app_web_url  }}/scripts/html5-ie.js"></script>
             <script type="text/javascript">
                 var _isOldIE = true;
             </script>
-            <link rel="stylesheet" href="/styles/ie.css"/>
+            <link rel="stylesheet" href="{{ app_web_url }}/styles/ie.css"/>
         <![endif]-->
         {% block head %}{% endblock %}
     </head>
     <body>
         <!--[if lt IE 8]>
-        <link rel="stylesheet" href="/styles/oldie.css" />
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/oldie.css" />
         <div id="alert-oldie">
             <h1>{%trans "Warning!" %}</h1>
             <p> {% trans "Your browser is too old and is not supported by the image viewer.<br/>Please consider upgrading your browser, or use an alternative, more recent one."%}</p>

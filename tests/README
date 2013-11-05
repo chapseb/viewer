@@ -8,9 +8,9 @@ $ php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach
 
 This will execute all available tests.
 
-If you want to generate coevrage report, simply add 
+If you want to generate coevrage report, simply add
 "-c tests/config/coverage.php" at the end of the command.
-This way, coverage informations will be created in tests/coverag directory.
+This way, coverage informations will be created in tests-results/coverage directory.
 
 Please read atoum documentation at http://docs.atoum.org/ if you want
 to learn more.

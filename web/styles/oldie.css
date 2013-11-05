@@ -3,6 +3,9 @@ section {
 }
 
 h1 {
+    left: 0;
+    top: 0;
+    position: relative;
     text-align: center;
 }
 

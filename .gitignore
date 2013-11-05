@@ -6,8 +6,14 @@ vendor/
 app/cache/
 app/logs/*.log
 app/config/local.config.yml
-tests/coverage/
+tests-results/
+build/
 #exclude not minified 3rd party libs
 web/scripts/jquery/ui/iviewer/jquery.iviewer.js
 #exclude local app configuration path
 app/config/config.inc.php
+#exclude eclipse project files
+.buildpath
+.project
+.settings/
+

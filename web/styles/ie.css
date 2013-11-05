@@ -1,7 +1,17 @@
-aside#progressbar > div {
-    background-color: white;
+aside#progressbar {
+    filter:alpha(opacity=50);
 }
 
-.zone {
-    filter:alpha(opacity=40);
+aside#progressbar > div {
+    filter:alpha(opacity=70);
+}
+
+.outerzone {
+    filter:alpha(opacity=50);
+}
+
+.navwin .zone {
+  background: white!important;
+  opacity: 0!important;
+  filter:alpha(opacity=0);
 }

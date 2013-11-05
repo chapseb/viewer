@@ -1,3 +1,21 @@
+html {
+    font-family: Verdana, Arial, sans-serif;
+    background: #414141;
+    color: white;
+}
+
+p {
+    margin: .2em 0 .3em 0;
+}
+
+a {
+    color: white;
+}
+
+em {
+    font-style: italic;
+}
+
 body {
     text-align: center;
     margin-top: 2em;
@@ -6,4 +24,10 @@ h1 {
     font-size: 1.5em;
     font-weight: bold;
     margin: .1em 0 .5em;
+}
+
+h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: .3em;
 }

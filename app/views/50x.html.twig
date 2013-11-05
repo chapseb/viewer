@@ -1,0 +1,14 @@
+{% extends "main.html.twig" %}
+
+{% block title %}{% trans "Bach's viewer - Error" %}{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="/styles/statics.css"/>
+{% endblock %}
+{% block content %}
+    <h1>BACH</h1>
+    <h2>{% trans "An error has occured" %}</h2>
+    <p>
+        <em>{{ exception.getMessage() }}</em>
+    </p>
+    <p>{% trans "Please report issue to an admin." %}<br/><a href="/">{% trans "Back to home!"  %}</a></p>
+{% endblock %}

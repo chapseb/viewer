@@ -3,30 +3,39 @@
 {% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}
 {% block head %}
         {% if not(iip) %}
-        <link rel="stylesheet" href="/styles/jquery.iviewer.css"/>
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.iviewer.css"/>
         {% else %}
-        <link rel="stylesheet" type="text/css" media="all" href="/styles/iip.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ app_web_url }}/styles/iip.css" />
         {% endif %}
-        <link rel="stylesheet" href="/styles/viewer.css"/>
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/viewer.css"/>
 {% endblock %}
 
 {% block content %}
         <section>
+            <header>
+                <h1>BACH</h1>
+                {% if series %}
+                    {% set series_name = series.getPath() %}
+                    <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
+                        {% trans %}
+                        Series {{ series_name }}:
+                        {% endtrans %}
+                        <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
+                    </span>
+                {% endif %}
+                <h2>{{ img }}</h2>
+
+                {% if not picture.isPyramidal %}
+                <div id="formats">
+                    <select name="formats">
+                        {% for key, fmt in picture.getVisibleFormats() %}
+                        <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </header>
             <figure id="viewer">
-                <header>
-                    {% if not picture.isPyramidal %}
-                    <div id="image_formats">
-                        {% trans "Image size:" %}
-                        <select name="formats" id="formats">
-                            {% for key, fmt in picture.getVisibleFormats() %}
-                            <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% endif %}
-                    {% if series %}<div id="series_pos"><span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}</div>{% endif %}
-                    <h1>{{ img }}</h1>
-                </header>
                 <noscript>
                     <img src="{{ picture.getUrl() }}" alt=""/>
                 </noscript>
@@ -41,14 +50,20 @@
                 <!-- Toolbar -->
                 <aside>
                     <ul>
-                        <li id="zoomout" title="{% trans "Zoom out" %}"></li>
-                        <li id="zoomin" title="{% trans "Zoom in" %}"></li>
-                        <li id="fullsize" title="{% trans "Show full size image" %}"></li>
-                        <li id="fitsize" title="{% trans "Fit image to screen" %}"></li>
-                        <li id="zoominfos"></li>
-                        <li id="lrotate" title="{% trans "Rotate 90 degrees by left" %}"></li>
-                        <li id="rrotate" title="{% trans "Rotate 90 degrees by right" %}"></li>
-                        <li id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"></li>
+                        {% if series %}
+                        <li id="thumbnails" title="{% trans "Show thumbnails" %}">
+                        {% endif %}
+                        {# rotation is buggy for IIP, see https://github.com/ruven/iipmooviewer/issues/13 #}
+                        {% if not iip %}
+                        <li id="lrotate" title="{% trans "Rotate 90 degrees by left" %}">
+                        <li id="rrotate" title="{% trans "Rotate 90 degrees by right" %}">
+                        {% endif %}
+                        <li id="zoomout" title="{% trans "Zoom out" %}">
+                        <li id="zoominfos">
+                        <li id="zoomin" title="{% trans "Zoom in" %}">
+                        <li id="fitsize" title="{% trans "Fit image to screen" %}">
+                        <li id="fullsize" title="{% trans "Show full size image" %}">
+                        {# <li id="moreparams" title="{% trans "More parameters" %}"> #}
                     </ul>
                 </aside>
                 {% if not(iip) %}
@@ -66,33 +81,36 @@
 {% endblock %}
 
 {% block scripts %}
-        <script type="text/javascript" src="/scripts/jquery/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery-1.9.1.min.js"></script>
         {% if not(iip) %}
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.core.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.widget.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.mouse.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/jquery.mousewheel.js"></script>
-        <script type="text/javascript" src="/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/viewer.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.widget.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.mouse.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.hammer.min.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/viewer.js"></script>
         {% else %}
-        <script type="text/javascript" src="/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
-        <script type="text/javascript" src="/scripts/mootools/mootools-more-1.4.0.1.js"></script>
-        <script type="text/javascript" src="/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/iipviewer.js"></script>
-        <script type="text/javascript" src="/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-more-1.4.0.1.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipviewer.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/touch.js"></script>
         {% if lang == 'fr_FR.utf8' %}
-        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.fr.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.fr.js"></script>
         {% else %}
-        <script type="text/javascript" src="/scripts/iipmooviewer/lang/help.en.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.en.js"></script>
         {% endif %}
-        <!--<script type="text/javascript" src="/scripts/iipmooviewer/touch.js"></script>-->
-        <script type="text/javascript" src="/scripts/iipmooviewer/navigation.js"></script>
-        <script type="text/javascript" src="/scripts/bachview/iipnavigation.js"></script>
+        <!--<script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/touch.js"></script>-->
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/navigation.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipnavigation.js"></script>
         {% endif %}
         <script>
             //global variables
             var series_path = '{{ series.getPath() }}';
+            var app_url = '{{ app_base_url }}';
             //no conflict jquery
             jQuery.noConflict();
             //jquery stuff
@@ -112,13 +130,14 @@
                     update_on_resize: true,
                     zoom_animation: false,
                     mousewheel: true,
-                    ui_disabled: true
+                    ui_disabled: true,
+                    imageName: '{{ picture.getName() }}'
                 });
                 {% else %}
 
                 {% endif %}
 
-                $('#fullscreen').click(function(){
+                $('#fullscreen').bind('click touchstart', function(){
                     toggleFullScreen();
                 });
 
@@ -150,25 +169,26 @@
                         }
                     }
                 }
+                if (document.fullScreenEnabled != undefined
+                    || document.mozFullScreenEnabled != undefined
+                    || document.webkitFullscreenEnabled != undefined
+                ){
+                    $('#formats').parent().append(
+                        $('<a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>')
+                    );
+                }
             })(jQuery);
             //mootools stuff, if any
             {% if iip %}
-                // IIPMooViewer options: See documentation at http://iipimage.sourceforge.net for more details
-                // Server path: set if not using default path
-                var server = '{{ iipserver  }}';
-
-                // The *full* image path on the server. This path does *not* need to be in the web
-                // server root directory. On Windows, use Unix style forward slash paths without
-                // the "c:" prefix
-                var image = '{{ picture.getFullPath()  }}';
-
                 // Create our iipmooviewer object
                 var _iipviewer = new BIIPMooViewer( "pviewer", {
                     {% if enable_right_click %}
                     disableContextMenu: false,
                     {% endif %}
-                    server: server,
-                    image: image,
+                    server: '{{ iipserver }}',
+                    image: '{{ picture.getFullPath() }}',
+                    imageName: '{{ picture.getName() }}',
+                    navWinSize: {{ thumb_format.width }},
                     showNavButtons: false,
                     prefix: '/images/'
                 });

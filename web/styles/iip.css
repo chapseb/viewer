@@ -14,18 +14,18 @@
 }
 
 .navcontainer {
-  position: absolute;
+  /*position: absolute;*/
+  float: right;
   z-index: 10;
   text-align: center;
   background: transparent;
-  top: 10px;
-  right: 10px;  
+  /*top: 10px;*/
+  /*right: 10px;  */
 }
 .navcontainer .toolbar {
   height: 8px;
   cursor: move;
   width: 100%;
-  opacity: 0.8;
   /* Cross browser CSS gradients from http://www.colorzilla.com/gradient-editor/ */
   background: #a9aba6; /* Old browsers */
   background: -moz-linear-gradient(top, #a9aba6 0%, #c0c2be 22%, #d5d5d2 33%, #e2e1dd 44%, #ededed 56%, #bebec1 67%, #c3c3c2 78%, #a1a4a0 89%, #878686 100%) repeat-x; /* FF3.6+ */
@@ -410,7 +410,7 @@
   -o-transition: opacity 0.5s ease-in-out;
   -ms-transition: opacity 0.5s ease-in-out;	
   transition: opacity 0.5s ease-in-out;
-  z-index:10;
+  z-index:15;
 }
 .iipmooviewer img.logo:hover { opacity: 1; }
 

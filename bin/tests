@@ -1,0 +1,8 @@
+#!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ..
+
+if [ $1 = '--coverage' ]; then
+    php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach -c tests/config/logo.php -c tests/config/coverage.php -l
+else
+    php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach -c tests/config/logo.php -l
+fi

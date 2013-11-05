@@ -10,6 +10,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var me = this;
         $.ui.iviewer.prototype._create.apply(this, arguments);
 
+        this.image_name = this.options.imageName;
+
         //add navigation overview
         this.drawNavigation();
 
@@ -32,14 +34,16 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             //load navigation overview image
             var _src;
-            if ( me.image_name ) {
-                _src = '/ajax/img/' + me.image_name + '/format/thumb';
+            if ( me.image_name && series_path != '' ) {
+                _src = app_url + '/ajax/img/'  + series_path  + '/' + me.image_name + '/format/thumb';
             } else {
                 _src  = me.options.src.replace(/show\/.+\//, 'show/thumb/');
             }
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
-                $('.navwin > img').removeAttr('style');
+                $('.navwin, .navwin > img, .outerzone').removeAttr('style')
+                    .height(me.nav_img_object.display_height())
+                    .width(me.nav_img_object.display_width());
                 me._setOverviewMaskSize();
             }, function() {
                 me._trigger("onErrorLoad", 0, src);
@@ -132,28 +136,94 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var me=this;
 
         //toolbar
-        $("#zoomin").click(function(){ me.zoom_by(1); });
-        $("#zoomout").click(function(){ me.zoom_by(-1); });
-        $("#fitsize").click(function(){ me.fit(); });
-        $("#fullsize").click(function(){ me.set_zoom(100); });
-        $("#lrotate").click(function(){ me.angle(-90); });
-        $("#rrotate").click(function(){ me.angle(90); });
+        $('#thumbnails').bind('click touchstart', function(){
+            var _thumbview = $('#thumbnails_view');
+            if ( _thumbview.length > 0 ) {
+                _thumbview.remove();
+            } else {
+                _thumbview = $('<div id="thumbnails_view"></div>');
+
+                $.get(
+                    app_url + '/ajax/series/thumbs',
+                    function(data){
+                        var _thumbs = data['thumbs'];
+                        var _meta = data['meta'];
+                        for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
+                            var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
+                            var _img = $('<img src="' + _src  + '" alt=""/>');
+                            var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
+                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            if ( me.image_name == _thumbs[i].name ) {
+                                _a.addClass('current');
+                            }
+                            _a.bind('click touch', function(){
+                                me.display(me._imgNameFromLink($(this)));
+                                $('#formats > select').val('default');
+                                _thumbview.remove();
+                                return false;
+                            });
+                            _img.appendTo(_a);
+                            _a.appendTo(_thumbview);
+                        }
+                        _thumbview.prependTo('body');
+                    },
+                    'json'
+                ).fail(function(){
+                    alert('An error occured loading series thumbnails.');
+                });
+
+
+            }
+        });
+        $("#zoomin").bind('click touchstart', function(){ me.zoom_by(1); });
+        $("#zoomout").bind('click touchstart', function(){ me.zoom_by(-1); });
+        $("#fitsize").bind('click touchstart', function(){ me.fit(); });
+        $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
+        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
+        $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
         this.zoom_object = $('#zoominfos');
 
+        //prevent this to execute on ios...
+        var agent = navigator.userAgent.toLowerCase();
+        if ( !(agent.indexOf('iphone') > 0 || agent.indexOf('ipad') >= 0) && navigator.platform != 'Win32' ) {
+            var tflagin = false;
+            var tflagout = false;
+            var _hammer = $('#viewer').hammer({
+                prevent_default: true
+            });
+            _hammer.on('pinchin', function(ev){
+                if ( !tflagin ) {
+                    tflagin = true;
+                    setTimeout(function(){ tflagin = false;}, 100);
+                    me.zoom_by(-1);
+                }
+                ev.gesture.preventDefault()
+            });
+            _hammer.on('pinchout', function(ev){
+                if ( !tflagout ) {
+                    tflagout = true;
+                    timer = setTimeout(function(){tflagout = false;}, 100);
+                    me.zoom_by(1);
+                }
+                ev.gesture.preventDefault()
+            });
+        }
+
         //resize image
-        $('#formats').change(function(){
+        $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
-            me.loadImage('/ajax/img/' + me.image_name + '/format/' + _format);
-        });
+            if ( series_path != '') {
+                var _src = app_url + '/ajax/img/' + series_path + '/' + me.image_name  + '/format/' + _format;
+            } else {
+                _src  = me.options.src.replace(/show\/.+\//, 'show/' + _format + '/');
+            }
+            me.loadImage(_src);
+        }).val('default');
 
         //navbar
-        $('#previmg,#nextimg').click(function(){
-            var _this = $(this);
-            var _str = _this.attr('href');
-            var _re = /img=(.*)/;
-            var _img = _str.match(_re)[1];
-            me.display(_img);
-            $('#formats').val('default');
+        $('#previmg,#nextimg').bind('click touchstart', function(){
+            me.display(me._imgNameFromLink($(this)));
+            $('#formats > select').val('default');
             me.drawNavigation();
             return false;
         });
@@ -172,6 +242,16 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             me.zoom_by(1, mouse_pos);
             return false;
+        });
+
+        $('.toolbarbtn').bind('click touchstart', function() {
+            $('.navwin').toggle();
+            $(this).toggleClass('off');
+        });
+
+        //prevent double click to be passed to viewer container
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
+            e.stopPropagation();
         });
 
         //bind keys
@@ -204,7 +284,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     /* update scale info in the container */
-    /* Overrideserrides iviewer method to remove ui check */
+    /* Overrides iviewer method to remove ui check */
     update_status: function()
     {
         var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height());
@@ -225,15 +305,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( series_path != '') {
             img = series_path + '/' + img;
         }
-        this.loadImage('/ajax/img/' + img);
+        this.loadImage(app_url + '/ajax/img/' + img);
     },
 
     /**
-     * Update series informations (mainly navigation on previous/next images)
+     * Update series informations:
+     * - navigation on previous/next images
+     * - position in current series
+     * - title
      */
     updateSeriesInfos: function()
     {
-        var _url = '/ajax/series/infos';
+        var _url = app_url + '/ajax/series/infos';
         if ( this.image_name != undefined ) {
             _url += '/' + this.image_name;
         }
@@ -243,7 +326,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 $('#previmg').attr('href', '?img=' + data.prev);
                 $('#nextimg').attr('href', '?img=' + data.next);
                 $('#current_pos').html(data.position);
-                $('header > h1').html(data.current);
+                $('header > h2').html(data.current);
             },
             'json'
         ).fail(function(){
@@ -260,11 +343,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
         var _navContainer = $('<div class="navcontainer" id="overview"></div>');
         var _navContainerBar = $('<div class="toolbar"></div>');
+        var _navContainerBarButton = $('<div class="toolbarbtn"></div>');
+        _navContainerBar.append(_navContainerBarButton);
         _navContainer.append(_navContainerBar);
         var _navWin = $('<div class="navwin"></div>');
+        var _outerZone = $('<div class="outerzone"></div>');
         var _navWinZone = $('<div class="zone"></div>');
 
-        _navWin.on('click', function(e) {
+        _navWin.bind('click touchstart', function(e) {
             var _this = _navWin;
             var _container = _navContainer;
             var _zone = _navWinZone;
@@ -329,10 +415,21 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _posy = _this.height() - _h + _bar.height();
             }
 
+            var _outerBottomBorder = _navWin.height() - Math.round(_posy) + _bar.height() + _borderTop - _outerZone.height() + _borderBottom;
+
+            var _outerRightBorder = _navWin.width() - Math.round(_posx) + _borderLeft - _outerZone.width() + _borderRight;
+
             //move zone
+            _outerZone.css({
+                'border-top-width':     Math.round(_posy) - _bar.height() + _borderTop,
+                'border-left-width':    Math.round(_posx) + _borderLeft,
+                'border-bottom-width':  _outerBottomBorder,
+                'border-right-width':   _outerRightBorder
+            });
+
             _zone.css({
-                'top': _posy,
-                'left': _posx
+                'top': Math.round(_posy),
+                'left': Math.round(_posx)
             });
 
             //update image position
@@ -346,6 +443,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             e.stopPropagation();
         });
         _navWinZone.hide();
+        _navWin.append(_outerZone);
         _navWin.append(_navWinZone);
         _navContainer.append(_navWin);
         $('#viewer').append(_navContainer);
@@ -358,6 +456,23 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
              drag: function() {
                 //get zone coords
                 var _coords = _navWinZone.css(['top', 'left']);
+                var _outerSizes = _outerZone.css(['width', 'height']);
+
+                //update outer zone coordinates
+                var _outerHeight = parseFloat(_outerSizes['height']);
+                var _outerBottomBorder = _navWin.height() - parseInt(_coords['top']) + _navContainerBar.height() - parseInt(_outerSizes['height']) + 1;
+
+                var _outerWidth = parseFloat(_outerSizes['width']);
+                var _outerRightBorder = _navWin.width() - parseInt(_coords['left']) - parseInt(_outerSizes['width']) + 1;
+
+                _outerZone.css({
+                    'border-top-width':     parseFloat(_coords['top']) - _navContainerBar.height(),
+                    'border-left-width':    parseFloat(_coords['left']),
+                    'border-bottom-width':  _outerBottomBorder,
+                    'border-right-width':   _outerRightBorder,
+                    'height':               _outerHeight,
+                    'width':                _outerWidth
+                });
 
                 //update image position
                 var _ratio = me.img_object.display_width() / _navWin.width();
@@ -375,15 +490,16 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.nav_img_object = new $.ui.iviewer.ImageObject(this.options.zoom_animation);
         this.nav_img_object.object()
             .prependTo($('div.navwin'));
-
     },
 
     _setOverviewMaskSize: function()
     {
         var _zone = $('#overview > .navwin > .zone');
+        var _outerZone = $('#overview > .navwin > .outerzone');
         var _img_height = this.nav_img_object.display_height();
         var _img_width = this.nav_img_object.display_width();
         var _bar = $('#overview > .toolbar');
+        var _navWin = $('.navwin');
 
         var _borders = _zone.css([
             'border-top-width',
@@ -422,37 +538,45 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         } else {
             //image is taller than window. Calculate zone size and position
             if ( this.img_object._y < 0 ) {
-                _topPos = this.img_object._y * -1 / this.img_object.display_height() * _img_height;
+                _topPos = Math.round(this.img_object._y * -1 / this.img_object.display_height() * _img_height);
             }
 
             if ( this.img_object._x < 0 ) {
-                _leftPos = this.img_object._x * -1 / this.img_object.display_width() * _img_width;
+                _leftPos = Math.round(this.img_object._x * -1 / this.img_object.display_width() * _img_width);
             }
 
             if ( this.img_object.display_height() > this.container[0].clientHeight ) {
-                _height = this.container[0].clientHeight / this.img_object.display_height() * _img_height;
+                _height = Math.round(this.container[0].clientHeight / this.img_object.display_height() * _img_height);
             } else {
                 _height = _img_height;
             }
 
             if ( this.img_object.display_width() > this.container[0].clientWidth ) {
-                _width = this.container[0].clientWidth / this.img_object.display_width() * _img_width;
+                _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
             } else {
                 _width = _img_width;
             }
         }
 
-        //add bar size
-        _topPos = _topPos + _bar.height();
+        var _outerHeight = _height;
+        var _outerBottomBorder = _navWin.height() - _topPos - _height + 1;
 
-        //remove borders sizes
-        _width = _width - _borderLeft - _borderRight;
-        _height = _height - _borderTop - _borderBottom;
+        var _outerWidth = _width;
+        var _outerRightBorder = _navWin.width() - _leftPos - _width + 1;
+
+        _outerZone.css({
+            'border-top-width':     _topPos,
+            'border-left-width':    _leftPos,
+            'border-bottom-width':  _outerBottomBorder,
+            'border-right-width':   _outerRightBorder,
+            'height':               _outerHeight,
+            'width':                _outerWidth
+        });
 
         _zone.width(_width);
         _zone.height(_height);
         _zone.css({
-            'top': _topPos,
+            'top': _topPos + _bar.height(),
             'left': _leftPos,
             'position': 'absolute'
         });
@@ -460,6 +584,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( _zone.is(':hidden') ) {
             _zone.show();
         }
+    },
+
+    _imgNameFromLink: function(link) {
+        var _str = link.attr('href');
+        var _re = /img=(.*)/;
+        var _img = _str.match(_re)[1];
+        return _img;
     }
 }));
 

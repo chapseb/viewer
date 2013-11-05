@@ -1,155 +1,180 @@
+# , 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Johan Cwiklinski <trasher@x-tnd.be>\n"
-"Language-Team: \n"
-"Language: \n"
+"PO-Revision-Date: 2013-06-21 14:16+0200\n"
+"Last-Translator: \n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:33
-#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:78
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:90
 msgid "Bach Viewer"
 msgstr "Bach Viewer"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:71
-msgid "Image size:"
-msgstr "Image size:"
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:79
+#, php-format
+msgid "You are currently browsing '%series_name%' series."
+msgstr "You are currently browsing '%series_name%' series."
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:135
-msgid "Go to previous image"
-msgstr "Go to previous image"
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:83
+msgid "Series %series_name%:"
+msgstr "Series %series_name%:"
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:137
-msgid "Previous"
-msgstr "Previous"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:143
-msgid "Go to next image"
-msgstr "Go to next image"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:145
-msgid "Next"
-msgstr "Next"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:156
-msgid "Zoom out"
-msgstr "Zoom out"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
-msgid "Zoom in"
-msgstr "Zoom in"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:164
-msgid "Show full size image"
-msgstr "Show full size image"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
-msgid "Fit image to screen"
-msgstr "Fit image to screen"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:173
-msgid "Rotate 90 degrees by left"
-msgstr "Rotate 90 degrees by left"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:177
-msgid "Rotate 90 degrees by right"
-msgstr "Rotate 90 degrees by right"
-
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:181
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:131
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:133
 msgid "Enter/exit fullscreen"
 msgstr "Enter/exit fullscreen"
 
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:158
+msgid "Go to previous image"
+msgstr "Go to previous image"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:160
+msgid "Previous"
+msgstr "Previous"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:166
+msgid "Go to next image"
+msgstr "Go to next image"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:168
+msgid "Next"
+msgstr "Next"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:182
+msgid "Show thumbnails"
+msgstr "Show thumbnails"
+
 #: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:193
+msgid "Rotate 90 degrees by left"
+msgstr "Rotate 90 degrees by left"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:197
+msgid "Rotate 90 degrees by right"
+msgstr "Rotate 90 degrees by right"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:203
+msgid "Zoom out"
+msgstr "Zoom out"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:208
+msgid "Zoom in"
+msgstr "Zoom in"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:212
+msgid "Fit image to screen"
+msgstr "Fit image to screen"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:216
+msgid "Show full size image"
+msgstr "Show full size image"
+
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:230
 msgid "Loading image, please wait..."
 msgstr "Loading image, please wait..."
 
-#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:198
+#: /tmp/viewer_cache_temp/5f/aa/a3fc467ff2e5638853ba54a06d43.php:235
 msgid "Loading..."
 msgstr "Loading..."
-
-#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:52
-msgid "Warning!"
-msgstr "Warning!"
-
-#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:56
-msgid ""
-"Your browser is too old and is not supported by the image viewer.<br/>Please "
-"consider upgrading your browser, or use an alternative, more recent one."
-msgstr ""
-"Your browser is too old and is not supported by the image viewer.<br/>Please "
-"consider upgrading your browser, or use an alternative, more recent one."
 
 #: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:32
 msgid "Bach's viewer - Page not found"
 msgstr "Bach's viewer - Page not found"
 
-#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:48
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:50
 msgid "Page not found"
 msgstr "Page not found"
 
-#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:52
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:54
 msgid "The page you're looking for does not exist, or has been removed."
 msgstr "The page you're looking for does not exist, or has been removed."
 
-#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:54
+#: /tmp/viewer_cache_temp/40/4b/ef90ebab671b6067ec12af5ad3a8.php:56
+#: /tmp/viewer_cache_temp/c6/bb/a894c765e93c3b05e2c62410bf3d.php:62
 msgid "Back to home!"
 msgstr "Back to home!"
 
-#: app/lib/Bach/Viewer/Picture.php:95
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:64
+msgid "Warning!"
+msgstr "Warning!"
+
+#: /tmp/viewer_cache_temp/1f/b2/2bbf03d83a8cf6d43f1db1f9cabb.php:68
+msgid ""
+"Your browser is too old and is not supported by the image viewer.<br/>Please "
+"consider upgrading your browser, or use an alternative, more recent one."
+msgstr ""
+"Your browser is too old and is not supported by the image viewer.<br/>Please "
+"consider upgrading your browser, or use an alternative, more recent one."
+
+#: /tmp/viewer_cache_temp/c6/bb/a894c765e93c3b05e2c62410bf3d.php:32
+msgid "Bach's viewer - Error"
+msgstr "Bach's viewer - Error"
+
+#: /tmp/viewer_cache_temp/c6/bb/a894c765e93c3b05e2c62410bf3d.php:50
+msgid "An error has occured"
+msgstr "An error has occured"
+
+#: /tmp/viewer_cache_temp/c6/bb/a894c765e93c3b05e2c62410bf3d.php:60
+msgid "Please report issue to an admin."
+msgstr "Please report issue to an admin."
+
+#: app/lib/Bach/Viewer/Picture.php:98
 msgid "Image path set to \"%path\""
 msgstr "Image path set to \"%path\""
 
-#: app/lib/Bach/Viewer/Picture.php:109
+#: app/lib/Bach/Viewer/Picture.php:112
 #, php-format
 msgid "File %file does not exists!"
 msgstr "File %file does not exists!"
 
-#: app/lib/Bach/Viewer/Picture.php:132
+#: app/lib/Bach/Viewer/Picture.php:135
 msgid "Unable to get image width!"
 msgstr "Unable to get image width!"
 
-#: app/lib/Bach/Viewer/Picture.php:142
+#: app/lib/Bach/Viewer/Picture.php:145
 msgid "Unable to get image height!"
 msgstr "Unable to get image height!"
 
-#: app/lib/Bach/Viewer/Picture.php:169
+#: app/lib/Bach/Viewer/Picture.php:172
 msgid "Unsupported image format!"
 msgstr "Unsupported image format!"
 
-#: app/lib/Bach/Viewer/Picture.php:178
+#: app/lib/Bach/Viewer/Picture.php:181
 msgid "Image format not supported if not pyramidal"
 msgstr "Image format not supported if not pyramidal"
 
-#: app/lib/Bach/Viewer/Picture.php:243
+#: app/lib/Bach/Viewer/Picture.php:246
 msgid "%path does not exists or is not writable!"
 msgstr "%path does not exists or is not writable!"
 
-#: app/lib/Bach/Viewer/Picture.php:284
+#: app/lib/Bach/Viewer/Picture.php:287
 msgid "Prepare method was explicitely set to Gmagick, but it is missing!"
 msgstr "Prepare method was explicitely set to Gmagick, but it is missing!"
 
-#: app/lib/Bach/Viewer/Picture.php:294
+#: app/lib/Bach/Viewer/Picture.php:297
 msgid "Prepare method was explicitely set to Imagick, but it is missing!"
 msgstr "Prepare method was explicitely set to Imagick, but it is missing!"
 
-#: app/lib/Bach/Viewer/Picture.php:310
+#: app/lib/Bach/Viewer/Picture.php:313
 msgid "Falling back to Gd method."
 msgstr "Falling back to Gd method."
 
-#: app/lib/Bach/Viewer/Picture.php:447
+#: app/lib/Bach/Viewer/Picture.php:450
 msgid "TIFF images cannot be resized using Gd library!"
 msgstr "TIFF images cannot be resized using Gd library!"
 
-#: app/lib/Bach/Viewer/Picture.php:453 app/lib/Bach/Viewer/Picture.php:457
+#: app/lib/Bach/Viewer/Picture.php:456 app/lib/Bach/Viewer/Picture.php:460
 msgid "Gd is not present!"
 msgstr "Gd is not present!"
 
-#: app/lib/Bach/Viewer/Picture.php:504
+#: app/lib/Bach/Viewer/Picture.php:506
 msgid "full"
 msgstr "full"
 
@@ -165,22 +190,38 @@ msgstr "Added root path: %root"
 msgid "The root path \"%root\" does not exists or is not a directory!"
 msgstr "The root path \"%root\" does not exists or is not a directory!"
 
-#: app/lib/Bach/Viewer/Series.php:55
+#: app/lib/Bach/Viewer/Series.php:56
 msgid "Series path set to \"%path\""
 msgstr "Series path set to \"%path\""
 
-#: app/lib/Bach/Viewer/Series.php:64
+#: app/lib/Bach/Viewer/Series.php:65
 msgid "No matching root found!"
 msgstr "No matching root found!"
 
-#: app/lib/Bach/Viewer/Series.php:141
+#: app/lib/Bach/Viewer/Series.php:146
 msgid "Image %image is not part of current series!"
 msgstr "Image %image is not part of current series!"
 
-#: app/lib/Bach/Viewer/Series.php:165
+#: app/lib/Bach/Viewer/Series.php:170
 msgid "No image at position %pos!"
 msgstr "No image at position %pos!"
 
-#: app/lib/Bach/Viewer/Series.php:243
+#: app/lib/Bach/Viewer/Series.php:248
 msgid "Series has not been initialized yet."
 msgstr "Series has not been initialized yet."
+
+#: app/routes/series.routes.php:35
+msgid "Sub series cannot be instancied; missing one of start or end param!"
+msgstr "Sub series cannot be instancied; missing one of start or end param!"
+
+#: app/routes/series.routes.php:50
+msgid "Cannot load series: "
+msgstr "Cannot load series: "
+
+#: app/routes/series.routes.php:62
+#, php-format
+msgid "Series \"%s\" is empty!"
+msgstr "Series \"%s\" is empty!"
+
+#~ msgid "Image size:"
+#~ msgstr "Image size:"

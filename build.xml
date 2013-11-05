@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Viewer" default="dist">
+    <property name="source" value="app" />
+
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+        <echo msg="Making directories..." />
+        <mkdir dir="${project.basedir}/build/api" />
+        <mkdir dir="${project.basedir}/build/code-browser" />
+        <mkdir dir="${project.basedir}/build/coverage" />
+        <mkdir dir="${project.basedir}/build/logs" />
+        <mkdir dir="${project.basedir}/build" />
+        <mkdir dir="${project.basedir}/build/viewer" />
+        <mkdir dir="${project.basedir}/build/pdepend" />
+    </target>
+
+    <!-- ======================= -->
+    <!-- Copy app for deployment -->
+    <!-- ======================= -->
+    <target name="build" depends="prepare,install-deps,build-classmap">
+        <echo msg="Bach is building..." />
+
+        <copy file="LICENSE" tofile="${project.basedir}/build/viewer/LICENSE" overwrite="true"/>
+        <copy file="README" tofile="${project.basedir}/build/viewer/README" overwrite="true"/>
+        <copy todir="${project.basedir}/build/viewer/app" >
+            <fileset dir="app">
+                <patternset>
+                    <exclude name="cache/**"/>
+                    <exclude name="logs/**"/>
+                </patternset>
+            </fileset>
+        </copy>
+        <copy todir="${project.basedir}/build/viewer/web" >
+            <fileset dir="web">
+                <patternset>
+                    <exclude name="uploads/**"/>
+                    <exclude name="covers/**"/>
+                </patternset>
+            </fileset>
+        </copy>
+        <phingcall target="clean-vendors" />
+    </target>
+
+    <!-- ================= -->
+    <!-- Launch unit tests -->
+    <!-- ================= -->
+    <target name="atoum">
+        <exec logoutput="true" dir="${project.basedir}" command="php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach -c tests/config/coverage.php" escape="false" />
+    </target>
+
+    <!-- ================================ -->
+    <!-- Copy and clean vendors libraries -->
+    <!-- ================================ -->
+    <target name="clean-vendors" depends="prepare">
+        <copy todir="${project.basedir}/build/viewer/vendor" >
+            <fileset dir="vendor">
+                <patternset>
+                    <exclude name=".git"/>
+                    <exclude name="**/*Test*"/>
+                </patternset>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: dist                       --> 
+    <!-- ============================================  -->
+    <target name="dist" depends="clean,qa,build">
+        <echo msg="Creating archive..." />
+
+        <tar destfile="./build/viewer.tar.gz" compression="gzip">
+            <fileset dir="./build/viewer">
+                <include name="*" />
+            </fileset>
+        </tar>
+
+        <echo msg="Files copied and compressed in build directory OK!" />
+    </target>
+
+    <!-- ================================= -->
+    <!-- Install dependencies via composer -->
+    <!-- ================================= -->
+    <target name="install-deps">
+        <composer command="install"/>
+    </target>
+
+    <!-- ================================= -->
+    <!-- Build composer optimized classmap -->
+    <!-- ================================= -->
+    <target name="build-classmap">
+        <composer command="dump-autoload">
+            <arg value="-o"/>
+        </composer>
+    </target>
+
+    <!-- ============ -->
+    <!-- Main QA task -->
+    <!-- ============ -->
+    <target name="qa" description="Quality Assurance tasks" depends="prepare">
+        <phingcall target="pdepend" />
+        <!--<phingcall target="phpmd" />-->
+        <phingcall target="phpcpd" />
+        <phingcall target="phploc" />
+        <phingcall target="phpcs" />
+        <!--<phingcall target="phpdoc" />-->
+        <phingcall target="atoum" />
+        <!--<phingcall target="phpcb" />-->
+    </target>
+
+    <!-- ====================== -->
+    <!-- Coding standards check -->
+    <!-- ====================== -->
+    <target name="phpcs">
+        <phpcodesniffer standard="PEAR">
+            <fileset dir="${project.basedir}/${source}">
+                <include name="**/*.php"/>
+            </fileset>
+            <formatter type="checkstyle" outfile="${project.basedir}/build/logs/checkstyle.xml"/>
+        </phpcodesniffer>
+    </target>
+
+    <!-- ================== -->
+    <!-- Dependencies check -->
+    <!-- ================== -->
+    <target name="pdepend" depends="prepare">
+        <phpdepend file="${project.basedir}/${source}" excludeDirectories="skeleton">
+            <logger type="jdepend-xml" outfile="${project.basedir}/build/logs/jdepend.xml" />
+            <logger type="jdepend-chart" outfile="${project.basedir}/build/pdepend/dependencies.svg" />
+            <logger type="overview-pyramid" outfile="${project.basedir}/build/pdepend/overview-pyramid.svg" />
+        </phpdepend>
+    </target>
+
+    <!-- ============= -->
+    <!-- Mess detector -->
+    <!-- ============= -->
+    <target name="phpmd" depends="prepare">
+        <phpmd file="${project.basedir}/${source}">
+            <formatter type="xml" outfile="${project.basedir}/build/phpmd.xml" />
+        </phpmd>
+    </target>
+
+    <!-- =================== -->
+    <!-- Copy/paste detector -->
+    <!-- =================== -->
+    <target name="phpcpd" depends="prepare">
+        <phpcpd file="${project.basedir}/${source}">
+            <formatter type="pmd" outfile="${project.basedir}/build/logs/pmd-cpd.xml"/>
+        </phpcpd>
+    </target>
+
+    <!-- ===================== -->
+    <!-- Some stats on project -->
+    <!-- ===================== -->
+    <target name="phploc" depends="prepare">
+        <exec logoutput="true" dir="${project.basedir}" command="phploc --log-csv '${project.basedir}/build/logs/phploc.csv' '${project.basedir}/${source}'" escape="false" />
+    </target>
+
+    <!-- ===================== -->
+    <!-- CodeBrowser generator -->
+    <!-- ===================== -->
+    <target name="phpcb" depends="prepare">
+        <exec logoutput="true" command="phpcb --log '${project.basedir}/build/logs' --source '${project.basedir}' --output '${project.basedir}/build/code-browser'" escape="false" />
+    </target>
+
+    <!-- ================ -->
+    <!-- Clean everything -->
+    <!-- ================ -->
+    <target name="clean" description="Clean all builds">
+        <delete dir="${project.basedir}/build"/>
+    </target>
+
+</project>

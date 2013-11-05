@@ -136,7 +136,8 @@ IIPMooViewer.implement({
 	    }
 
 	    // Rotation
-	    var r1 = Math.atan2( _this.touchend[1].y - _this.touchend[0].y, _this.touchend[1].x - _this.touchend[0].x ) * 180 / Math.PI;
+	    // [JC] 2013-08-30] Disable buggy rotation, see https://github.com/ruven/iipmooviewer/issues/13
+	    /*var r1 = Math.atan2( _this.touchend[1].y - _this.touchend[0].y, _this.touchend[1].x - _this.touchend[0].x ) * 180 / Math.PI;
 	    var r2 = Math.atan2( _this.touchstart[1].y - _this.touchstart[0].y, _this.touchstart[1].x - _this.touchstart[0].x ) * 180 / Math.PI;
 	    var rotation = r1 - r2;
 	    if( Math.abs(rotation) > 25 ){
@@ -145,7 +146,7 @@ IIPMooViewer.implement({
 	      else r -= 90 % 360;
 	      _this.rotate(r);
 	      if(IIPMooViewer.sync) IIPMooViewer.windows(_this).invoke( 'rotate', r );
-	    }
+	    }*/
 
 	    _this.touchend = null;
 	  }

@@ -9,6 +9,10 @@ var BIIPMooViewer = new Class({
         if ( options.disableContextMenu == false ) {
             this.disableContextMenu = false;
         }
+
+        //path
+        this.fpath = options.image.replace(options.imageName, '');
+
         // Navigation window options
         this.navigation = null;
         if( (typeof(BNavigation)==="function") ){
@@ -46,7 +50,7 @@ var BIIPMooViewer = new Class({
             'events': {
                 click: function(){ this.fade('out'); }
             },
-            'html': '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="'+this.prefix+'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 Ajax High Resolution Image Viewer - Version '+this.version+'<br/><ul><li>'+IIPMooViewer.lang.navigate+'</li><li>'+IIPMooViewer.lang.zoomIn+'</li><li>'+IIPMooViewer.lang.zoomOut+'</li><li>'+IIPMooViewer.lang.rotate+'</li><li>'+IIPMooViewer.lang.fullscreen+'</li><li>'+IIPMooViewer.lang.navigation+'</li></ul><br/>'+IIPMooViewer.lang.more+' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
+            'html': '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="'+this.prefix+'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 Ajax High Resolution Image Viewer - Version '+this.version+'<br/><ul><li>'+IIPMooViewer.lang.navigate+'</li><li>'+IIPMooViewer.lang.zoomIn+'</li><li>'+IIPMooViewer.lang.zoomOut+'</li><li>'+IIPMooViewer.lang.fullscreen+'</li><li>'+IIPMooViewer.lang.navigation+'</li></ul><br/>'+IIPMooViewer.lang.more+' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
         }).inject( this.container );
     },
 
@@ -56,15 +60,16 @@ var BIIPMooViewer = new Class({
      */
     calculateNavSize: function()    {
 
-        var thumb_width = Math.round(this.view.w * this.navigation.options.navWinSize);
+        //var thumb_width = Math.round(this.view.w * this.navigation.options.navWinSize);
+        var thumb_width = this.navigation.options.navWinSize;
 
         // For panoramic images, use a large navigation window
         /*if( this.max_size.w > 2*this.max_size.h ) thumb_width = Math.round( this.view.w/2 );*/
 
         // Make sure our height is not more than 50% of view height
-        if( (this.max_size.h/this.max_size.w)*thumb_width > this.view.h*0.5 ){
+        /*if( (this.max_size.h/this.max_size.w)*thumb_width > this.view.h*0.5 ){
             thumb_width = Math.round( this.view.h * 0.5 * this.max_size.w/this.max_size.h );
-        }
+        }*/
 
         this.navigation.size.x = thumb_width;
         this.navigation.size.y = Math.round( (this.max_size.h/this.max_size.w)*thumb_width );
@@ -150,5 +155,41 @@ var BIIPMooViewer = new Class({
       break;
     }
 
-  }
+  },
+
+    /**
+     * Update series informations:
+     * - navigation on previous/next images
+     * - position in current series
+     * - title
+     */
+    updateSeriesInfos: function()
+    {
+        var _url = '/ajax/series/infos';
+        if ( this.image_name != undefined ) {
+            _url += '/' + this.image_name;
+        }
+
+        var _req = new Request.JSON({
+            url: _url,
+            onSuccess: function(data){
+                $$('#previmg').set('href', '?img=' + data.prev);
+                $$('#nextimg').set('href', '?img=' + data.next);
+                $$('#current_pos').set('text', data.position);
+                $$('header > h2').set('text', data.current);
+            },
+            onFailure: function(){
+            alert('An error occured loading series informations, navigation may fail.');
+            }
+        }).get();
+    },
+
+    /**
+     * Overrides IIP navigation
+     */
+    changeImage: function( name, path ) {
+        this.image_name = name;
+        this.parent(path);
+        this.updateSeriesInfos();
+    }
 });
