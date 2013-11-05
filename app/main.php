@@ -100,7 +100,9 @@ if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php'))
     && strncmp($_SERVER['PHP_SELF'], '/debug.php', strlen('/debug.php'))
 ) {
     preg_match('/.*(index|debug)\.php/', $_SERVER['PHP_SELF'], $matches);
-    $app_base_url = $matches[0];
+    if ( isset($matches[0]) ) {
+        $app_base_url = $matches[0];
+    }
 }
 
 $view = $app->view();
