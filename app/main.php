@@ -13,7 +13,7 @@
 
 use \Slim\Slim;
 use \Slim\Route;
-use \Slim\Extras\Views\Twig;
+use \Slim\Views\Twig;
 use \Bach\Viewer\Conf;
 use \Bach\Viewer\Picture;
 use \Analog\Analog;
@@ -103,12 +103,13 @@ if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php'))
     $app_base_url = $matches[0];
 }
 
-Twig::$twigExtensions = array(
+$view = $app->view();
+$view->parserExtensions = array(
     new Twig_Extensions_Extension_I18n()
 );
 
 if ( defined('APP_CACHE') && APP_CACHE !== false ) {
-    Twig::$twigOptions = array(
+    $view->parserOptions = array(
         'cache'         => APP_CACHE,
         'auto_reload'   => true
     );
