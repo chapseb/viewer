@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ..
+php vendor/atoum/atoum/bin/atoum  -bf tests/Bootstrap.php -d tests/Bach -c tests/config/logo.php -l
