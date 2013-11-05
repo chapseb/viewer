@@ -488,7 +488,7 @@ class Picture
     }
 
     /**
-     * Get "visible" formats (ie. no thumbs)
+     * Get "visible" formats (ie. no thumbs, nor medium)
      *
      * @return array
      */
@@ -499,7 +499,7 @@ class Picture
         if ( count($this->_conf->getFormats()) > 0 ) {
             $formats = $this->_conf->getFormats();
             foreach ( $formats as $k=>$fmt ) {
-                if ( $k !== 'thumb' ) {
+                if ( $k !== 'thumb' && $k !== 'medium' ) {
                     $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' . $fmt['height'];
                 }
             }
