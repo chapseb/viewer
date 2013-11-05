@@ -26,6 +26,7 @@ use \Analog\Analog;
  */
 class Series
 {
+    private $_conf;
     private $_path;
     private $_full_path;
     private $_start;
@@ -36,15 +37,18 @@ class Series
     /**
      * Main constructor
      *
-     * @param array  $roots        Configured roots
+     * @param array  $conf         Viewer configuration
      * @param string $path         Series path
      * @param string $app_base_url Application base URL
      * @param string $start        Sub series start point (optional)
      * @param string $end          Sub series end point (optional)
      */
-    public function __construct($roots, $path, $app_base_url, $start = null, $end = null)
-    {
+    public function __construct(
+        $conf, $path, $app_base_url, $start = null, $end = null
+    ) {
         $this->_path = $path;
+        $this->_conf = $conf;
+        $roots = $conf->getRoots();
 
         foreach ( $roots as $root ) {
             if ( file_exists($root . $path) && is_dir($root . $path) ) {
@@ -74,7 +78,7 @@ class Series
                 ) {
                     try {
                         $picture = new Picture(
-                            null,
+                            $this->_conf,
                             $entry,
                             $app_base_url,
                             $this->_full_path
@@ -275,7 +279,7 @@ class Series
         $ret['meta'] = $fmt;
 
         foreach ( $this->_content as $c ) {
-            $p = new Picture(null, $c, null, $this->_full_path);
+            $p = new Picture($this->_conf, $c, null, $this->_full_path);
             $path = null;
             if ( $p->isPyramidal() ) {
                 $path = $p->getFullPath();

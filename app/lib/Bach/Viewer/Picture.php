@@ -104,7 +104,7 @@ class Picture
                 }
             }
 
-            //if file has not been found in roots, trhw an exception
+            //if file has not been found in roots, throw an exception
             if ( !file_exists($this->_full_path) ) {
                 throw new \RuntimeException(
                     str_replace(

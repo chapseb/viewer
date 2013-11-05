@@ -24,7 +24,7 @@ $app->get(
 
         if ( $series_path !== null ) {
             $series = new Series(
-                $conf->getRoots(),
+                $conf,
                 $series_path,
                 $app_base_url
             );
@@ -59,7 +59,7 @@ $app->get(
                 if ( !$series || $series->getPath() !== $series_path ) {
                     //check if series path are the same form params and from session
                     $series = new Series(
-                        $conf->getRoots(),
+                        $conf,
                         $series_path,
                         $app_base_url
                     );
@@ -97,7 +97,7 @@ $app->get(
     function ($series_path = null, $format) use ($app, $conf, $session, $app_base_url) {
 
         $series = new Series(
-            $conf->getRoots(),
+            $conf,
             $series_path,
             $app_base_url
         );

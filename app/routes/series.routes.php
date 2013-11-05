@@ -39,7 +39,7 @@ $app->get(
         $series = null;
         try {
             $series = new Series(
-                $conf->getRoots(),
+                $conf,
                 implode('/', $path),
                 $app_base_url,
                 $start,

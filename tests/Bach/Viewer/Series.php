@@ -51,7 +51,7 @@ class Series extends atoum
         $this->_conf->setRoots($this->_roots);
 
         $this->_series = new Viewer\Series(
-            $this->_conf->getRoots(),
+            $this->_conf,
             '',
             null
         );
@@ -68,8 +68,9 @@ class Series extends atoum
     {
         $this->exception(
             function () {
+                $conf = new Viewer\Conf($this->_config_path);
                 $series = New Viewer\Series(
-                    array(),
+                    $conf,
                     '/',
                     null
                 );
@@ -77,7 +78,7 @@ class Series extends atoum
         )->hasMessage('No matching root found!');
 
         $series = New Viewer\Series(
-            $this->_conf->getRoots(),
+            $this->_conf,
             '/',
             null
         );

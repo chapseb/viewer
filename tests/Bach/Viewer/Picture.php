@@ -52,7 +52,7 @@ class Picture extends atoum
         $this->_conf->setRoots($this->_roots);
 
         $this->_series = new Viewer\Series(
-            $this->_conf->getRoots(),
+            $this->_conf,
             '',
             null
         );
