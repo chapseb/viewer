@@ -213,6 +213,37 @@ class Picture
     }
 
     /**
+     * Get image relative path
+     *
+     * @param string $image_name Image name
+     *
+     * @return string
+     */
+    private function _getRelativePath($image_name)
+    {
+
+        if ( $image_name === $this->_name ) {
+            return '';
+        } else {
+            $relative_path = str_replace($image_name, '', $this->_name);
+
+            foreach ( $this->_conf->getRoots() as $root ) {
+                if ( strpos($this->_name, $root) === 0 ) {
+                    return str_replace($root, '', $relative_path);
+                }
+            }
+        }
+
+        throw new \RuntimeException(
+            str_replace(
+                '%image',
+                $image_name,
+                'Unable to get %image relative path!'
+            )
+        );
+    }
+
+    /**
      * Get image informations for a specific format
      *
      * @param string $format Required format
@@ -223,11 +254,11 @@ class Picture
     {
         $name_path = explode('/', $this->_name);
         $image_name = array_pop($name_path);
-        $path = $this->_conf->getPreparedPath() . $format . $this->_path;
-        foreach ( $name_path as $np ) {
-            $path .= $np . '/';
-        }
-        $image_path = $path . $image_name;
+
+        $prepared_path = $this->_conf->getPreparedPath() . $format;
+        $prepared_path .= '/' . $this->_getRelativePath($image_name);
+
+        $image_path = $prepared_path . $image_name;
 
         if ( !file_exists($image_path) ) {
             //prepared image does not exists yet
@@ -235,10 +266,10 @@ class Picture
                 && is_dir($this->_conf->getPreparedPath())
                 && is_writable($this->_conf->getPreparedPath())
             ) {
-                if ( !file_exists($path) ) {
-                    mkdir($path, 0755, true);
+                if ( !file_exists($prepared_path) ) {
+                    mkdir($prepared_path, 0755, true);
                 }
-                $this->_prepareImage($format);
+                $this->_prepareImage($image_path, $format);
             } else {
                 Analog::error(
                     str_replace(
@@ -264,15 +295,13 @@ class Picture
     /**
      * Converts image to specified format
      *
+     * @param string $dest   Destination file full path
      * @param string $format Wanted image format
      *
      * @return void
      */
-    private function _prepareImage($format)
+    private function _prepareImage($dest, $format)
     {
-        $dest = $this->_conf->getPreparedPath() . $format  .
-            $this->_path . $this->_name;
-
         //chek method that will be used
         $method = null;
         $prepare_method = $this->_conf->getPrepareMethod();
