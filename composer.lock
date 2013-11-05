@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "898a6c9aa0c39809c91b362d53871df4",
+    "hash": "4a46e2a6a1c0e8e5fc38bfad4ac5659a",
     "packages": [
         {
             "name": "analog/analog",
-            "version": "1.0.2-stable",
+            "version": "1.0.3-stable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jbroadway/analog.git",
-                "reference": "1.0.2-stable"
+                "reference": "70bb491508ae50eabbd27022a473fca1ff2d07cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jbroadway/analog/zipball/1.0.2-stable",
-                "reference": "1.0.2-stable",
+                "url": "https://api.github.com/repos/jbroadway/analog/zipball/70bb491508ae50eabbd27022a473fca1ff2d07cf",
+                "reference": "70bb491508ae50eabbd27022a473fca1ff2d07cf",
                 "shasum": ""
             },
             "require": {
@@ -37,7 +37,8 @@
                 {
                     "name": "Johnny Broadway",
                     "email": "johnny@johnnybroadway.com",
-                    "homepage": "http://www.johnnybroadway.com/"
+                    "homepage": "http://www.johnnybroadway.com/",
+                    "role": "Main Developer"
                 }
             ],
             "description": "PHP 5.3+ micro logging class that can be extended via closures. Includes several pre-built handlers including file, mail, syslog, HTTP post, and MongoDB.",
@@ -52,7 +53,7 @@
                 "logging",
                 "syslog"
             ],
-            "time": "2013-03-01 15:39:04"
+            "time": "2013-04-22 14:07:01"
         },
         {
             "name": "atoum/atoum",
@@ -262,17 +263,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.2.1",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "v2.2.1"
+                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
+                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
                 "shasum": ""
             },
             "require": {
@@ -281,7 +282,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -305,24 +306,24 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-23 07:49:54"
+            "time": "2013-09-22 18:04:39"
         },
         {
             "name": "twig/extensions",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig-extensions.git",
-                "reference": "v1.0.0"
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/v1.0.0",
-                "reference": "v1.0.0",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
                 "shasum": ""
             },
             "require": {
-                "twig/twig": "1.*"
+                "twig/twig": "~1.0"
             },
             "type": "library",
             "extra": {
@@ -352,20 +353,20 @@
                 "i18n",
                 "text"
             ],
-            "time": "2013-02-28 14:21:30"
+            "time": "2013-10-18 19:37:15"
         },
         {
             "name": "twig/twig",
-            "version": "v1.12.3",
+            "version": "v1.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "v1.12.3"
+                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.3",
-                "reference": "v1.12.3",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/ca445842fcea4f844d68203ffa2d00f5e3cdea64",
+                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64",
                 "shasum": ""
             },
             "require": {
@@ -374,7 +375,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.12-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -384,7 +385,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-3"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -401,7 +402,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-04-08 12:40:11"
+            "time": "2013-10-30 08:20:53"
         }
     ],
     "packages-dev": [
