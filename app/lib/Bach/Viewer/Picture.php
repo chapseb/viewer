@@ -318,7 +318,7 @@ class Picture
 
         switch ( $method ) {
         case self::METHOD_GMAGICK:
-            Analog::warn('Gmagick is installed but not yet implemented!');
+            Analog::warning('Gmagick is installed but not yet implemented!');
             $this->_gdResizeImage(
                 $this->_full_path,
                 $dest,
@@ -326,7 +326,7 @@ class Picture
             );
             break;
         case self::METHOD_IMAGICK:
-            Analog::warn('Imagick is installed but not yet implemented!');
+            Analog::warning('Imagick is installed but not yet implemented!');
             $this->_gdResizeImage(
                 $this->_full_path,
                 $dest,
