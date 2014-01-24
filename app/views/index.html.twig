@@ -111,6 +111,29 @@
             //global variables
             var series_path = '{{ series.getPath() }}';
             var app_url = '{{ app_base_url }}';
+
+            //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
+            function toggleFullScreen() {
+                if (!document.fullscreenElement &&    // alternative standard method
+                    !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.mozRequestFullScreen) {
+                        document.documentElement.mozRequestFullScreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    }
+                } else {
+                    if (document.cancelFullScreen) {
+                        document.cancelFullScreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitCancelFullScreen) {
+                        document.webkitCancelFullScreen();
+                    }
+                }
+            }
+
             //no conflict jquery
             jQuery.noConflict();
             //jquery stuff
@@ -137,27 +160,6 @@
 
                 {% endif %}
 
-                //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
-                function toggleFullScreen() {
-                    if (!document.fullscreenElement &&    // alternative standard method
-                        !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
-                        if (document.documentElement.requestFullscreen) {
-                            document.documentElement.requestFullscreen();
-                        } else if (document.documentElement.mozRequestFullScreen) {
-                            document.documentElement.mozRequestFullScreen();
-                        } else if (document.documentElement.webkitRequestFullscreen) {
-                            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                        }
-                    } else {
-                        if (document.cancelFullScreen) {
-                            document.cancelFullScreen();
-                        } else if (document.mozCancelFullScreen) {
-                            document.mozCancelFullScreen();
-                        } else if (document.webkitCancelFullScreen) {
-                            document.webkitCancelFullScreen();
-                        }
-                    }
-                }
                 if (document.fullScreenEnabled != undefined
                     || document.mozFullScreenEnabled != undefined
                     || document.webkitFullscreenEnabled != undefined
