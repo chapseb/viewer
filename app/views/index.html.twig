@@ -137,17 +137,6 @@
 
                 {% endif %}
 
-                $('#fullscreen').bind('click touchstart', function(){
-                    toggleFullScreen();
-                });
-
-
-                $('body').bind('keydown', function(event) {
-                    if (event.which == 70) {
-                        toggleFullScreen();
-                    }
-                });
-
                 //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
                 function toggleFullScreen() {
                     if (!document.fullscreenElement &&    // alternative standard method
@@ -176,6 +165,16 @@
                     $('#formats').parent().append(
                         $('<a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>')
                     );
+                    $('#fullscreen').bind('click touchstart', function(){
+                        toggleFullScreen();
+                    });
+
+
+                    $('body').bind('keydown', function(event) {
+                        if (event.which == 70) {
+                            toggleFullScreen();
+                        }
+                    });
                 }
             })(jQuery);
             //mootools stuff, if any
