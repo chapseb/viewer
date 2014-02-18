@@ -23,10 +23,21 @@ $app->get(
         }
 
         if ( $series_path !== null ) {
+            $start = null;
+            $end = null;
+
+            if ( $series !== null ) {
+                $start = $series->getStart();
+                $end = $series->getEnd();
+            }
+
+            Analog::debug('SET NEW SERIES');
             $series = new Series(
                 $conf,
                 $series_path,
-                $app_base_url
+                $app_base_url,
+                $start,
+                $end
             );
         }
         $series->setImage($image);
