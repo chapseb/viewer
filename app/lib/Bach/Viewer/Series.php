@@ -48,6 +48,8 @@ class Series
     ) {
         $this->_path = $path;
         $this->_conf = $conf;
+        $this->_start = $start;
+        $this->_end = $end;
         $roots = $conf->getRoots();
 
         foreach ( $roots as $root ) {
@@ -71,11 +73,29 @@ class Series
         } else {
             $this->_content = array();
             $handle = opendir($this->_full_path);
+
+            $all_entries = array();
             while ( false !== ($entry = readdir($handle)) ) {
                 if ($entry != "."
                     && $entry != ".."
                     && !is_dir($this->_full_path . '/' . $entry)
                 ) {
+                    $all_entries[] = $entry;
+                }
+            }
+            closedir($handle);
+            sort($all_entries, SORT_STRING);
+
+            $go = ($this->_start === null ) ? true : false;
+            foreach ( $all_entries as $entry ) {
+                //check for subseries start
+                if ( !$go
+                    && substr($entry, -strlen($this->_start)) === $this->_start
+                ) {
+                    $go = true;
+                }
+
+                if ( $go ) {
                     try {
                         $picture = new Picture(
                             $this->_conf,
@@ -89,10 +109,22 @@ class Series
                             'Image type for ' . $entry . ' is not supported!'
                         );
                     }
+
+                    if ( $this->_end !== false
+                        && substr($entry, -strlen($this->_end)) === $this->_end
+                    ) {
+                        $go = false;
+                    }
+                } else {
+                    Analog::info(
+                        str_replace(
+                            '%img',
+                            $entry,
+                            'Image %img is out of subseries.'
+                        )
+                    );
                 }
             }
-            closedir($handle);
-            sort($this->_content, SORT_STRING);
         }
     }
 
@@ -296,4 +328,25 @@ class Series
 
         return $ret;
     }
+
+    /**
+     * Get subseries start image
+     *
+     * @return string or null
+     */
+    public function getStart()
+    {
+        return $this->_start;
+    }
+
+    /**
+     * Get subseries end image
+     *
+     * @return string or null
+     */
+    public function getEnd()
+    {
+        return $this->_end;
+    }
+
 }

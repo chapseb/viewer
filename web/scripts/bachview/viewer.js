@@ -320,11 +320,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( this.image_name != undefined ) {
             _url += '/' + this.image_name;
         }
+        //check for subseries
+        var _subs = $('#previmg').attr('href').replace(/&img=(.+)/, '');
+        if ( _subs != '?img' ) {
+            _url += _subs;
+        }
         $.get(
             _url,
             function(data){
-                $('#previmg').attr('href', '?img=' + data.prev);
-                $('#nextimg').attr('href', '?img=' + data.next);
+                var _prev = $('#previmg');
+                _prev.attr('href', _prev.attr('href').replace(/img=(.+)/, 'img=' + data.prev));
+                var _next = $('#nextimg');
+                _next.attr('href', _next.attr('href').replace(/img=(.+)/, 'img=' + data.next));
                 $('#current_pos').html(data.position);
                 $('header > h2').html(data.current);
             },

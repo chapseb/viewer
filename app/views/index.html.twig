@@ -43,8 +43,13 @@
                 <!-- Browse series, if series there is -->
                 {% if series %}
                 <nav>
-                    <a href="?img={{ series.getPreviousImage()  }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="?img={{ series.getNextImage() }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    {%- set img_series -%}
+                        {%- if not series.getStart is null and not series.getEnd is null -%}
+                            s={{ series.getStart }}&e={{ series.getEnd }}&
+                        {%- endif -%}
+                    {%- endset -%}
+                    <a href="?{{ img_series }}img={{ series.getPreviousImage()  }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    <a href="?{{ img_series }}img={{ series.getNextImage() }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->
@@ -111,6 +116,29 @@
             //global variables
             var series_path = '{{ series.getPath() }}';
             var app_url = '{{ app_base_url }}';
+
+            //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
+            function toggleFullScreen() {
+                if (!document.fullscreenElement &&    // alternative standard method
+                    !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.mozRequestFullScreen) {
+                        document.documentElement.mozRequestFullScreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    }
+                } else {
+                    if (document.cancelFullScreen) {
+                        document.cancelFullScreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitCancelFullScreen) {
+                        document.webkitCancelFullScreen();
+                    }
+                }
+            }
+
             //no conflict jquery
             jQuery.noConflict();
             //jquery stuff
@@ -133,42 +161,8 @@
                     ui_disabled: true,
                     imageName: '{{ picture.getName() }}'
                 });
-                {% else %}
-
                 {% endif %}
 
-                $('#fullscreen').bind('click touchstart', function(){
-                    toggleFullScreen();
-                });
-
-
-                $('body').bind('keydown', function(event) {
-                    if (event.which == 70) {
-                        toggleFullScreen();
-                    }
-                });
-
-                //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
-                function toggleFullScreen() {
-                    if (!document.fullscreenElement &&    // alternative standard method
-                        !document.mozFullScreenElement && !document.webkitFullscreenElement) {  // current working methods
-                        if (document.documentElement.requestFullscreen) {
-                            document.documentElement.requestFullscreen();
-                        } else if (document.documentElement.mozRequestFullScreen) {
-                            document.documentElement.mozRequestFullScreen();
-                        } else if (document.documentElement.webkitRequestFullscreen) {
-                            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                        }
-                    } else {
-                        if (document.cancelFullScreen) {
-                            document.cancelFullScreen();
-                        } else if (document.mozCancelFullScreen) {
-                            document.mozCancelFullScreen();
-                        } else if (document.webkitCancelFullScreen) {
-                            document.webkitCancelFullScreen();
-                        }
-                    }
-                }
                 if (document.fullScreenEnabled != undefined
                     || document.mozFullScreenEnabled != undefined
                     || document.webkitFullscreenEnabled != undefined
@@ -176,6 +170,16 @@
                     $('#formats').parent().append(
                         $('<a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>')
                     );
+                    $('#fullscreen').bind('click touchstart', function(){
+                        toggleFullScreen();
+                    });
+
+
+                    $('body').bind('keydown', function(event) {
+                        if (event.which == 70) {
+                            toggleFullScreen();
+                        }
+                    });
                 }
             })(jQuery);
             //mootools stuff, if any

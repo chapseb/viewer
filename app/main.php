@@ -117,7 +117,9 @@ if ( defined('APP_CACHE') && APP_CACHE !== false ) {
     );
 }
 
-define('DEFAULT_PICTURE', 'main.jpg');
+if ( !defined('DEFAULT_PICTURE') ) {
+    define('DEFAULT_PICTURE', 'main.jpg');
+}
 
 $app->hook(
     'slim.before.dispatch',

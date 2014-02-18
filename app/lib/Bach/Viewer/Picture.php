@@ -222,7 +222,7 @@ class Picture
     private function _getRelativePath($image_name)
     {
 
-        if ( $image_name === $this->_name ) {
+        if ( $image_name === $this->_name || $image_name === DEFAULT_PICTURE ) {
             return '';
         } else {
             $relative_path = str_replace($image_name, '', $this->_name);
