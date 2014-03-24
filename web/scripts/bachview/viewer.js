@@ -272,11 +272,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 }
                 event.preventDefault();
             }
-            if ( event.which == 34 ) { //page down
+            if ( event.which == 34 && !event.ctrlKey ) { //page down
                 $('#previmg').click();
                 event.preventDefault();
             }
-            if ( event.which == 33 ) { //page up
+            if ( event.which == 33 && !event.ctrlKey ) { //page up
                 $('#nextimg').click();
                 event.preventDefault();
             }
