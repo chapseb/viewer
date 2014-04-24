@@ -262,4 +262,26 @@ class Series extends atoum
         $this->string($tiled_path)
             ->isIdenticalTo($this->_roots[0] . '/iron_man_tiled.tif');
     }
+
+    /**
+     * Test subseries
+     *
+     * @return void
+     */
+    public function testSubseries()
+    {
+        $series = New Viewer\Series(
+            $this->_conf,
+            '/',
+            null,
+            'doms.jpg',
+            'tech.jpg'
+        );
+
+        $start = $series->getStart();
+        $this->string($start)->isIdenticalTo('doms.jpg');
+
+        $end = $series->getEnd();
+        $this->string($end)->isIdenticalTo('tech.jpg');
+    }
 }

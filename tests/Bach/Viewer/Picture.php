@@ -111,6 +111,14 @@ class Picture extends atoum
             'doms.jpg',
             null
         );
+
+        //test with missing ending/ in path
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            $this->_series->getRepresentative(),
+            null,
+            rtrim($this->_series->getFullPath(), '/')
+        );
     }
 
     /**
@@ -165,7 +173,7 @@ class Picture extends atoum
         $display = $picture->getDisplay('thumb');
         $length = $display['headers']['Content-Length'];
 
-        $this->integer($length)->isIdenticalTo(5234);
+        $this->integer($length)->isIdenticalTo(5239);
 
         //test with PNG image
         $picture = new Viewer\Picture(
@@ -177,7 +185,7 @@ class Picture extends atoum
         $display = $picture->getDisplay('thumb');
         $length = $display['headers']['Content-Length'];
 
-        $this->integer($length)->isIdenticalTo(21898);
+        $this->integer($length)->isIdenticalTo(21539);
 
         //test with GIF image
         $picture = new Viewer\Picture(
@@ -189,7 +197,7 @@ class Picture extends atoum
         $display = $picture->getDisplay('thumb');
         $length = $display['headers']['Content-Length'];
 
-        $this->integer($length)->isIdenticalTo(13449);
+        $this->integer($length)->isIdenticalTo(13365);
 
     }
 
