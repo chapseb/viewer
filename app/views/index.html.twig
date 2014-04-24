@@ -13,7 +13,7 @@
 {% block content %}
         <section>
             <header>
-                <h1>BACH</h1>
+                <h1><img src="{{ app_web_url }}/images/logo.png" alt="BACH"/></h1>
                 {% if series %}
                     {% set series_name = series.getPath() %}
                     <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
