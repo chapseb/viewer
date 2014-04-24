@@ -307,6 +307,13 @@ var Navigation = new Class({
   setImage: function( src ){
     if( this.navcontainer && this.navcontainer.getElement('img.navimage') ){
       this.navcontainer.getElement('img.navimage').src = src;
+
+      //[JC 2014-04-24] Update preview image size
+      var _navWin = $$('.navwin')[0];
+      this.navcontainer.getElement('img.navimage').setStyles({
+        'height': _navWin.getStyle('height'),
+        'width': _navWin.getStyle('width'),
+      });
     }
   },
 
