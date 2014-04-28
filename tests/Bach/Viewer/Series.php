@@ -38,7 +38,7 @@
  * @category Main
  * @package  TestsViewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
- * @license  Unknown http://unknown.com
+ * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
 
@@ -55,7 +55,7 @@ require_once __DIR__ . '../../../../app/lib/Bach/Viewer/Conf.php';
  * @category Main
  * @package  TestViewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
- * @license  Unknown http://unknown.com
+ * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
 class Series extends atoum
