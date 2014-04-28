@@ -7,16 +7,16 @@
     "packages": [
         {
             "name": "analog/analog",
-            "version": "1.0.3-stable",
+            "version": "1.0.4-stable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jbroadway/analog.git",
-                "reference": "70bb491508ae50eabbd27022a473fca1ff2d07cf"
+                "reference": "b33febc06cb47593e23c74cccaceaaf618220b07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jbroadway/analog/zipball/70bb491508ae50eabbd27022a473fca1ff2d07cf",
-                "reference": "70bb491508ae50eabbd27022a473fca1ff2d07cf",
+                "url": "https://api.github.com/repos/jbroadway/analog/zipball/b33febc06cb47593e23c74cccaceaaf618220b07",
+                "reference": "b33febc06cb47593e23c74cccaceaaf618220b07",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "logging",
                 "syslog"
             ],
-            "time": "2013-04-22 14:07:01"
+            "time": "2014-01-24 22:41:50"
         },
         {
             "name": "atoum/atoum",
@@ -61,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "7353dca86e2192f7b71640865c0b10c57cc224bb"
+                "reference": "ae761218e03e4df060153034924270660d4da768"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/7353dca86e2192f7b71640865c0b10c57cc224bb",
-                "reference": "7353dca86e2192f7b71640865c0b10c57cc224bb",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/ae761218e03e4df060153034924270660d4da768",
+                "reference": "ae761218e03e4df060153034924270660d4da768",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +127,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2013-10-30 10:45:34"
+            "time": "2014-03-14 22:07:10"
         },
         {
             "name": "psr/log",
@@ -263,17 +263,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.6",
+            "version": "v2.3.12",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3"
+                "reference": "3acf34f6993db3d873fa77ac2cb6e595db00b88d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
-                "reference": "6bb881b948368482e1abf1a75c08bcf88a1c5fc3",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/3acf34f6993db3d873fa77ac2cb6e595db00b88d",
+                "reference": "3acf34f6993db3d873fa77ac2cb6e595db00b88d",
                 "shasum": ""
             },
             "require": {
@@ -297,7 +297,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -306,7 +308,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-09-22 18:04:39"
+            "time": "2014-03-04 16:04:39"
         },
         {
             "name": "twig/extensions",
@@ -357,16 +359,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.14.2",
+            "version": "v1.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64"
+                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/ca445842fcea4f844d68203ffa2d00f5e3cdea64",
-                "reference": "ca445842fcea4f844d68203ffa2d00f5e3cdea64",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/1fb5784662f438d7d96a541e305e28b812e2eeed",
+                "reference": "1fb5784662f438d7d96a541e305e28b812e2eeed",
                 "shasum": ""
             },
             "require": {
@@ -375,7 +377,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14-dev"
+                    "dev-master": "1.15-dev"
                 }
             },
             "autoload": {
@@ -390,11 +392,19 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com"
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -402,7 +412,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-10-30 08:20:53"
+            "time": "2014-02-13 10:19:29"
         }
     ],
     "packages-dev": [
