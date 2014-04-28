@@ -1,6 +1,7 @@
 /* IIPMooViewer Navigation Widget
 
    Copyright (c) 2007-2013 Ruven Pillay <ruven@users.sourceforge.net>
+   Copyright (c) 2013-2014 Anaphore
    IIPImage: http://iipimage.sourceforge.net
 
    --------------------------------------------------------------------
