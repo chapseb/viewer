@@ -59,6 +59,9 @@ if ( defined('APP_TESTS') ) {
     $logger = \Analog\Handler\Variable::init($viewer_log);
 } else {
     $log_dir = APP_DIR . '/logs/';
+    if ( defined('APP_LOGS') ) {
+        $log_dir = APP_LOGS;
+    }
     if ( !file_exists($log_dir) ) {
         throw new \RuntimeException(
             'Log directory (' . $log_dir  . ') does not exists!'
