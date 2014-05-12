@@ -453,3 +453,11 @@ aside#progressbar > div > progress {
 .navcontainer .loadBarContainer.invisible {
     visibility: hidden!important;
 }
+
+/* Mobile view */
+@media ( max-width : 767px) {
+    header > h1 {
+        width: 40px;
+        overflow: hidden;
+    }
+}
