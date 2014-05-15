@@ -1,3 +1,8 @@
+1.0.2 (2014-05-15)
+
+- Fix logo size in mobile view
+- Update to latest Slim, Slim-views, Symfony-YAML and HammerJS
+
 1.0.1 (2014-05-09)
 
 - Overridable logs dir
