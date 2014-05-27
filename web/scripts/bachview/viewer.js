@@ -214,6 +214,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
         $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
         $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
+        $('#negate').bind('click touchstart', function(){ me.negate(); });
         this.zoom_object = $('#zoominfos');
 
         //prevent this to execute on ios...
@@ -283,7 +284,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#negate").on('dblclick', function(e){
             e.stopPropagation();
         });
 
@@ -339,6 +340,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             img = series_path + '/' + img;
         }
         this.loadImage(app_url + '/ajax/img/' + img);
+    },
+
+    negate: function()
+    {
+        var _img_path = $('#viewer > img').attr('src').replace('/show', '');
+        this.loadImage(app_url + '/transform/negate' + _img_path);
     },
 
     /**

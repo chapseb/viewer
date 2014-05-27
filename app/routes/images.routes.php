@@ -68,11 +68,57 @@ $app->get(
         $display = $picture->getDisplay($format);
         $response = $app->response();
         foreach ( $display['headers'] as $key=>$header ) {
-            echo $key;
             $response[$key] = $header;
         }
         $response->body($display['content']);
     }
+);
+
+$app->get(
+    '/transform/:method(/:angle)(/:format)/:uri',
+    function ($method, $angle, $format, $uri) use ($app,
+        $conf, &$session, $app_base_url
+        ) {
+        $picture = new Picture(
+            $conf,
+            base64_decode($uri),
+            $app_base_url
+        );
+
+        if ( !isset($session['picture']) ) {
+            $session['picture'] = serialize($picture);
+        } else {
+            $sess_pic = unserialize($session['picture']);
+            if ( $sess_pic->getFullPath() != $picture->getFullPath() ) {
+                $session['picture'] = serialize($picture);
+            }
+        }
+
+        if ( $format == '' ) {
+            $format = 'default';
+        }
+
+        if ( $angle === '' ) {
+            $angle = null;
+        }
+
+        $negate = false;
+        if ( $method === 'negate' ) {
+            $negate = true;
+        }
+
+        $display = $picture->getDisplay($format, $angle, $negate);
+        $response = $app->response();
+        foreach ( $display['headers'] as $key=>$header ) {
+            $response[$key] = $header;
+        }
+        $response->body($display['content']);
+    }
+)->conditions(
+    array(
+        'method'    => '(rotate|negate)',
+        'angle'     => '(([0-2]?[0-9]?[0-9])|([3][0-5][0-9])|(360))'
+    )
 );
 
 $app->get(
@@ -85,7 +131,12 @@ $app->get(
         }
         $picture = null;
         if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture($conf, DEFAULT_PICTURE, $app_base_url, WEB_DIR . '/images/');
+            $picture = new Picture(
+                $conf,
+                DEFAULT_PICTURE,
+                $app_base_url,
+                WEB_DIR . '/images/'
+            );
         } else {
             $picture = new Picture($conf, $img, $app_base_url, $path);
         }

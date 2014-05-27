@@ -60,21 +60,9 @@ class Picture
     const DEFAULT_WIDTH = 1000;
     const DEFAULT_HEIGHT = 1000;
 
-    const METHOD_GMAGICK = 0;
-    const METHOD_IMAGICK = 1;
-    const METHOD_GD = 2;
-
-    private $_supported_types = array(
-        IMAGETYPE_GIF,
-        IMAGETYPE_JPEG,
-        IMAGETYPE_PNG,
-        IMAGETYPE_TIFF_II,
-        IMAGETYPE_TIFF_MM
-    );
-    private $_pyramidal_types = array(
-        IMAGETYPE_TIFF_II,
-        IMAGETYPE_TIFF_MM
-    );
+    const METHOD_GMAGICK = 'gmagick';
+    const METHOD_IMAGICK = 'imagick';
+    const METHOD_GD = 'gd';
 
     private $_path;
     private $_name;
@@ -87,6 +75,12 @@ class Picture
     private $_conf;
     private $_exif;
     private $_app_base_url;
+    private $_handler;
+
+    private $_pyramidal_types = array(
+        IMAGETYPE_TIFF_II,
+        IMAGETYPE_TIFF_MM
+    );
 
     /**
      * Main constructor
@@ -149,13 +143,15 @@ class Picture
 
         $this->_exif = @exif_read_data($this->_full_path);
 
+        $this->_prepareHandler();
+
         if ( $this->_exif === false ) {
-            //no exif data in picture, let's try another way
+            //no exif data in picture, let's ask handler
             list(
                 $this->_width,
                 $this->_height,
-                $this->_type) = getimagesize($this->_full_path);
-            $this->_mime = image_type_to_mime_type($this->_type);
+                $this->_type,
+                $this->_mime) = $this->_handler->getImageInfos($this->_full_path);
         } else {
             if ( isset($this->_exif['ExifImageWidth']) ) {
                 $this->_width = $this->_exif['ExifImageWidth'];
@@ -178,6 +174,7 @@ class Picture
             }
 
             $this->_type = $this->_exif['FileType'];
+            $this->_handler->setType($this->_type);
             $this->_mime =  $this->_exif['MimeType'];
 
             //checks pyramidal images
@@ -190,39 +187,65 @@ class Picture
             }
         }
 
-        $this->_check();
+        $this->_handler->check($this->_pyramidal);
     }
 
     /**
-     * Check if image is supported
+     * Prepares image handler
      *
      * @return void
      */
-    private function _check()
+    private function _prepareHandler()
     {
-        if ( !in_array($this->_type, $this->_supported_types) ) {
-            throw new \RuntimeException(_('Unsupported image format!'));
+        //chek method that will be used
+        $method = $this->_conf->getPrepareMethod();
+
+        if ( $method === 'choose' ) {
+            //automatically set method
+            if ( class_exists('Imagick') ) {
+                $method = self::METHOD_IMAGICK;
+            } else if ( class_exists('Gmagick') ) {
+                $method = self::METHOD_GMAGICK;
+            } else {
+                $method = self::METHOD_GD;
+            }
         }
 
-        if ( in_array($this->_type, $this->_pyramidal_types)
-            && $this->_pyramidal === false
-        ) {
-            //TODO: maybe we can convert simple TIFF files to JPEG
-            //instead of throwing an error
-            throw new \RuntimeException(
-                _('Image format not supported if not pyramidal')
+        if ( $method === null ) {
+            Analog::info(
+                _('Falling back to Gd method.')
             );
+            $method = self::METHOD_GD;
         }
+
+        $handler_class = 'GdHandler';
+
+        switch ( $method ) {
+        case self::METHOD_GMAGICK:
+            $handler_class = 'GmagickHandler';
+            break;
+        case self::METHOD_IMAGICK:
+            $handler_class = 'ImagickHandler';
+            break;
+        }
+
+        $handler_class = 'Bach\Viewer\Handlers\\' . $handler_class;
+        $this->_handler = new $handler_class(
+            $this->_conf,
+            $this->_pyramidal_types
+        );
     }
 
     /**
      * Get display informations (header, content, etc)
      *
-     * @param string $format Format to display
+     * @param string  $format Format to display
+     * @param int     $angle  Rotation angle, if any
+     * @param boolean $negate Negate the image
      *
      * @return array
      */
-    public function getDisplay($format = 'full')
+    public function getDisplay($format = 'full', $angle = null, $negate = false)
     {
         $length = null;
         $file_path = null;
@@ -233,12 +256,35 @@ class Picture
             list($file_path, $length) = $this->_checkImageFormat($format);
         }
 
+        $content = null;
+        if ( $angle === null && $negate === false ) {
+            $content = file_get_contents($file_path);
+        } else {
+            $length = null; //FIXME: find a way to get lenght
+            $params = array();
+            if ( $angle !== null ) {
+                $params['rotate'] = array('angle' => $angle);
+            }
+            if ( $negate === true ) {
+                $params['negate'] = true;
+            }
+            $content = $this->_handler->transform($file_path, $params);
+        }
+
+        $headers = array();
+
+        if ( $length !== null ) {
+            $headers['Content-Length'] = $length;
+        }
+
+        if ( $this->_mime !== null ) {
+            $headers['Content-Type'] = $this->_mime;
+        }
+
+
         $ret = array(
-            'headers'   => array(
-                'Content-Type'      => $this->_mime,
-                'Content-Length'    => $length
-            ),
-            'content'   => file_get_contents($file_path)
+            'headers'   => $headers,
+            'content'   => $content
         );
         return $ret;
     }
@@ -333,194 +379,12 @@ class Picture
      */
     private function _prepareImage($dest, $format)
     {
-        //chek method that will be used
-        $method = null;
-        $prepare_method = $this->_conf->getPrepareMethod();
+        $this->_handler->resize(
+            $this->_full_path,
+            $dest,
+            $format
+        );
 
-        if ( $prepare_method != 'choose' ) {
-            //explitely set methods
-            if ( $prepare_method === 'gmagick'
-                && class_exists('Gmagick')
-            ) {
-                $method = self::METHOD_GMAGICK;
-            } else {
-                Analog::warning(
-                    _('Prepare method was explicitely set to Gmagick, but it is missing!')
-                );
-            }
-
-            if ( $prepare_method === 'imagick'
-                && class_exists('Imagick')
-            ) {
-                $method = self::METHOD_IMAGICK;
-            } else {
-                Analog::warning(
-                    _('Prepare method was explicitely set to Imagick, but it is missing!')
-                );
-            }
-        } else {
-            //automatically set method
-            if ( class_exists('Gmagick') ) {
-                $method = self::METHOD_GMAGICK;
-            } else if ( class_exists('Imagick') ) {
-                $method = self::METHOD_IMAGICK;
-            } else {
-                $method = self::METHOD_GD;
-            }
-        }
-
-        if ( $method === null ) {
-            Analog::info(
-                _('Falling back to Gd method.')
-            );
-            $method = self::METHOD_GD;
-        }
-
-        switch ( $method ) {
-        case self::METHOD_GMAGICK:
-            Analog::warning('Gmagick is installed but not yet implemented!');
-            $this->_gdResizeImage(
-                $this->_full_path,
-                $dest,
-                $format
-            );
-            break;
-        case self::METHOD_IMAGICK:
-            Analog::warning('Imagick is installed but not yet implemented!');
-            $this->_gdResizeImage(
-                $this->_full_path,
-                $dest,
-                $format
-            );
-            break;
-        case self::METHOD_GD:
-        default:
-            $this->_gdResizeImage(
-                $this->_full_path,
-                $dest,
-                $format
-            );
-            break;
-        }
-    }
-
-    /**
-    * Resize the image if it exceed max allowed sizes
-    *
-    * @param string $source the source image
-    * @param string $dest   the destination image.
-    * @param string $format the format to use
-    *
-    * @return void
-    */
-    private function _gdResizeImage($source, $dest, $format)
-    {
-        if (function_exists("gd_info")) {
-            $gdinfo = gd_info();
-            $fmts = $this->_conf->getFormats();
-            $fmt = $fmts[$format];
-            $h = $fmt['height'];
-            $w = $fmt['width'];
-
-            switch( $this->_type ) {
-            case IMAGETYPE_JPEG:
-                if (!$gdinfo['JPEG Support']) {
-                    Analog::log(
-                        '[' . $class . '] GD has no JPEG Support - ' .
-                        'pictures could not be resized!',
-                        Analog::ERROR
-                    );
-                    return false;
-                }
-                break;
-            case IMAGETYPE_PNG:
-                if (!$gdinfo['PNG Support']) {
-                    Analog::log(
-                        '[' . $class . '] GD has no PNG Support - ' .
-                        'pictures could not be resized!',
-                        Analog::ERROR
-                    );
-                    return false;
-                }
-                break;
-            case IMAGETYPE_GIF:
-                if (!$gdinfo['GIF Create Support']) {
-                    Analog::log(
-                        '[' . $class . '] GD has no GIF Support - ' .
-                        'pictures could not be resized!',
-                        Analog::ERROR
-                    );
-                    return false;
-                }
-                break;
-            default:
-                Analog::error(
-                    'Current image type cannot be resized'
-                );
-                return false;
-            }
-
-            list($cur_width, $cur_height, $cur_type, $curattr)
-                = getimagesize($source);
-
-            $ratio = $cur_width / $cur_height;
-
-            // calculate image size according to ratio
-            if ($cur_width>$cur_height) {
-                $h = $w/$ratio;
-            } else {
-                $w = $h*$ratio;
-            }
-
-            $thumb = imagecreatetruecolor($w, $h);
-            switch( $this->_type ) {
-            case IMAGETYPE_JPEG:
-                $image = ImageCreateFromJpeg($source);
-                imagecopyresampled(
-                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
-                );
-                imagejpeg($thumb, $dest);
-                break;
-            case IMAGETYPE_PNG:
-                $image = ImageCreateFromPng($source);
-                // Turn off alpha blending and set alpha flag. That prevent alpha
-                // transparency to be saved as an arbitrary color (black in my tests)
-                imagealphablending($thumb, false);
-                imagealphablending($image, false);
-                imagesavealpha($thumb, true);
-                imagesavealpha($image, true);
-                imagecopyresampled(
-                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
-                );
-                imagepng($thumb, $dest, 9);
-                break;
-            case IMAGETYPE_GIF:
-                $image = ImageCreateFromGif($source);
-                imagecopyresampled(
-                    $thumb, $image, 0, 0, 0, 0, $w, $h, $cur_width, $cur_height
-                );
-                imagegif($thumb, $dest);
-                break;
-            case IMAGETYPE_TIFF_II:
-            case IMAGETYPE_TIFF_MM:
-                /** FIXME: Gd cannot resize TIFF images.
-                 * IIP is able to serve a complete image using JPEG
-                 * maybe we can get original image there and resize using jpg.
-                 */
-                throw new \RuntimeException(
-                    _('TIFF images cannot be resized using Gd library!')
-                );
-                break;
-            }
-        } else {
-            Analog::error(
-                _('Gd is not present!')
-            );
-
-            throw new \RuntimeException(
-                _('Gd is not present!')
-            );
-        }
     }
 
     /**
