@@ -144,21 +144,37 @@ class GmagickHandler extends AbstractHandler
      */
     public function transform($source, $params)
     {
-        if ( isset($params['negate']) ) {
-            $this->canNegate();
-        }
-
-        if ( isset($params['rotate']) ) {
-            try {
-                $image = new \Gmagick();
-                $image->readImage($source);
-                $image->rotateImage('#000', $params['rotate']['angle']);
-                $ret = $image->getImageBlob();
-                $image->destroy();
-                return $ret;
-            } catch ( \GmagickException $e ) {
-                throw new \RuntimeException($e->getMessage());
+        try {
+            $image = new \Gmagick();
+            $image->readImage($source);
+            
+            if ( isset($params['crop']) ) {
+                $image->cropImage(
+                    $params['crop']['width'],
+                    $params['crop']['height'],
+                    $params['crop']['x'],
+                    $params['crop']['y']
+                );
             }
+            
+            if ( isset($params['negate']) ) {
+                $this->canNegate();
+            }
+
+            if ( isset($params['rotate']) ) {
+                    $image->rotateImage(
+                    '#000',
+                    $params['rotate']['angle']
+                );
+            }
+            
+            $ret = $image->getImageBlob();
+            $image->destroy();
+            return $ret;
+        
+        } catch ( \GmagickException $e ) {
+            $image->destroy();
+            throw new \RuntimeException($e->getMessage());
         }
     }
 }

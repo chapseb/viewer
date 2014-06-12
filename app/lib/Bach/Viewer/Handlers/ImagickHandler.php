@@ -146,6 +146,7 @@ class ImagickHandler extends AbstractHandler
         try {
             $image = new \Imagick($source);
 
+
             if ( isset($params['negate']) ) {
                 $image->negateImage(false);
             }
@@ -154,6 +155,15 @@ class ImagickHandler extends AbstractHandler
                 $image->rotateImage(
                     new \ImagickPixel('#00000000'),
                     $params['rotate']['angle']
+                );
+            }
+
+            if ( isset($params['crop']) ) {
+                $image->cropImage(
+                    $params['crop']['width'],
+                    $params['crop']['height'],
+                    $params['crop']['x'],
+                    $params['crop']['y']
                 );
             }
 

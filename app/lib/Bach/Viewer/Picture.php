@@ -242,11 +242,17 @@ class Picture
      * @param string  $format Format to display
      * @param int     $angle  Rotation angle, if any
      * @param boolean $negate Negate the image
+     * @param boolean $crop   Crop the image
      *
      * @return array
      */
-    public function getDisplay($format = 'full', $angle = null, $negate = false)
-    {
+    public function getDisplay($format = 'full', $angle = null, $negate = false,
+        $crop = false
+    ) {
+        Analog::log(
+            'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
+            Analog::DEBUG
+        );
         $length = null;
         $file_path = null;
         if ( $format == 'full' ) {
@@ -257,7 +263,7 @@ class Picture
         }
 
         $content = null;
-        if ( $angle === null && $negate === false ) {
+        if ( $angle === null && $negate === false && $crop === false) {
             $content = file_get_contents($file_path);
         } else {
             $length = null; //FIXME: find a way to get lenght
@@ -267,6 +273,9 @@ class Picture
             }
             if ( $negate === true ) {
                 $params['negate'] = true;
+            }
+            if ( $crop !== false ) {
+                $params['crop'] = $crop;
             }
             $content = $this->_handler->transform($file_path, $params);
         }

@@ -58,7 +58,8 @@ use \Analog\Analog;
 class GdHandler extends AbstractHandler
 {
     protected $capabilities = array(
-        'rotate'
+        'rotate',
+        'crop'
     );
 
     private $_supported_types = array(
@@ -220,17 +221,37 @@ class GdHandler extends AbstractHandler
             $this->canNegate();
         }
 
+        $image = $this->_getImageAsResource($source);
+        $result = null;
+
         if ( isset($params['rotate']) ) {
-            $image = $this->_getImageAsResource($source);
-            $rotate = imagerotate(
-                $image,
+            $result = imagerotate(
+                (($result !== null) ? $result : $image),
                 360 - $params['rotate']['angle'],
                 0
             );
-            imagejpeg($rotate);
-            imagedestroy($image);
-            imagedestroy($rotate);
         }
+
+        if ( isset($params['crop']) ) {
+            $cparams = $params['crop'];
+            $infos = $this->getImageInfos($source);
+
+            $result = imagecrop(
+                (($result !== null) ? $result : $image),
+                $cparams
+            );
+        }
+
+        if ( $result === null ) {
+            throw new \RuntimeException(
+                _('Something went wrong in GD transformation!')
+            );
+        }
+
+        imagejpeg($result);
+        imagedestroy($image);
+        imagedestroy($result);
+
     }
 
     /**

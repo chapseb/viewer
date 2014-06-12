@@ -89,6 +89,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me._setOverviewMaskSize();
         };
 
+
         this.options.onStopDrag = function(ev, point) {
             me._setOverviewMaskSize();
         }
@@ -161,6 +162,54 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $.ui.iviewer.prototype.angle.apply(this, arguments);
     },
 
+    print: function()
+    {
+        var me = this;
+        var _img_height = this.nav_img_object.display_height();
+        var _img_width = this.nav_img_object.display_width();
+        var _width;
+        var _height;
+        var _topPos = 0;
+        var _leftPos = 0;
+
+        var _container = $(this.container[0]);
+        //is image taller than window?
+        var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height())/100;
+
+        if ( this.img_object.display_width() < this.container[0].clientWidth ) {
+            var   scale_width = Math.round(this.img_object.display_width() / percent);
+        } else {
+            var   scale_width = Math.round( this.container[0].clientWidth  / percent);
+        }
+
+        if ( this.img_object.display_height() < this.container[0].clientHeight ) {
+            var   scale_height = Math.round(this.container[0].clientHeight / percent);
+        } else {
+            var   scale_height = Math.round( this.container[0].clientHeight / percent);
+        }
+
+        //image is taller than window. Calculate zone size and position
+        if ( this.img_object._y < 0 ) {
+            _topPos = Math.round(this.img_object._y * -1 / this.img_object.display_height() * _img_height);
+        }
+        _height = Math.round(this.container[0].clientHeight / this.img_object.display_height() * _img_height);
+        _topPosHD = Math.round(scale_height * _topPos / _height);
+        if ( this.img_object._x < 0 ) {
+            _leftPos = Math.round(this.img_object._x * -1 / this.img_object.display_width() * _img_width );
+        }
+
+        _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
+        _leftPosHD = Math.round(scale_width * _leftPos /_width); 
+
+        _src  = $('#viewer > img').attr('src').replace(/show\//, '' );
+        var res = 'printpdf/'  + _leftPosHD  +  '/' +  _topPosHD +  '/' + scale_width +  '/' + scale_height +  _src ;
+
+        var _path_info = window.location.href.split('/');
+        res = _path_info[0] + '//' + _path_info[2] + '/' + res;
+
+        window.location.href = res;
+    },
+
     /**
      * Create zoom buttons info box
      */
@@ -215,6 +264,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
         $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
         $('#negate').bind('click touchstart', function(){ me.negate(); });
+        $("#print").bind('click touchstart', function(){ me.print(); });
         this.zoom_object = $('#zoominfos');
 
         //prevent this to execute on ios...

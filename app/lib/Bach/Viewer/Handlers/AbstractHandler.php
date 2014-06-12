@@ -251,5 +251,44 @@ abstract class AbstractHandler
             );
         }
     }
+    /**
+     * Negate image
+     *
+     * @param string $source the source image
+     *
+     * @return void
+     */
+    public function crop($source)
+    {
+        if ( $this->canCrop() ) {
+            return $this->transform(
+                $source,
+                array(
+                    'crop' => true
+                )
+            );
+        }
+    }
+
+    /**
+     * Check for negate capabiblity
+     *
+     * @return boolean
+     */
+    public function canCrop()
+    {
+        if ( in_array('crop', $this->capabilities) ) {
+            return true;
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%ext',
+                    $this->extensionName(),
+                    _('Crop is not supported with %ext!')
+                )
+            );
+        }
+    }
+
 }
 
