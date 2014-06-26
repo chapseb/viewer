@@ -193,6 +193,9 @@ class Picture extends atoum
         if ( file_exists('/tmp/thumb/tech.png') && is_file('/tmp/thumb/tech.png') ) {
             unlink('/tmp/thumb/tech.png');
         }
+        if ( file_exists('/tmp/thumb/tech.jpg') && is_file('/tmp/thumb/tech.jpg') ) {
+            unlink('/tmp/thumb/tech.jpg');
+        }
         if ( file_exists('/tmp/thumb/iron_man.gif')
             && is_file('/tmp/thumb/iron_man.gif')
         ) {
@@ -333,5 +336,23 @@ class Picture extends atoum
         $this->string($surl)->isIdenticalTo(
             '/show/default/' . base64_encode($fpath)
         );
+    }
+
+    /** Test image inside a subdirectory
+     *
+     * @return void
+     */
+    public function testSeriesImage()
+    {
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            $this->_series->getFullPath() . 'tech.jpg',
+            null
+        );
+
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        $this->integer($length)->isIdenticalTo(6827);
     }
 }
