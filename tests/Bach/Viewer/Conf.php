@@ -128,9 +128,10 @@ class Conf extends atoum
     {
         $formats = $this->_conf->getFormats();
         $this->array($formats)
-            ->hasSize(3)
+            ->hasSize(4)
             ->hasKey('default')
             ->hasKey('huge')
+            ->hasKey('medium')
             ->hasKey('thumb');
 
         $default = $formats['default'];

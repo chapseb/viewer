@@ -1,7 +1,8 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "a573d3bcfd9ac2a2392577b49121a653",
     "packages": [
@@ -61,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "35a880e64d2e8b7e804a039a503ac1bb2ac30881"
+                "reference": "a994ea39494c5b1837a06b4d282e3a488c465d4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/35a880e64d2e8b7e804a039a503ac1bb2ac30881",
-                "reference": "35a880e64d2e8b7e804a039a503ac1bb2ac30881",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/a994ea39494c5b1837a06b4d282e3a488c465d4a",
+                "reference": "a994ea39494c5b1837a06b4d282e3a488c465d4a",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +128,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2014-04-24 14:40:50"
+            "time": "2014-06-20 18:11:29"
         },
         {
             "name": "psr/log",
@@ -269,17 +270,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.13",
+            "version": "v2.3.16",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "c10f8ed05d6e539b93eb5acc7763c9a639456c6b"
+                "reference": "2e257c292cfce88bf6c894a03d0fe8d782055aee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/c10f8ed05d6e539b93eb5acc7763c9a639456c6b",
-                "reference": "c10f8ed05d6e539b93eb5acc7763c9a639456c6b",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/2e257c292cfce88bf6c894a03d0fe8d782055aee",
+                "reference": "2e257c292cfce88bf6c894a03d0fe8d782055aee",
                 "shasum": ""
             },
             "require": {
@@ -314,7 +315,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-18 20:35:25"
+            "time": "2014-05-12 09:13:35"
         },
         {
             "name": "twig/extensions",
