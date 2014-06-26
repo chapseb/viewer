@@ -64,6 +64,7 @@ class Picture extends atoum
     private $_conf;
     private $_roots;
     private $_series;
+    private $_name;
 
     /**
      * Set up tests
