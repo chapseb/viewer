@@ -53,6 +53,14 @@ session_start();
 $session = &$_SESSION['bachviewer'];
 
 require APP_DIR . '/../vendor/autoload.php';
+
+if ( defined('VIEWER_XHPROF_PATH')
+    && function_exists('xhprof_enable')
+) {
+    $profiler = new Bach\XHProf();
+    $profiler->start();
+}
+
 $logger = null;
 if ( defined('APP_TESTS') ) {
     $viewer_log = '';
@@ -256,4 +264,8 @@ if ( APP_DEBUG === true ) {
 
 if ( !defined('APP_TESTS') ) {
     $app->run();
+
+    if ( isset($profiler) ) {
+        $profiler->stop();
+    }
 }
