@@ -203,15 +203,10 @@ $app->get(
 );
 
 $app->get(
-    '/printpdf/:x/:y/:width/:height(/:format)/:uri',
-    function ($x, $y, $width, $height, $format, $uri) use ($app,
+    '/print/:x/:y/:width/:height(/:format)/:uri(/:show)',
+    function ($x, $y, $width, $height, $format, $uri, $show = false) use ($app,
         $conf, &$session, $app_base_url
     ) {
-        $pdf = new Pdf(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
         $protocol = 'http';
         if ( isset($_SERVER['HTTPS'])) {
             $protocol .= 's';
@@ -225,43 +220,32 @@ $app->get(
         );
 
         $params = array(
-            'x' => $x,
-            'y' => $y,
-            'width' => $width,
-            'height' => $height
+            'x'         => $x,
+            'y'         => $y,
+            'width'     => $width,
+            'height'    => $height
         );
         if ( $format == '' ) {
             $format = 'default';
         }
 
-        $display = $picture->getDisplay($format, null, false, $params);
-        /** FIXME: parametize */
-        $tmp_name = '/tmp/';
-        $tmp_name .= uniqid(
-            $uri . '_' . $format . '_' . $x . $y . $width . $height,
-            true
-        );
-
-        file_put_contents(
-            $tmp_name,
-            $display['content']
-        );
-
-        $pdf->AddPage();
-
-        $html = '<img src="' .  $tmp_name . '"/>';
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-        unlink($tmp_name);
+        $pdf = new Pdf($conf, $picture, $params, $format);
 
         $app->response->headers->set('Content-Type', 'application/pdf');
-        $pdf->output('viewer.pdf', 'D');
+
+        if ( $show === 'true' ) {
+            $content = $pdf->getContent();
+            $app->response->body($content);
+        } else {
+            $pdf->download();
+        }
     }
 )->conditions(
     array(
         'x'         => '\d+',
         'y'         => '\d+',
         'width'     => '\d+',
-        'height'    => '\d+'
+        'height'    => '\d+',
+        'show'      => 'true|false'
     )
 );

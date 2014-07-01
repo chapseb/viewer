@@ -45,23 +45,46 @@
 
 namespace Bach\Viewer;
 
+/**
+ * PDF Generation
+ *
+ * @category Main
+ * @package  Viewer
+ * @author   Vincent Fleurette <vincent.fleurette@anaphore.eu>
+ * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
+ * @link     http://anaphore.eu
+ */
 class Pdf extends \TCPDF
 {
+    private $_conf;
+    private $_picture;
+    private $_params;
+    private $_image_format;
+    private $_header_height = 0;
 
     /**
      * Main constructor
      *
-     * @param Conf   $conf         App Configuration
-     * @param string $name         Image name
-     * @param string $app_base_url Application base URL
-     * @param string $path         Path
+     * @param Conf    $conf    App Configuration
+     * @param Picture $picture Picture
+     * @param array   $params  Print params
+     * @param string  $format  Image format
      */
-    public function __construct($conf, $name, $app_base_url, $path=null)
+    public function __construct(Conf $conf, Picture $picture, $params, $format)
     {
-        parent::__construct('P', 'mm', 'A4', true, 'UTF-8');
+        $orientation = 'P';
+        if ( $params['width'] > $params['height'] ) {
+            $orientation = 'L';
+        }
+        parent::__construct($orientation, 'mm', 'A4', true, 'UTF-8');
         $this->_conf = $conf;
-        $this->_name = $name;
-        $this->_app_base_url = $app_base_url;
+        $this->_picture = $picture;
+        $this->_params = $params;
+        $this->_image_format = $format;
+
+        $this->setCreator('Bach - ' . PDF_CREATOR);
+        $this->setTitle($picture->getName());
     }
 
     /**
@@ -71,13 +94,23 @@ class Pdf extends \TCPDF
      */
     public function Header()
     {
-        // Logo
-        //$image_file = K_PATH_IMAGES.'logo_example.jpg';
-        //$this->Image($image_file, 10, 10, 15, '', 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        // Set font
-        //$this->SetFont('helvetica', 'B', 20);
-        // Title
-        //$this->Cell(0, 15, 'viewer test print', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+        $image = $this->_conf->getPrintHeaderImage($this->CurOrientation);
+        if ( file_exists($image) ) {
+            $this->SetY(5);
+            list($width, $height) = getimagesize($image);
+            $this->_header_height = ceil($height / 10) + 5;
+            $this->writeHTML(
+                '<img src="' . $image . '"/>'
+            );
+        } else {
+            Analog::error(
+                str_replace(
+                    '%file',
+                    $image,
+                    'File %file does not exists!'
+                )
+            );
+        }
     }
 
     /**
@@ -87,10 +120,69 @@ class Pdf extends \TCPDF
      */
     public function Footer()
     {
-        // Position at 15 mm from bottom
-        //$this->SetY(-15);
-        // Set font
-        //$this->SetFont('helvetica', 'I', 8);
+        $this->SetY(-15);
+        $this->Cell(0, 10, $this->_conf->getPrintFooter(), 0, 0, 'C');
+    }
+
+    /**
+     * Prepare image in PDF
+     *
+     * @return void
+     */
+    private function _prepareImage()
+    {
+        $display = $this->_picture->getDisplay(
+            $this->_image_format,
+            null,
+            false,
+            $this->_params
+        );
+
+        /** FIXME: parametize? */
+        $tmp_name = '/tmp/';
+        $tmp_name .= uniqid(
+            base64_encode($this->_picture->getFullPath()) . '_' .
+            $this->_image_format . '_' . $this->_params['x'] . $this->_params['y'] .
+            $this->_params['width'] . $this->_params['height'],
+            true
+        );
+
+        file_put_contents(
+            $tmp_name,
+            $display['content']
+        );
+
+        $this->AddPage();
+        if ( $this->_header_height > 0 ) {
+            $this->setTopMargin($this->_header_height);
+        }
+
+        $html = '<img src="' .  $tmp_name . '"/>';
+        $this->writeHTML($html, true, false, true, false, '');
+
+        unlink($tmp_name);
+    }
+
+    /**
+     * Retrieve PDF content for display in page
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        $this->_prepareImage();
+        return $this->Output('bach_print.pdf', 'S');
+    }
+
+    /**
+     * Dowload PDF
+     *
+     * @return void
+     */
+    public function download()
+    {
+        $this->_prepareImage();
+        $this->output('bach_print.pdf', 'D');
     }
 
 }

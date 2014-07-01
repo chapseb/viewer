@@ -50,3 +50,11 @@ ui:
     enable_right_click: true
 roots:
     - /var/www/images
+
+print:
+    header:
+        image: ~
+        #image_landscape: ~
+        #image_portrait: ~
+        content: ~
+    footer: ~
