@@ -147,7 +147,7 @@ class GmagickHandler extends AbstractHandler
         try {
             $image = new \Gmagick();
             $image->readImage($source);
-            
+
             if ( isset($params['crop']) ) {
                 $image->cropImage(
                     $params['crop']['width'],
@@ -156,22 +156,21 @@ class GmagickHandler extends AbstractHandler
                     $params['crop']['y']
                 );
             }
-            
+
             if ( isset($params['negate']) ) {
                 $this->canNegate();
             }
 
             if ( isset($params['rotate']) ) {
-                    $image->rotateImage(
+                $image->rotateImage(
                     '#000',
                     $params['rotate']['angle']
                 );
             }
-            
+
             $ret = $image->getImageBlob();
             $image->destroy();
             return $ret;
-        
         } catch ( \GmagickException $e ) {
             $image->destroy();
             throw new \RuntimeException($e->getMessage());
