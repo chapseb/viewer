@@ -308,13 +308,13 @@ class Picture
     private function _getRelativePath($image_name)
     {
 
-        if ( $image_name === $this->_name || $image_name === DEFAULT_PICTURE ) {
+        if ( $image_name === DEFAULT_PICTURE ) {
             return '';
         } else {
-            $relative_path = str_replace($image_name, '', $this->_name);
+            $relative_path = str_replace($image_name, '', $this->_full_path);
 
             foreach ( $this->_conf->getRoots() as $root ) {
-                if ( strpos($this->_name, $root) === 0 ) {
+                if ( strpos($this->_full_path, $root) === 0 ) {
                     return str_replace($root, '', $relative_path);
                 }
             }
@@ -409,15 +409,20 @@ class Picture
     /**
      * Get image URL to display in web interface
      *
+     * @param Series $series Current series
      * @param string $format Format to display
      *
      * @return string
      */
-    public function getUrl($format = 'default')
+    public function getUrl(Series $series = null, $format = 'default')
     {
         $prefix = $this->_app_base_url . '/show/';
         $prefix .= $format . '/';
-        return $prefix . base64_encode($this->_full_path);
+        //return $prefix . base64_encode($this->_full_path);
+        if ( $series ) {
+            $prefix .= $series->getPath() . '/';
+        }
+        return $prefix . $this->getName();
     }
 
     /**

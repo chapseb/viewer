@@ -62,7 +62,7 @@ $app->get(
                 $end = $series->getEnd();
             }
 
-            Analog::debug('SET NEW SERIES');
+            Analog::debug('SET NEW SERIES (' . $series_path . ')');
             $series = new Series(
                 $conf,
                 $series_path,
@@ -84,53 +84,39 @@ $app->get(
 $app->get(
     '/ajax/img(/:series)/:image/format/:format',
     function ($series_path = null, $image, $format) use ($app, $conf, $session, $app_base_url) {
-        $picture = unserialize($session['picture']);
+        if ( $series_path !== null && $series_path !== '' ) {
+            $series = new Series(
+                $conf,
+                $series_path,
+                $app_base_url
+            );
 
-        if ( $image !== 'undefined'
-            && $picture
-            && substr($picture->getName(), strlen($image)) !== $image
-            || !$picture
-        ) {
-            if ( $series_path !== null && $series_path !== '' ) {
-                //names differs, load image
-                $series = null;
-                if ( isset($session['series']) ) {
-                    $series = unserialize($session['series']);
-                }
+            $picture = new Picture(
+                $conf,
+                $image,
+                $app_base_url,
+                $series->getFullPath()
+            );
 
-                if ( !$series || $series->getPath() !== $series_path ) {
-                    //check if series path are the same form params and from session
-                    $series = new Series(
-                        $conf,
-                        $series_path,
-                        $app_base_url
-                    );
-                }
-
+            $url = $picture->getUrl($series, $format);
+        } else {
+            if ( $image === DEFAULT_PICTURE ) {
                 $picture = new Picture(
                     $conf,
                     $image,
                     $app_base_url,
-                    $series->getFullPath()
+                    WEB_DIR . '/images/'
                 );
             } else {
-                if ( $image === DEFAULT_PICTURE ) {
-                    $picture = new Picture(
-                        $conf,
-                        $image,
-                        $app_base_url,
-                        WEB_DIR . '/images/'
-                    );
-                } else {
-                    $picture = new Picture(
-                        $conf,
-                        $image,
-                        $app_base_url
-                    );
-                }
+                $picture = new Picture(
+                    $conf,
+                    $image,
+                    $app_base_url
+                );
             }
+            $url = $picture->getUrl(null, $format);
         }
-        $app->redirect($picture->getUrl($format));
+        $app->redirect($url);
     }
 );
 
@@ -155,13 +141,23 @@ $app->get(
 );
 
 $app->get(
-    '/ajax/series/infos(/:image)',
-    function ($img = null) use ($app, $session) {
-        $series = unserialize($session['series']);
+    '/ajax/series/infos/:series/:image',
+    function ($series_path, $img) use ($app, $conf, $app_base_url) {
+        $start = $app->request->params('s');
+        $end = $app->request->params('e');
+
+        $series = new Series(
+            $conf,
+            $series_path,
+            $app_base_url,
+            $start,
+            $end
+        );
+
         if ( $img !== null ) {
             $series->setImage($img);
-            $session['series'] = serialize($series);
         }
+
         $infos = $series->getInfos();
         echo json_encode($infos);
     }

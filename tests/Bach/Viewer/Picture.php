@@ -322,8 +322,8 @@ class Picture extends atoum
         $isPyramidal = $picture->isPyramidal();
         $fpath = $picture->getFullPath();
         $vformats = $picture->getVisibleFormats();
-        $url = $picture->getUrl();
-        $surl = $picture->getUrl('default');
+        $url = $picture->getUrl(null);
+        $surl = $picture->getUrl(null, 'default');
         $name = $picture->getName();
 
         $this->integer($width)->isEqualTo(150);
@@ -332,9 +332,9 @@ class Picture extends atoum
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/doms.jpg');
         $this->string($name)->isIdenticalTo('doms.jpg');
         $this->array($vformats)->hasSize(3);
-        $this->string($url)->isIdenticalTo('/show/default/' . base64_encode($fpath));
+        $this->string($url)->isIdenticalTo('/show/default/doms.jpg');
         $this->string($surl)->isIdenticalTo(
-            '/show/default/' . base64_encode($fpath)
+            '/show/default/doms.jpg'
         );
     }
 

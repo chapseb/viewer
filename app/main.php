@@ -47,6 +47,7 @@ use \Slim\Route;
 use \Slim\Views\Twig;
 use \Bach\Viewer\Conf;
 use \Bach\Viewer\Picture;
+use Bach\Viewer\Viewer;
 use \Analog\Analog;
 
 session_start();
@@ -147,6 +148,8 @@ if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php'))
     }
 }
 
+$viewer = new Viewer($conf, $app_base_url);
+
 $view = $app->view();
 $view->parserExtensions = array(
     new Twig_Extensions_Extension_I18n()
@@ -201,7 +204,8 @@ $app->hook(
 Route::setDefaultConditions(
     array(
         'image'     => '.+\.[a-zA-Z]{3,4}',
-        'series'    => '.+'
+        'series'    => '.+',
+        'format'    => 'full|' . implode('|', array_keys($conf->getFormats()))
     )
 );
 

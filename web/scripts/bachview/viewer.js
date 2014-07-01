@@ -67,11 +67,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             //load navigation overview image
             var _src;
-            if ( me.image_name && series_path != '' ) {
-                _src = app_url + '/ajax/img/'  + series_path  + '/' + me.image_name + '/format/thumb';
-            } else {
-                _src  = me.options.src.replace(/show\/.+\//, 'show/thumb/');
-            }
+            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
                 $('.navwin, .navwin > img, .outerzone').removeAttr('style')
@@ -234,7 +230,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            var _a = $('<a href="' + series_path + '/' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
@@ -296,11 +292,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //resize image
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
-            if ( series_path != '') {
-                var _src = app_url + '/ajax/img/' + series_path + '/' + me.image_name  + '/format/' + _format;
-            } else {
-                _src  = me.options.src.replace(/show\/.+\//, 'show/' + _format + '/');
-            }
+            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
             me.loadImage(_src);
         }).val('default');
 
@@ -385,17 +377,24 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     display: function(img)
     {
-        this.image_name = img;
-        if ( series_path != '') {
-            img = series_path + '/' + img;
-        }
-        this.loadImage(app_url + '/ajax/img/' + img);
+        this.image_name = (img.split('/')).pop();
+        this.options.src = '/show/default/' + img;
+        this.loadImage(app_url + '/show/default/' + img);
     },
 
     negate: function()
     {
-        var _img_path = $('#viewer > img').attr('src').replace('/show', '');
-        this.loadImage(app_url + '/transform/negate' + _img_path);
+        var _img_path = $('#viewer > img').attr('src');
+
+        if ( this.negated == true ) {
+            _img_path = '/show' + _img_path.replace('/transform/negate', '');
+            this.negated = false;
+        } else {
+            _img_path = '/transform/negate' + _img_path.replace('/show', '');
+            this.negated = true;
+        }
+
+        this.loadImage(_img_path);
     },
 
     /**
@@ -406,22 +405,25 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
-        var _url = app_url + '/ajax/series/infos';
-        if ( this.image_name != undefined ) {
-            _url += '/' + this.image_name;
+        var _url = app_url + '/ajax/series/infos/';
+        _url += series_path + '/' + this.image_name;
+
+        if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
+            _url += '?s=' + series_start + '&e=' + series_end;
         }
+
         //check for subseries
-        var _subs = $('#previmg').attr('href').replace(/&img=(.+)/, '');
+        /*var _subs = $('#previmg').attr('href').replace(/&img=(.+)/, '');
         if ( _subs != '?img' ) {
             _url += _subs;
-        }
+        }*/
         $.get(
             _url,
             function(data){
                 var _prev = $('#previmg');
-                _prev.attr('href', _prev.attr('href').replace(/img=(.+)/, 'img=' + data.prev));
+                _prev.attr('href', series_path + '/' + data.prev);
                 var _next = $('#nextimg');
-                _next.attr('href', _next.attr('href').replace(/img=(.+)/, 'img=' + data.next));
+                _next.attr('href', series_path + '/' + data.next);
                 $('#current_pos').html(data.position);
                 $('header > h2').html(data.current);
             },
@@ -684,9 +686,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     _imgNameFromLink: function(link) {
-        var _str = link.attr('href');
-        var _re = /img=(.*)/;
-        var _img = _str.match(_re)[1];
+        var _img = link.attr('href');
         return _img;
     }
 }));

@@ -43,26 +43,14 @@
  */
 
 use \Bach\Viewer\Picture;
+use \Bach\Viewer\Series;
 use \Bach\Viewer\Pdf;
 
 $app->get(
-    '/show(/:format)/:uri',
-    function ($format, $uri) use ($app, $conf, &$session, $app_base_url) {
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
+    '/show/:format(/:series)/:image',
+    function ($format = null, $series_path = null, $image) use ($app, $viewer) {
+        $picture = $viewer->getImage($series_path, $image);
 
-        if ( !isset($session['picture']) ) {
-            $session['picture'] = serialize($picture);
-        } else {
-            $sess_pic = unserialize($session['picture']);
-            if ( $sess_pic->getFullPath() != $picture->getFullPath() ) {
-                $session['picture'] = serialize($picture);
-            }
-        }
-        //var_dump($picture);
         if ( $format == '' ) {
             $format = 'default';
         }
@@ -76,28 +64,9 @@ $app->get(
 );
 
 $app->get(
-    '/transform/:method(/:angle)(/:format)/:uri',
-    function ($method, $angle, $format, $uri) use ($app,
-        $conf, &$session, $app_base_url
-    ) {
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
-
-        if ( !isset($session['picture']) ) {
-            $session['picture'] = serialize($picture);
-        } else {
-            $sess_pic = unserialize($session['picture']);
-            if ( $sess_pic->getFullPath() != $picture->getFullPath() ) {
-                $session['picture'] = serialize($picture);
-            }
-        }
-
-        if ( $format == '' ) {
-            $format = 'default';
-        }
+    '/transform/:method(/:angle)/:format(/:series)/:image',
+    function ($method, $angle, $format, $series_path, $image) use ($app, $viewer) {
+        $picture = $viewer->getImage($series_path, $image);
 
         if ( $angle === '' ) {
             $angle = null;
@@ -163,61 +132,9 @@ $app->get(
 );
 
 $app->get(
-    '/crop/:x/:y/:width/:height(/:format)/:uri',
-    function ($x, $y, $width, $height, $format, $uri) use ($app,
-        $conf, &$session, $app_base_url
-    ) {
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
-
-        $params = array(
-            'x' => $x,
-            'y' => $y,
-            'width' => $width,
-            'height' => $height
-        );
-        if ( $format == '' ) {
-            $format = 'default';
-        }
-
-        $display = $picture->getDisplay($format, null, false, $params);
-        //var_dump($display);
-        $response = $app->response();
-
-
-        foreach ( $display['headers'] as $key=>$header ) {
-            $response[$key] = $header;
-        }
-        $response->body($display['content']);
-    }
-)->conditions(
-    array(
-        'x'         => '\d+',
-        'y'         => '\d+',
-        'width'     => '\d+',
-        'height'    => '\d+'
-    )
-);
-
-$app->get(
-    '/print/:x/:y/:width/:height(/:format)/:uri(/:show)',
-    function ($x, $y, $width, $height, $format, $uri, $show = false) use ($app,
-        $conf, &$session, $app_base_url
-    ) {
-        $protocol = 'http';
-        if ( isset($_SERVER['HTTPS'])) {
-            $protocol .= 's';
-        }
-        $root_base_url= $protocol . '://' . $_SERVER['HTTP_HOST'] ;
-
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
+    '/print/:x/:y/:width/:height/:format/:series/:image(/:show)',
+    function ($x, $y, $width, $height, $format, $series_path, $image, $show = false) use ($app, $conf, $viewer) {
+        $picture = $viewer->getImage($series_path, $image);
 
         $params = array(
             'x'         => $x,
