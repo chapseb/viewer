@@ -106,12 +106,16 @@ class Series
             $handle = opendir($this->_full_path);
 
             $all_entries = array();
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
             while ( false !== ($entry = readdir($handle)) ) {
                 if ($entry != "."
                     && $entry != ".."
                     && !is_dir($this->_full_path . '/' . $entry)
                 ) {
-                    $all_entries[] = $entry;
+                    $mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                    if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                        $all_entries[] = $entry;
+                    }
                 }
             }
             closedir($handle);
