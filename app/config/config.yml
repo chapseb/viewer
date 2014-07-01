@@ -48,6 +48,8 @@ iip:
     server: /iipsrv
 ui:
     enable_right_click: true
+    negate: false
+    print: false
 roots:
     - /var/www/images
 
