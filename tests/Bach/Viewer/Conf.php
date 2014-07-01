@@ -153,22 +153,37 @@ class Conf extends atoum
         $conf = new Viewer\Conf();
         $ui = $conf->getUI();
         $this->array($ui)
-            ->hasSize(1)
+            ->hasSize(3)
             ->hasKey('enable_right_click');
 
         //right click is enabled in default configuration
         $rc_enabled = $ui['enable_right_click'];
         $this->boolean($rc_enabled)->isTrue();
 
+        $negate_enabled = $ui['negate'];
+        $this->boolean($negate_enabled)->isFalse();
+
+        $print_enabled = $ui['print'];
+        $this->boolean($print_enabled)->isFalse();
+
         //then, test UT configuration
         $ui = $this->_conf->getUI();
         $this->array($ui)
-            ->hasSize(1)
-            ->hasKey('enable_right_click');
+            ->hasSize(3)
+            ->hasKey('enable_right_click')
+            ->hasKey('negate')
+            ->hasKey('print');
 
         //right click is disabled in test configuration
         $rc_enabled = $ui['enable_right_click'];
         $this->boolean($rc_enabled)->isFalse();
+
+        $negate_enabled = $ui['negate'];
+        $this->boolean($negate_enabled)->isFalse();
+
+        $print_enabled = $ui['print'];
+        $this->boolean($print_enabled)->isFalse();
+
     }
 
     /**
@@ -261,10 +276,10 @@ class Conf extends atoum
     public function testGetPrepareMethod()
     {
         $method = $this->_conf->getPrepareMethod();
-        $this->string($method)->isIdenticalTo('choose');
+        $this->string($method)->isIdenticalTo('gd');
 
         $conf = new Viewer\Conf(TESTS_DIR . '/config/config-woprepared.yml');
         $method = $conf->getPrepareMethod();
-        $this->string($method)->isIdenticalTo('gmagick');
+        $this->string($method)->isIdenticalTo('choose');
     }
 }
