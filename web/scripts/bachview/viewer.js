@@ -202,7 +202,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _leftPosHD = Math.round(scale_width * _leftPos /_width); 
 
         _src  = $('#viewer > img').attr('src').replace(/show\//, '' );
-        var res = 'printpdf/'  + _leftPosHD  +  '/' +  _topPosHD +  '/' + scale_width +  '/' + scale_height +  _src ;
+        var res = 'print/'  + _leftPosHD  +  '/' +  _topPosHD +  '/' + scale_width +  '/' + scale_height +  _src ;
 
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + '/' + res;

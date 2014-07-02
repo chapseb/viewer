@@ -285,6 +285,10 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background-position: -455px 0;
 }
 
+#print {
+    background-position: -500px 0;
+}
+
 #fullscreen {
     width: 20px;
     height: 20px;
