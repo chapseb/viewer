@@ -183,6 +183,14 @@ $app->hook(
             $ui['enable_right_click']
         );
         $v->setData('lang', $lang);
+        $v->setData(
+            'negate',
+            $ui['negate']
+        );
+        $v->setData(
+            'print',
+            $ui['print']
+        );
 
         $fmts = $conf->getFormats();
         $v->setData('thumb_format', $fmts['thumb']);
