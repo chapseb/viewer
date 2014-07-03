@@ -419,7 +419,6 @@ class Picture
     {
         $prefix = $this->_app_base_url . '/show/';
         $prefix .= $format . '/';
-        //return $prefix . base64_encode($this->_full_path);
         if ( $series ) {
             $prefix .= $series->getPath() . '/';
         }

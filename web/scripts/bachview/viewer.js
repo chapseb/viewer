@@ -224,8 +224,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             } else {
                 _thumbview = $('<div id="thumbnails_view"></div>');
 
+                var _url = app_url + '/ajax/series/' + series_path  + '/thumbs';
+                if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
+                    _url += '?s=' + series_start + '&e=' + series_end;
+                }
+
                 $.get(
-                    app_url + '/ajax/series/thumbs',
+                    _url,
                     function(data){
                         var _thumbs = data['thumbs'];
                         var _meta = data['meta'];

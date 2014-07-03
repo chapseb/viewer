@@ -91,20 +91,10 @@ class Viewer
         }
 
         if ( $series_path !== null ) {
-            $start = null;
-            $end = null;
-
-            /*if ( $series !== null ) {
-                $start = $series->getStart();
-                $end = $series->getEnd();
-            }*/
-
             $series = new Series(
                 $this->_conf,
                 $series_path,
-                $this->_app_base_url,
-                $start,
-                $end
+                $this->_app_base_url
             );
             $series->setImage($image_name);
             $fullpath = $series->getFullPath();

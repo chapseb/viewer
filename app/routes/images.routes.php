@@ -50,10 +50,6 @@ $app->get(
     '/show/:format(/:series)/:image',
     function ($format = null, $series_path = null, $image) use ($app, $viewer) {
         $picture = $viewer->getImage($series_path, $image);
-
-        if ( $format == '' ) {
-            $format = 'default';
-        }
         $display = $picture->getDisplay($format);
         $response = $app->response();
         foreach ( $display['headers'] as $key=>$header ) {

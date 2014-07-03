@@ -47,7 +47,7 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, &$session, $app_base_url) {
+    function ($path) use ($app, $conf, $app_base_url) {
         $request = $app->request();
         $start = $request->params('s');
         if ( trim($start) === '' ) {
@@ -117,9 +117,6 @@ $app->get(
             $app_base_url,
             $series->getFullPath()
         );
-
-        $session['series'] = serialize($series);
-        $session['picture'] = serialize($picture);
 
         $args = array(
             'img'       => $img,
