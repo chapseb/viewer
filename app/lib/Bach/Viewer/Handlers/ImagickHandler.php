@@ -59,7 +59,9 @@ class ImagickHandler extends AbstractHandler
 {
     protected $capabilities = array(
         'rotate',
-        'negate'
+        'negate',
+        'crop',
+        'print'
     );
 
     /**
@@ -146,7 +148,6 @@ class ImagickHandler extends AbstractHandler
         try {
             $image = new \Imagick($source);
 
-
             if ( isset($params['negate']) ) {
                 $image->negateImage(false);
             }
@@ -160,8 +161,8 @@ class ImagickHandler extends AbstractHandler
 
             if ( isset($params['crop']) ) {
                 $image->cropImage(
-                    $params['crop']['width'],
-                    $params['crop']['height'],
+                    $params['crop']['w'],
+                    $params['crop']['h'],
                     $params['crop']['x'],
                     $params['crop']['y']
                 );

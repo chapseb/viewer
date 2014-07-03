@@ -45,6 +45,7 @@
 namespace Bach\Viewer;
 
 use \Analog\Analog;
+use \Slim\Http\Request;
 
 /**
  * Bach viewer
@@ -126,5 +127,34 @@ class Viewer
         }
 
         return $picture;
+    }
+
+    /**
+     * Bind a request
+     *
+     * @param Request $request Request
+     *
+     * @return array
+     */
+    public function bind(Request $request)
+    {
+        $params = array(
+            'rotate'    => $request->params('r'),
+            'negate'    => $request->params('n'),
+            'crop'      => false
+        );
+
+        if ( $request->params('h') !== null && $request->params('h') !== null
+            && $request->params('x') !== null && $request->params('y') !== null
+        ) {
+            $params['crop'] = array(
+                'x' => $request->params('x'),
+                'y' => $request->params('y'),
+                'w' => $request->params('w'),
+                'h' => $request->params('h')
+            );
+        }
+
+        return $params;
     }
 }

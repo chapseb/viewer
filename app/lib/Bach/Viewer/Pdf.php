@@ -74,7 +74,20 @@ class Pdf extends \TCPDF
     public function __construct(Conf $conf, Picture $picture, $params, $format)
     {
         $orientation = 'P';
-        if ( $params['width'] > $params['height'] ) {
+
+        $w = $picture->getWidth();
+        $h = $picture->getHeight();
+
+        if ( $params['crop'] !== false ) {
+            if ( $params['crop']['w'] < $w ) {
+                $w = $params['crop']['w'];
+            }
+            if ( $params['crop']['h'] ) {
+                $h = $params['crop']['h'];
+            }
+        }
+
+        if ( $w > $h ) {
             $orientation = 'L';
         }
         parent::__construct($orientation, 'mm', 'A4', true, 'UTF-8');
@@ -133,17 +146,14 @@ class Pdf extends \TCPDF
     {
         $display = $this->_picture->getDisplay(
             $this->_image_format,
-            null,
-            false,
             $this->_params
         );
 
         /** FIXME: parametize? */
         $tmp_name = '/tmp/';
         $tmp_name .= uniqid(
-            base64_encode($this->_picture->getFullPath()) . '_' .
-            $this->_image_format . '_' . $this->_params['x'] . $this->_params['y'] .
-            $this->_params['width'] . $this->_params['height'],
+            base64_encode($this->_picture->getFullPath()) .
+            '_' . $this->_image_format,
             true
         );
 

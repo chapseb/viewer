@@ -193,6 +193,25 @@ abstract class AbstractHandler
     }
 
     /**
+     * Crop image
+     *
+     * @param string $source the source image
+     *
+     * @return void
+     */
+    public function crop($source)
+    {
+        if ( $this->canCrop() ) {
+            return $this->transform(
+                $source,
+                array(
+                    'crop' => true
+                )
+            );
+        }
+    }
+
+    /**
      * Check for negate capabiblity
      *
      * @return boolean
@@ -233,6 +252,46 @@ abstract class AbstractHandler
     }
 
     /**
+     * Check for crop capabiblity
+     *
+     * @return boolean
+     */
+    public function canCrop()
+    {
+        if ( in_array('crop', $this->capabilities) ) {
+            return true;
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%ext',
+                    $this->extensionName(),
+                    _('Crop is not supported with %ext!')
+                )
+            );
+        }
+    }
+
+    /**
+     * Check for print capabiblity
+     *
+     * @return boolean
+     */
+    public function canPrint()
+    {
+        if ( in_array('print', $this->capabilities) ) {
+            return true;
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%ext',
+                    $this->extensionName(),
+                    _('Print is not supported with %ext!')
+                )
+            );
+        }
+    }
+
+    /**
      * Check if image suits handler capabilities
      *
      * @param boolean $pyramidal Image pyramidal or not
@@ -248,44 +307,6 @@ abstract class AbstractHandler
             //instead of throwing an error
             throw new \RuntimeException(
                 _('Image format not supported if not pyramidal')
-            );
-        }
-    }
-    /**
-     * Negate image
-     *
-     * @param string $source the source image
-     *
-     * @return void
-     */
-    public function crop($source)
-    {
-        if ( $this->canCrop() ) {
-            return $this->transform(
-                $source,
-                array(
-                    'crop' => true
-                )
-            );
-        }
-    }
-
-    /**
-     * Check for negate capabiblity
-     *
-     * @return boolean
-     */
-    public function canCrop()
-    {
-        if ( in_array('crop', $this->capabilities) ) {
-            return true;
-        } else {
-            throw new \RuntimeException(
-                str_replace(
-                    '%ext',
-                    $this->extensionName(),
-                    _('Crop is not supported with %ext!')
-                )
             );
         }
     }

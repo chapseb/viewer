@@ -58,7 +58,9 @@ use \Analog\Analog;
 class GmagickHandler extends AbstractHandler
 {
     protected $capabilities = array(
-        'rotate'
+        'rotate',
+        'crop',
+        'print'
     );
 
     /**

@@ -160,7 +160,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
     print: function()
     {
-        var me = this;
         var _img_height = this.nav_img_object.display_height();
         var _img_width = this.nav_img_object.display_width();
         var _width;
@@ -168,7 +167,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _topPos = 0;
         var _leftPos = 0;
 
-        var _container = $(this.container[0]);
         //is image taller than window?
         var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height())/100;
 
@@ -197,8 +195,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
         _leftPosHD = Math.round(scale_width * _leftPos /_width); 
 
-        _src  = $('#viewer > img').attr('src').replace(/show\//, '' );
-        var res = 'print/'  + _leftPosHD  +  '/' +  _topPosHD +  '/' + scale_width +  '/' + scale_height +  _src ;
+        var _src = $('#viewer > img').attr('src').replace(/show\//, '' );
+        var res = 'print'  +  _src ;
+        res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
+
+        if ( this.negated ) {
+            res += '&n=true';
+        }
 
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + '/' + res;
@@ -387,10 +390,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _img_path = $('#viewer > img').attr('src');
 
         if ( this.negated == true ) {
-            _img_path = '/show' + _img_path.replace('/transform/negate', '');
+            _img_path = '/show' + _img_path.replace('/transform', '');
             this.negated = false;
         } else {
-            _img_path = '/transform/negate' + _img_path.replace('/show', '');
+            _img_path = '/transform' + _img_path.replace('/show', '') + '?n=true';
             this.negated = true;
         }
 

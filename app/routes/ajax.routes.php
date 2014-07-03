@@ -143,8 +143,9 @@ $app->get(
 $app->get(
     '/ajax/series/infos/:series/:image',
     function ($series_path, $img) use ($app, $conf, $app_base_url) {
-        $start = $app->request->params('s');
-        $end = $app->request->params('e');
+        $request = $app->request;
+        $start = $request->params('s');
+        $end = $request->params('e');
 
         $series = new Series(
             $conf,

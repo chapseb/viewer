@@ -40,6 +40,7 @@ formats:
     thumb:
         width: 150
         height: 150
+
 prepared_images:
     #method is one of choose, gd, gmagick, imagick
     method: choose
@@ -50,6 +51,7 @@ ui:
     enable_right_click: true
     negate: false
     print: false
+
 roots:
     - /var/www/images
 

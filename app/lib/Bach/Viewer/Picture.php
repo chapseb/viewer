@@ -239,20 +239,18 @@ class Picture
     /**
      * Get display informations (header, content, etc)
      *
-     * @param string  $format Format to display
-     * @param int     $angle  Rotation angle, if any
-     * @param boolean $negate Negate the image
-     * @param boolean $crop   Crop the image
+     * @param string $format           Format to display
+     * @param array  $transform_params Transformation parameters, optionnal
      *
      * @return array
      */
-    public function getDisplay($format = 'full', $angle = null, $negate = false,
-        $crop = false
-    ) {
+    public function getDisplay($format = 'full', $transform_params = null )
+    {
         Analog::log(
             'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
             Analog::DEBUG
         );
+
         $length = null;
         $file_path = null;
         if ( $format == 'full' ) {
@@ -263,20 +261,23 @@ class Picture
         }
 
         $content = null;
-        if ( $angle === null && $negate === false && $crop === false) {
+        if ( $transform_params === null ) {
             $content = file_get_contents($file_path);
         } else {
             $length = null; //FIXME: find a way to get lenght
+
             $params = array();
-            if ( $angle !== null ) {
-                $params['rotate'] = array('angle' => $angle);
+            //translate parameters for handler
+            if ( $transform_params['rotate'] !== null ) {
+                $params['rotate'] = array('angle' => $transform_params['rotate']);
             }
-            if ( $negate === true ) {
+            if ( $transform_params['negate'] !== null ) {
                 $params['negate'] = true;
             }
-            if ( $crop !== false ) {
-                $params['crop'] = $crop;
+            if ( $transform_params['crop'] !== false ) {
+                $params['crop'] = $transform_params['crop'];
             }
+
             $content = $this->_handler->transform($file_path, $params);
         }
 
@@ -487,6 +488,36 @@ class Picture
     public function getHeight()
     {
         return $this->_height;
+    }
+
+    /**
+     * Is negate supported by current handler
+     *
+     * @return boolean
+     */
+    public function canNegate()
+    {
+        try {
+            $this->_handler->canNegate();
+            return true;
+        } catch ( \RuntimeException $e ) {
+            return false;
+        }
+    }
+
+    /**
+     * Is print supported by current handler
+     *
+     * @return boolean
+     */
+    public function canPrint()
+    {
+        try {
+            $this->_handler->canPrint();
+            return true;
+        } catch ( \RuntimeException $e ) {
+            return false;
+        }
     }
 
 }

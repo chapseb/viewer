@@ -64,31 +64,19 @@ $app->get(
 );
 
 $app->get(
-    '/transform/:method(/:angle)/:format(/:series)/:image',
-    function ($method, $angle, $format, $series_path, $image) use ($app, $viewer) {
+    '/transform/:format(/:series)/:image',
+    function ($format, $series_path, $image) use ($app, $viewer) {
         $picture = $viewer->getImage($series_path, $image);
+        $params = $viewer->bind($app->request);
 
-        if ( $angle === '' ) {
-            $angle = null;
-        }
+        $display = $picture->getDisplay($format, $params);
 
-        $negate = false;
-        if ( $method === 'negate' ) {
-            $negate = true;
-        }
-
-        $display = $picture->getDisplay($format, $angle, $negate);
         $response = $app->response();
         foreach ( $display['headers'] as $key=>$header ) {
             $response[$key] = $header;
         }
         $response->body($display['content']);
     }
-)->conditions(
-    array(
-        'method'    => '(rotate|negate)',
-        'angle'     => '(([0-2]?[0-9]?[0-9])|([3][0-5][0-9])|(360))'
-    )
 );
 
 $app->get(
@@ -132,25 +120,18 @@ $app->get(
 );
 
 $app->get(
-    '/print/:x/:y/:width/:height/:format/:series/:image(/:show)',
-    function ($x, $y, $width, $height, $format, $series_path, $image, $show = false) use ($app, $conf, $viewer) {
+    '/print/:format(/:series)/:image(/:display)',
+    function ($format, $series_path, $image, $display = false) use ($app,
+        $conf, $viewer
+    ) {
         $picture = $viewer->getImage($series_path, $image);
-
-        $params = array(
-            'x'         => $x,
-            'y'         => $y,
-            'width'     => $width,
-            'height'    => $height
-        );
-        if ( $format == '' ) {
-            $format = 'default';
-        }
+        $params = $viewer->bind($app->request);
 
         $pdf = new Pdf($conf, $picture, $params, $format);
 
         $app->response->headers->set('Content-Type', 'application/pdf');
 
-        if ( $show === 'true' ) {
+        if ( $display === 'true' ) {
             $content = $pdf->getContent();
             $app->response->body($content);
         } else {
@@ -159,10 +140,6 @@ $app->get(
     }
 )->conditions(
     array(
-        'x'         => '\d+',
-        'y'         => '\d+',
-        'width'     => '\d+',
-        'height'    => '\d+',
-        'show'      => 'true|false'
+        'display' => 'true|false'
     )
 );
