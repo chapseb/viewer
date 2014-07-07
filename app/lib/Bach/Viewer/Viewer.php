@@ -133,7 +133,7 @@ class Viewer
             'crop'      => false
         );
 
-        if ( $request->params('h') !== null && $request->params('h') !== null
+        if ( $request->params('h') !== null && $request->params('w') !== null
             && $request->params('x') !== null && $request->params('y') !== null
         ) {
             $params['crop'] = array(
