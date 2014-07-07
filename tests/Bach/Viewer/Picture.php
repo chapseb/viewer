@@ -123,8 +123,7 @@ class Picture extends atoum
                 $picture = new Viewer\Picture(
                     $this->_conf,
                     'doms.tiff',
-                    null,
-                    $this->_series->getFullPath()
+                    null
                 );
             }
         )->hasMessage('Image format not supported if not pyramidal');
@@ -270,8 +269,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             'tech.jpg',
-            null,
-            $this->_series->getFullPath()
+            null
         );
         $width = $picture->getWidth();
         $height = $picture->getHeight();
@@ -314,8 +312,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             $this->_series->getRepresentative(),
-            null,
-            $this->_series->getFullPath()
+            null
         );
         $width = $picture->getWidth();
         $height = $picture->getHeight();
