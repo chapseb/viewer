@@ -104,8 +104,7 @@ class Viewer
             $picture = new Picture(
                 $this->_conf,
                 DEFAULT_PICTURE,
-                $this->_app_base_url,
-                WEB_DIR . '/images/'
+                $this->_app_base_url
             );
         } else {
             $picture = new Picture(

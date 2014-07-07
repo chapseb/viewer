@@ -88,8 +88,7 @@ $app->get(
             $picture = new Picture(
                 $conf,
                 DEFAULT_PICTURE,
-                $app_base_url,
-                WEB_DIR . '/images/'
+                $app_base_url
             );
         } else {
             $picture = new Picture($conf, $img, $app_base_url, $path);

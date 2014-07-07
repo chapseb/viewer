@@ -96,18 +96,22 @@ class Picture
         $this->_name = $name;
         $this->_app_base_url = $app_base_url;
 
-        if ( $path !== null ) {
+        if ( $name === DEFAULT_PICTURE ) {
+            $this->_full_path = WEB_DIR . '/images/' . $this->_name;
+        } else {
+            if ( $path !== null ) {
 
-            $this->_path = $path;
-            //normalize path
-            if (  substr($this->_path, - 1) !== '/'
-                && !substr($this->_name, 0, 1) !== '/'
-            ) {
-                $this->_path = $this->_path . '/';
+                $this->_path = $path;
+                //normalize path
+                if (  substr($this->_path, - 1) !== '/'
+                    && !substr($this->_name, 0, 1) !== '/'
+                ) {
+                    $this->_path = $this->_path . '/';
+                }
             }
-        }
 
-        $this->_full_path = $this->_path . $this->_name;
+            $this->_full_path = $this->_path . $this->_name;
+        }
 
         if ( !file_exists($this->_full_path) ) {
             if ( isset($this->_conf) ) {
@@ -421,6 +425,8 @@ class Picture
         $prefix .= $format . '/';
         if ( $series ) {
             $prefix .= $series->getPath() . '/';
+        } else if ( $this->_path !== null ) {
+            $prefix .= $this->_path;
         }
         return $prefix . $this->getName();
     }
