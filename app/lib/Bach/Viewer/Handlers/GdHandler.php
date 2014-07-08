@@ -59,6 +59,7 @@ class GdHandler extends AbstractHandler
 {
     protected $capabilities = array(
         'rotate',
+        'negate',
         'crop'
     );
 
@@ -217,12 +218,18 @@ class GdHandler extends AbstractHandler
      */
     public function transform($source, $params)
     {
-        if ( isset($params['negate']) ) {
-            $this->canNegate();
-        }
-
         $image = $this->_getImageAsResource($source);
         $result = null;
+
+        if ( isset($params['negate']) ) {
+            $res = imagefilter($image, IMG_FILTER_NEGATE);
+
+            if ( $res === false ) {
+                throw new \RuntimeException(
+                    _('Something went wrong in GD negate!')
+                );
+            }
+        }
 
         if ( isset($params['rotate']) ) {
             $result = imagerotate(
@@ -230,6 +237,12 @@ class GdHandler extends AbstractHandler
                 360 - $params['rotate']['angle'],
                 0
             );
+
+            if ( $result === null ) {
+                throw new \RuntimeException(
+                    _('Something went wrong in GD rotation!')
+                );
+            }
         }
 
         if ( isset($params['crop']) ) {
@@ -240,12 +253,16 @@ class GdHandler extends AbstractHandler
                 (($result !== null) ? $result : $image),
                 $cparams
             );
+
+            if ( $result === null ) {
+                throw new \RuntimeException(
+                    _('Something went wrong in GD crop!')
+                );
+            }
         }
 
         if ( $result === null ) {
-            throw new \RuntimeException(
-                _('Something went wrong in GD transformation!')
-            );
+            $result = $image;
         }
 
         imagejpeg($result);
