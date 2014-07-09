@@ -63,6 +63,12 @@ if ( defined('VIEWER_XHPROF_PATH')
 }
 
 $logger = null;
+
+$log_lvl = Analog::ERROR;
+if ( APP_DEBUG === true ) {
+    $log_lvl = Analog::DEBUG;
+}
+
 if ( defined('APP_TESTS') ) {
     $viewer_log = '';
     $logger = \Analog\Handler\Variable::init($viewer_log);
@@ -83,7 +89,12 @@ if ( defined('APP_TESTS') ) {
     $log_file = $log_dir . 'viewer.log';
     $logger = \Analog\Handler\File::init($log_file);
 }
-Analog::handler($logger);
+Analog::handler(
+    \Analog\Handler\LevelBuffer::init(
+        $logger,
+        $log_lvl
+    )
+);
 
 $conf = new Conf();
 
