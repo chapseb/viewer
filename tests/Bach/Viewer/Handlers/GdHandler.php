@@ -100,11 +100,8 @@ class GdHandler extends atoum
         $extension = $handler->extensionName();
         $this->string($extension)->isEqualTo('gd');
 
-        $this->exception(
-            function () use ($handler) {
-                $negate = $handler->canNegate();
-            }
-        )->hasMessage('Negate is not supported with gd!');
+        $negate = $handler->canNegate();
+        $this->boolean($negate)->isTrue();
 
         $rotate = $handler->canRotate();
         $this->boolean($rotate)->isTrue();
