@@ -84,20 +84,9 @@ class Viewer
     public function getImage($series_path, $image_name)
     {
         $picture = null;
-        $fullpath = null;
 
         if ( trim($series_path) === '' ) {
             $series_path = null;
-        }
-
-        if ( $series_path !== null ) {
-            $series = new Series(
-                $this->_conf,
-                $series_path,
-                $this->_app_base_url
-            );
-            $series->setImage($image_name);
-            $fullpath = $series->getFullPath();
         }
 
         if ( $series_path === null && $image_name === DEFAULT_PICTURE ) {
@@ -111,7 +100,7 @@ class Viewer
                 $this->_conf,
                 $image_name,
                 $this->_app_base_url,
-                $fullpath
+                $series_path
             );
         }
 
