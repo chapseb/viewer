@@ -220,6 +220,14 @@ $app->notFound(
 $app->error(
     function (\Exception $e) use ($app, $conf, $app_base_url) {
         $resuUri = $app->request()->getResourceUri();
+
+        $etype = get_class($e);
+        Analog::error(
+            'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
+            '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
+            "\nStack trace:\n" . $e->getTraceAsString()
+        );
+
         if ( (substr($resuUri, 0, 10) === '/ajax/img/'
             || substr($resuUri, 0, 21) === '/ajax/representative/')
             && APP_DEBUG !== true
@@ -241,12 +249,6 @@ $app->error(
             }
             $response->body($display['content']);
         } else {
-            $etype = get_class($e);
-            Analog::error(
-                'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
-                '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
-                "\nStack trace:\n" . $e->getTraceAsString()
-            );
             $app->render(
                 '50x.html.twig',
                 array(
