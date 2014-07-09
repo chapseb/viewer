@@ -45,35 +45,6 @@
 use \Bach\Viewer\Picture;
 use \Bach\Viewer\Series;
 
-$app->get(
-    '/ajax/img(/:series)/:image',
-    function ($series_path = null, $image) use ($app, $conf, $app_base_url) {
-        $series = null;
-
-        if ( $series_path !== null ) {
-            $start = null;
-            $end = null;
-
-            if ( $series !== null ) {
-                $start = $series->getStart();
-                $end = $series->getEnd();
-            }
-
-            $series = new Series(
-                $conf,
-                $series_path,
-                $app_base_url,
-                $start,
-                $end
-            );
-        }
-        $series->setImage($image);
-        $picture = new Picture($conf, $image, $app_base_url, $series->getFullPath());
-
-        $app->redirect($picture->getUrl());
-    }
-);
-
 /**
  * FIXME: this one is mainly the same as the "show" route".
  * The only difference is that "ajax/img" route will display a
@@ -81,8 +52,8 @@ $app->get(
  * will display an error message (see 'slim.before.dispatch' in main.php)
  */
 $app->get(
-    '/ajax/img(/:series)/:image/format/:format',
-    function ($series_path = null, $image, $format) use ($app, $viewer) {
+    '/ajax/img(/:series)/:image(/format/:format)',
+    function ($series_path = null, $image, $format = 'default') use ($app, $viewer) {
         $picture = $viewer->getImage($series_path, $image);
         $display = $picture->getDisplay($format);
         $response = $app->response();
