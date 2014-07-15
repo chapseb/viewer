@@ -34,6 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 ( function( $, undefined ) {
 $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
+    /**
+     * Display options
+     */
+    display_options: {
+        zoom: 'auto',
+        format: 'default',
+        negate: false,
+        rotate: 0
+    },
+
     /* Overrides iviewer method to:
      *  - add specific UI
      *  - add actions on some events
@@ -92,6 +102,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         this.options.angle = function(ev, angle) {
             me.nav_img_object.angle(angle.angle);
+            me.display_options.rotate = angle.angle
 
             var _margin = 0;
             var _orig = '50% 50%';
@@ -195,12 +206,16 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
         _leftPosHD = Math.round(scale_width * _leftPos /_width); 
 
-        var _src = $('#viewer > img').attr('src').replace(/show\//, '' );
+        var _src = this.options.src.replace(/show\/default/, this.display_options.format);
         var res = 'print'  +  _src ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
-        if ( this.negated ) {
+        if ( this.display_options.negate ) {
             res += '&n=true';
+        }
+
+        if ( this.display_options.rotate > 0 ) {
+            res += '&r=' + this.display_options.rotate;
         }
 
         var _path_info = window.location.href.split('/');
@@ -238,7 +253,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="' + series_path + '/' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
@@ -300,6 +315,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //resize image
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
+            me.display_options.format = _format;
             _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
             me.loadImage(_src);
         }).val('default');
@@ -307,7 +323,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
             me.display(me._imgNameFromLink($(this)));
-            $('#formats > select').val('default');
+            $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
             return false;
         });
@@ -386,23 +402,32 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     display: function(img)
     {
         this.image_name = (img.split('/')).pop();
+
+        //store default format as source
         this.options.src = '/show/default/' + img;
-        this.loadImage(app_url + '/show/default/' + img);
-    },
+        var _img_path = app_url + this.options.src.replace(
+            'default',
+            this.display_options.format
+        );
 
-    negate: function()
-    {
-        var _img_path = $('#viewer > img').attr('src');
-
-        if ( this.negated == true ) {
-            _img_path = '/show' + _img_path.replace('/transform', '');
-            this.negated = false;
-        } else {
+        if ( this.display_options.negate ) {
             _img_path = '/transform' + _img_path.replace('/show', '') + '?n=true';
-            this.negated = true;
         }
 
         this.loadImage(_img_path);
+    },
+
+    /**
+     * Negate image
+     */
+    negate: function()
+    {
+        if ( this.display_options.negate == true ) {
+            this.display_options.negate = false;
+        } else {
+            this.display_options.negate = true;
+        }
+        this.display(this.options.src.replace('/show/default/', ''));
     },
 
     /**
@@ -416,22 +441,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _url = app_url + '/ajax/series/infos/';
         _url += series_path + '/' + this.image_name;
 
+        //check for subseries
         if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
             _url += '?s=' + series_start + '&e=' + series_end;
         }
 
-        //check for subseries
-        /*var _subs = $('#previmg').attr('href').replace(/&img=(.+)/, '');
-        if ( _subs != '?img' ) {
-            _url += _subs;
-        }*/
         $.get(
             _url,
             function(data){
                 var _prev = $('#previmg');
-                _prev.attr('href', series_path + '/' + data.prev);
+                _prev.attr('href', series_path + '?img=' + data.prev);
                 var _next = $('#nextimg');
-                _next.attr('href', series_path + '/' + data.next);
+                _next.attr('href', series_path + '?img=' + data.next);
                 $('#current_pos').html(data.position);
                 $('header > h2').html(data.current);
             },
@@ -694,8 +715,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     _imgNameFromLink: function(link) {
-        var _img = link.attr('href');
-        return _img;
+        var _str = link.attr('href').replace('/series', '');
+        var _re = /\?img=(.+)/;
+        return _str.replace(_re, '/$1');
     }
 }));
 

@@ -81,8 +81,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             ?s={{ series.getStart }}&e={{ series.getEnd }}&
                         {%- endif -%}
                     {%- endset -%}
-                    <a href="{{ series.getPath() }}/{{ series.getPreviousImage() }}{{ img_series }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="{{ series.getPath() }}/{{ series.getNextImage() }}{{ img_series }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->
