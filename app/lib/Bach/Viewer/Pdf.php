@@ -112,11 +112,11 @@ class Pdf extends \TCPDF
         $image = $this->_conf->getPrintHeaderImage($this->CurOrientation);
         if ( file_exists($image) ) {
             $this->SetY(5);
-            list($width, $height) = getimagesize($image);
-            $this->_header_height = ceil($height / 10) + 5;
             $this->writeHTML(
                 '<img src="' . $image . '"/>'
             );
+
+            $this->_header_height = ceil($this->getY());
         } else {
             Analog::error(
                 str_replace(
