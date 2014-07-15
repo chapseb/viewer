@@ -49,8 +49,8 @@ iip:
     server: /iipsrv
 ui:
     enable_right_click: true
-    negate: false
-    print: false
+    negate: true
+    print: true
 
 roots:
     - /var/www/images
