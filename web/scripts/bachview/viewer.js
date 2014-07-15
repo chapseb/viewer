@@ -188,7 +188,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         if ( this.img_object.display_height() < this.container[0].clientHeight ) {
-            var   scale_height = Math.round(this.container[0].clientHeight / percent);
+            var   scale_height = Math.round(this.img_object.display_height() / percent);
         } else {
             var   scale_height = Math.round( this.container[0].clientHeight / percent);
         }
