@@ -245,11 +245,13 @@ class Picture
      *
      * @param string $format           Format to display
      * @param array  $transform_params Transformation parameters, optionnal
+     * @param string $store            Temporary store image on disk
      *
      * @return array
      */
-    public function getDisplay($format = 'full', $transform_params = null )
-    {
+    public function getDisplay($format = 'full', $transform_params = null,
+        $store = null
+    ) {
         Analog::log(
             'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
             Analog::DEBUG
@@ -282,7 +284,7 @@ class Picture
                 $params['crop'] = $transform_params['crop'];
             }
 
-            $content = $this->_handler->transform($file_path, $params);
+            $content = $this->_handler->transform($file_path, $params, $store);
         }
 
         $headers = array();

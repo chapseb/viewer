@@ -146,10 +146,11 @@ abstract class AbstractHandler
      *
      * @param string $source Source image
      * @param array  $params Transformations and parameters
+     * @param string $store  Temporary store on disk
      *
      * @return string
      */
-    public abstract function transform($source, $params);
+    public abstract function transform($source, $params, $store = null);
 
     /**
      * Rotate image

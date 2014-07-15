@@ -60,7 +60,8 @@ class GdHandler extends AbstractHandler
     protected $capabilities = array(
         'rotate',
         'negate',
-        'crop'
+        'crop',
+        'print'
     );
 
     private $_supported_types = array(
@@ -213,10 +214,11 @@ class GdHandler extends AbstractHandler
      *
      * @param string $source Source image
      * @param array  $params Transformations and parameters
+     * @param string $store  Temporary store on disk
      *
      * @return string
      */
-    public function transform($source, $params)
+    public function transform($source, $params, $store = null)
     {
         $image = $this->_getImageAsResource($source);
         $result = null;
@@ -246,8 +248,32 @@ class GdHandler extends AbstractHandler
         }
 
         if ( isset($params['crop']) ) {
-            $cparams = $params['crop'];
+            $cparams = array(
+                'x'         => $params['crop']['x'],
+                'y'         => $params['crop']['y'],
+                'width'     => $params['crop']['w'],
+                'height'    => $params['crop']['h']
+            );
             $infos = $this->getImageInfos($source);
+
+            $orig_width = $infos[0];
+            $orig_height = $infos[1];
+
+            if ( isset($params['rotate'])
+                && ($params['rotate']['angle'] == 90
+                || $params['rotate']['angle'] == 270)
+            ) {
+                $orig_width = $infos[1];
+                $orig_height = $infos[0];
+            }
+
+            if ( $orig_width < $cparams['width'] ) {
+                $cparams['width'] = $orig_width;
+            }
+
+            if ( $orig_height < $cparams['height'] ) {
+                $cparams['height'] = $orig_height;
+            }
 
             $result = imagecrop(
                 (($result !== null) ? $result : $image),
@@ -265,8 +291,7 @@ class GdHandler extends AbstractHandler
             $result = $image;
         }
 
-        imagejpeg($result);
-        imagedestroy($image);
+        imagejpeg($result, $store);
         imagedestroy($result);
 
     }

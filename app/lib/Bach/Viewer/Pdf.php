@@ -144,11 +144,6 @@ class Pdf extends \TCPDF
      */
     private function _prepareImage()
     {
-        $display = $this->_picture->getDisplay(
-            $this->_image_format,
-            $this->_params
-        );
-
         /** FIXME: parametize? */
         $tmp_name = '/tmp/';
         $tmp_name .= uniqid(
@@ -157,9 +152,10 @@ class Pdf extends \TCPDF
             true
         );
 
-        file_put_contents(
-            $tmp_name,
-            $display['content']
+        $display = $this->_picture->getDisplay(
+            $this->_image_format,
+            $this->_params,
+            $tmp_name
         );
 
         $this->AddPage();

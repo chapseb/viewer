@@ -140,10 +140,11 @@ class ImagickHandler extends AbstractHandler
      *
      * @param string $source Source image
      * @param array  $params Transformations and parameters
+     * @param string $store  Temporary store on disk
      *
      * @return string
      */
-    public function transform($source, $params)
+    public function transform($source, $params, $store = null)
     {
         try {
             $image = new \Imagick($source);
@@ -168,7 +169,12 @@ class ImagickHandler extends AbstractHandler
                 );
             }
 
-            $ret = $image->getImageBlob();
+            $ret = null;
+            if ( $store !== null ) {
+                $ret = $image->writeImage($store);
+            } else {
+                $ret = $image->getImageBlob();
+            }
             $image->destroy();
             return $ret;
         } catch ( \ImagickException $e ) {

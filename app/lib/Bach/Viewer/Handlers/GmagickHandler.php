@@ -141,10 +141,11 @@ class GmagickHandler extends AbstractHandler
      *
      * @param string $source Source image
      * @param array  $params Transformations and parameters
+     * @param string $store  Temporary store on disk
      *
      * @return string
      */
-    public function transform($source, $params)
+    public function transform($source, $params, $store = null)
     {
         try {
             $image = new \Gmagick();
@@ -170,7 +171,12 @@ class GmagickHandler extends AbstractHandler
                 );
             }
 
-            $ret = $image->getImageBlob();
+            $ret = null;
+            if ( $store !== null ) {
+                $ret = $image->writeImage($store);
+            } else {
+                $ret = $image->getImageBlob();
+            }
             $image->destroy();
             return $ret;
         } catch ( \GmagickException $e ) {
