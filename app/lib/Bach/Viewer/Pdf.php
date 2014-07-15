@@ -45,6 +45,8 @@
 
 namespace Bach\Viewer;
 
+use \Analog\Analog;
+
 /**
  * PDF Generation
  *
