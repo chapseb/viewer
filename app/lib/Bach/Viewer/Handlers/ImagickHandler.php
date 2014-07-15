@@ -57,6 +57,8 @@ use \Analog\Analog;
  */
 class ImagickHandler extends AbstractHandler
 {
+    private $_quality = 70;
+
     protected $capabilities = array(
         'rotate',
         'negate',
@@ -119,6 +121,9 @@ class ImagickHandler extends AbstractHandler
     {
         $image = new \Imagick($source);
 
+        $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+        $image->setImageCompressionQuality($this->_quality);
+
         $fmts = $this->conf->getFormats();
         $fmt = $fmts[$format];
         $h = $fmt['height'];
@@ -148,6 +153,9 @@ class ImagickHandler extends AbstractHandler
     {
         try {
             $image = new \Imagick($source);
+
+            $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+            $image->setImageCompressionQuality($this->_quality);
 
             if ( isset($params['negate']) ) {
                 $image->negateImage(false);
