@@ -47,13 +47,28 @@ use \Slim\Route;
 use \Slim\Views\Twig;
 use \Bach\Viewer\Conf;
 use \Bach\Viewer\Picture;
+use Bach\Viewer\Viewer;
 use \Analog\Analog;
 
 session_start();
 $session = &$_SESSION['bachviewer'];
 
 require APP_DIR . '/../vendor/autoload.php';
+
+if ( defined('VIEWER_XHPROF_PATH')
+    && function_exists('xhprof_enable')
+) {
+    $profiler = new Bach\XHProf();
+    $profiler->start();
+}
+
 $logger = null;
+
+$log_lvl = Analog::ERROR;
+if ( APP_DEBUG === true ) {
+    $log_lvl = Analog::DEBUG;
+}
+
 if ( defined('APP_TESTS') ) {
     $viewer_log = '';
     $logger = \Analog\Handler\Variable::init($viewer_log);
@@ -74,7 +89,12 @@ if ( defined('APP_TESTS') ) {
     $log_file = $log_dir . 'viewer.log';
     $logger = \Analog\Handler\File::init($log_file);
 }
-Analog::handler($logger);
+Analog::handler(
+    \Analog\Handler\LevelBuffer::init(
+        $logger,
+        $log_lvl
+    )
+);
 
 $conf = new Conf();
 
@@ -139,6 +159,8 @@ if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php'))
     }
 }
 
+$viewer = new Viewer($conf, $app_base_url);
+
 $view = $app->view();
 $view->parserExtensions = array(
     new Twig_Extensions_Extension_I18n()
@@ -175,6 +197,14 @@ $app->hook(
             $ui['enable_right_click']
         );
         $v->setData('lang', $lang);
+        $v->setData(
+            'negate',
+            $ui['negate']
+        );
+        $v->setData(
+            'print',
+            $ui['print']
+        );
 
         $fmts = $conf->getFormats();
         $v->setData('thumb_format', $fmts['thumb']);
@@ -185,7 +215,8 @@ $app->hook(
 Route::setDefaultConditions(
     array(
         'image'     => '.+\.[a-zA-Z]{3,4}',
-        'series'    => '.+'
+        'series'    => '.+',
+        'format'    => 'full|' . implode('|', array_keys($conf->getFormats()))
     )
 );
 
@@ -200,6 +231,14 @@ $app->notFound(
 $app->error(
     function (\Exception $e) use ($app, $conf, $app_base_url) {
         $resuUri = $app->request()->getResourceUri();
+
+        $etype = get_class($e);
+        Analog::error(
+            'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
+            '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
+            "\nStack trace:\n" . $e->getTraceAsString()
+        );
+
         if ( (substr($resuUri, 0, 10) === '/ajax/img/'
             || substr($resuUri, 0, 21) === '/ajax/representative/')
             && APP_DEBUG !== true
@@ -212,8 +251,7 @@ $app->error(
             $picture = new Picture(
                 $conf,
                 DEFAULT_PICTURE,
-                $app_base_url,
-                WEB_DIR . '/images/'
+                $app_base_url
             );
             $display = $picture->getDisplay($format);
             $response = $app->response();
@@ -222,12 +260,6 @@ $app->error(
             }
             $response->body($display['content']);
         } else {
-            $etype = get_class($e);
-            Analog::error(
-                'exception \'' . $etype . '\' with message \'' . $e->getMessage() .
-                '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
-                "\nStack trace:\n" . $e->getTraceAsString()
-            );
             $app->render(
                 '50x.html.twig',
                 array(
@@ -256,4 +288,8 @@ if ( APP_DEBUG === true ) {
 
 if ( !defined('APP_TESTS') ) {
     $app->run();
+
+    if ( isset($profiler) ) {
+        $profiler->stop();
+    }
 }

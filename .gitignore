@@ -3,11 +3,20 @@ viewer.vimentry
 .vimfiles*
 quick_gen_project_*_autogen.sh
 vendor/
-app/cache/
+app/cache/*
+!app/cache/notempty
 app/logs/*.log
 app/config/local.config.yml
 tests-results/
 build/
+# Apple system files
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.apdisk
+.fuse_hidden*
 #exclude not minified 3rd party libs
 web/scripts/jquery/ui/iviewer/jquery.iviewer.js
 #exclude local app configuration path

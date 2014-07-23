@@ -70,7 +70,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </header>
             <figure id="viewer">
                 <noscript>
-                    <img src="{{ picture.getUrl() }}" alt=""/>
+                    <img src="{{ picture.getUrl(series) }}" alt=""/>
                 </noscript>
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
                 <!-- Browse series, if series there is -->
@@ -78,11 +78,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <nav>
                     {%- set img_series -%}
                         {%- if not series.getStart is null and not series.getEnd is null -%}
-                            s={{ series.getStart }}&e={{ series.getEnd }}&
+                            ?s={{ series.getStart }}&e={{ series.getEnd }}&
                         {%- endif -%}
                     {%- endset -%}
-                    <a href="?{{ img_series }}img={{ series.getPreviousImage()  }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="?{{ img_series }}img={{ series.getNextImage() }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->
@@ -99,8 +99,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
                         <li id="zoomin" title="{% trans "Zoom in" %}">
+                        {% if negate and picture.canNegate() %}<li id="negate" title="{% trans "Negate" %}">{% endif %}
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
+                        {% if print and picture.canPrint() %}<li id="print" title="{% trans "Print" %}">{% endif %}
                         {# <li id="moreparams" title="{% trans "More parameters" %}"> #}
                     </ul>
                 </aside>
@@ -148,6 +150,10 @@ POSSIBILITY OF SUCH DAMAGE.
         <script>
             //global variables
             var series_path = '{{ series.getPath() }}';
+            {% if not series.getStart is null and not series.getEnd is null -%}
+            var series_start = '{{ series.getStart }}';
+            var series_end = '{{ series.getEnd }}';
+            {% endif -%}
             var app_url = '{{ app_base_url }}';
 
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
@@ -187,7 +193,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 {% if not(iip) %}
                 var viewer = $("#viewer").bviewer({
-                    src: "{{ picture.getUrl() }}",
+                    src: "{{ picture.getUrl(series) }}",
                     update_on_resize: true,
                     zoom_animation: false,
                     mousewheel: true,
@@ -206,7 +212,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#fullscreen').bind('click touchstart', function(){
                         toggleFullScreen();
                     });
-
 
                     $('body').bind('keydown', function(event) {
                         if (event.which == 70) {

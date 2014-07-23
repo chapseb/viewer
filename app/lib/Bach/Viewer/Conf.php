@@ -63,6 +63,7 @@ class Conf
     private $_formats;
     private $_ui;
     private $_iip;
+    private $_print;
 
     private $_path;
     private $_local_path;
@@ -142,6 +143,8 @@ class Conf
 
         $this->_iip = $this->_conf['iip'];
         $this->_setRoots($this->_conf['roots']);
+
+        $this->_print = $this->_conf['print'];
     }
 
     /**
@@ -252,6 +255,42 @@ class Conf
     public function getPrepareMethod()
     {
         return $this->_prepare_method;
+    }
+
+    /**
+     * Retrieve print header image
+     *
+     * @param char $orientation Either L(andscape) or P(ortrait)
+     *
+     * @return string
+     */
+    public function getPrintHeaderImage($orientation = null)
+    {
+        $image = $this->_print['header']['image'];
+
+        if ( $orientation === 'P'
+            && isset($this->_print['header']['image_portrait'])
+        ) {
+            $image = $this->_print['header']['image_portrait'];
+        }
+
+        if ( $orientation === 'L'
+            && isset($this->_print['header']['image_landscape'])
+        ) {
+            $image = $this->_print['header']['image_landscape'];
+        }
+
+        return $image;
+    }
+
+    /**
+     * Retrieve print footer
+     *
+     * @return string
+     */
+    public function getPrintFooter()
+    {
+        return $this->_print['footer'];
     }
 
     /**

@@ -123,8 +123,7 @@ class Picture extends atoum
                 $picture = new Viewer\Picture(
                     $this->_conf,
                     'doms.tiff',
-                    null,
-                    $this->_series->getFullPath()
+                    null
                 );
             }
         )->hasMessage('Image format not supported if not pyramidal');
@@ -192,6 +191,9 @@ class Picture extends atoum
         }
         if ( file_exists('/tmp/thumb/tech.png') && is_file('/tmp/thumb/tech.png') ) {
             unlink('/tmp/thumb/tech.png');
+        }
+        if ( file_exists('/tmp/thumb/tech.jpg') && is_file('/tmp/thumb/tech.jpg') ) {
+            unlink('/tmp/thumb/tech.jpg');
         }
         if ( file_exists('/tmp/thumb/iron_man.gif')
             && is_file('/tmp/thumb/iron_man.gif')
@@ -267,8 +269,7 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             'tech.jpg',
-            null,
-            $this->_series->getFullPath()
+            null
         );
         $width = $picture->getWidth();
         $height = $picture->getHeight();
@@ -311,16 +312,15 @@ class Picture extends atoum
         $picture = new Viewer\Picture(
             $this->_conf,
             $this->_series->getRepresentative(),
-            null,
-            $this->_series->getFullPath()
+            null
         );
         $width = $picture->getWidth();
         $height = $picture->getHeight();
         $isPyramidal = $picture->isPyramidal();
         $fpath = $picture->getFullPath();
         $vformats = $picture->getVisibleFormats();
-        $url = $picture->getUrl();
-        $surl = $picture->getUrl('default');
+        $url = $picture->getUrl(null);
+        $surl = $picture->getUrl(null, 'default');
         $name = $picture->getName();
 
         $this->integer($width)->isEqualTo(150);
@@ -329,9 +329,27 @@ class Picture extends atoum
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/doms.jpg');
         $this->string($name)->isIdenticalTo('doms.jpg');
         $this->array($vformats)->hasSize(3);
-        $this->string($url)->isIdenticalTo('/show/default/' . base64_encode($fpath));
+        $this->string($url)->isIdenticalTo('/show/default/doms.jpg');
         $this->string($surl)->isIdenticalTo(
-            '/show/default/' . base64_encode($fpath)
+            '/show/default/doms.jpg'
         );
+    }
+
+    /** Test image inside a subdirectory
+     *
+     * @return void
+     */
+    public function testSeriesImage()
+    {
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            $this->_series->getFullPath() . 'tech.jpg',
+            null
+        );
+
+        $display = $picture->getDisplay('thumb');
+        $length = $display['headers']['Content-Length'];
+
+        $this->integer($length)->isIdenticalTo(6827);
     }
 }

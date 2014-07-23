@@ -43,32 +43,32 @@
  */
 
 use \Bach\Viewer\Picture;
+use \Bach\Viewer\Series;
+use \Bach\Viewer\Pdf;
 
 $app->get(
-    '/show(/:format)/:uri',
-    function ($format, $uri) use ($app, $conf, &$session, $app_base_url) {
-        $picture = new Picture(
-            $conf,
-            base64_decode($uri),
-            $app_base_url
-        );
-
-        if ( !isset($session['picture']) ) {
-            $session['picture'] = serialize($picture);
-        } else {
-            $sess_pic = unserialize($session['picture']);
-            if ( $sess_pic->getFullPath() != $picture->getFullPath() ) {
-                $session['picture'] = serialize($picture);
-            }
-        }
-        //var_dump($picture);
-        if ( $format == '' ) {
-            $format = 'default';
-        }
+    '/show/:format(/:series)/:image',
+    function ($format = null, $series_path = null, $image) use ($app, $viewer) {
+        $picture = $viewer->getImage($series_path, $image);
         $display = $picture->getDisplay($format);
         $response = $app->response();
         foreach ( $display['headers'] as $key=>$header ) {
-            echo $key;
+            $response[$key] = $header;
+        }
+        $response->body($display['content']);
+    }
+);
+
+$app->get(
+    '/transform/:format(/:series)/:image',
+    function ($format, $series_path, $image) use ($app, $viewer) {
+        $picture = $viewer->getImage($series_path, $image);
+        $params = $viewer->bind($app->request);
+
+        $display = $picture->getDisplay($format, $params);
+
+        $response = $app->response();
+        foreach ( $display['headers'] as $key=>$header ) {
             $response[$key] = $header;
         }
         $response->body($display['content']);
@@ -85,7 +85,11 @@ $app->get(
         }
         $picture = null;
         if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture($conf, DEFAULT_PICTURE, $app_base_url, WEB_DIR . '/images/');
+            $picture = new Picture(
+                $conf,
+                DEFAULT_PICTURE,
+                $app_base_url
+            );
         } else {
             $picture = new Picture($conf, $img, $app_base_url, $path);
         }
@@ -110,4 +114,27 @@ $app->get(
     }
 );
 
+$app->get(
+    '/print/:format(/:series)/:image(/:display)',
+    function ($format, $series_path, $image, $display = false) use ($app,
+        $conf, $viewer
+    ) {
+        $picture = $viewer->getImage($series_path, $image);
+        $params = $viewer->bind($app->request);
 
+        $pdf = new Pdf($conf, $picture, $params, $format);
+
+        $app->response->headers->set('Content-Type', 'application/pdf');
+
+        if ( $display === 'true' ) {
+            $content = $pdf->getContent();
+            $app->response->body($content);
+        } else {
+            $pdf->download();
+        }
+    }
+)->conditions(
+    array(
+        'display' => 'true|false'
+    )
+);

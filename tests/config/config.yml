@@ -34,6 +34,7 @@ formats:
         width: 2000
         height: 2000
 prepared_images:
+    method: gd
     path: /tmp
 iip:
     server: /path/to/configured/iipsrv.fcgi

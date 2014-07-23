@@ -40,6 +40,7 @@ formats:
     thumb:
         width: 150
         height: 150
+
 prepared_images:
     #method is one of choose, gd, gmagick, imagick
     method: choose
@@ -48,5 +49,16 @@ iip:
     server: /iipsrv
 ui:
     enable_right_click: true
+    negate: true
+    print: true
+
 roots:
     - /var/www/images
+
+print:
+    header:
+        image: ~
+        #image_landscape: ~
+        #image_portrait: ~
+        content: ~
+    footer: ~

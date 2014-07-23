@@ -88,8 +88,19 @@ $xunitReport->addWriter($xunitWriter);
 $clover = new atoum\reports\asynchronous\clover();
 $clover->addWriter($cloverWriter);
 
+$cliReport = $script->addDefaultReport();
+/*
+This will add the atoum logo before each run
+*/
+$cliReport->addField(new atoum\report\fields\runner\atoum\logo());
+/*
+This will add a green or red logo after each run depending on its status
+*/
+$cliReport->addField(new atoum\report\fields\runner\result\logo());
+
 $runner->addReport($xunitReport);
 $runner->addReport($clover);
+$runner->addReport($cliReport);
 $script
     ->addDefaultReport()
     ->addField($coverageHtmlField)

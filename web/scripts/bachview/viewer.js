@@ -34,6 +34,16 @@ POSSIBILITY OF SUCH DAMAGE.
 ( function( $, undefined ) {
 $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
+    /**
+     * Display options
+     */
+    display_options: {
+        zoom: 'auto',
+        format: 'default',
+        negate: false,
+        rotate: 0
+    },
+
     /* Overrides iviewer method to:
      *  - add specific UI
      *  - add actions on some events
@@ -67,11 +77,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             //load navigation overview image
             var _src;
-            if ( me.image_name && series_path != '' ) {
-                _src = app_url + '/ajax/img/'  + series_path  + '/' + me.image_name + '/format/thumb';
-            } else {
-                _src  = me.options.src.replace(/show\/.+\//, 'show/thumb/');
-            }
+            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
                 $('.navwin, .navwin > img, .outerzone').removeAttr('style')
@@ -89,12 +95,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me._setOverviewMaskSize();
         };
 
+
         this.options.onStopDrag = function(ev, point) {
             me._setOverviewMaskSize();
         }
 
         this.options.angle = function(ev, angle) {
             me.nav_img_object.angle(angle.angle);
+            me.display_options.rotate = angle.angle
 
             var _margin = 0;
             var _orig = '50% 50%';
@@ -161,6 +169,61 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $.ui.iviewer.prototype.angle.apply(this, arguments);
     },
 
+    print: function()
+    {
+        var _img_height = this.nav_img_object.display_height();
+        var _img_width = this.nav_img_object.display_width();
+        var _width;
+        var _height;
+        var _topPos = 0;
+        var _leftPos = 0;
+
+        //is image taller than window?
+        var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height())/100;
+
+        if ( this.img_object.display_width() < this.container[0].clientWidth ) {
+            var   scale_width = Math.round(this.img_object.display_width() / percent);
+        } else {
+            var   scale_width = Math.round( this.container[0].clientWidth  / percent);
+        }
+
+        if ( this.img_object.display_height() < this.container[0].clientHeight ) {
+            var   scale_height = Math.round(this.img_object.display_height() / percent);
+        } else {
+            var   scale_height = Math.round( this.container[0].clientHeight / percent);
+        }
+
+        //image is taller than window. Calculate zone size and position
+        if ( this.img_object._y < 0 ) {
+            _topPos = Math.round(this.img_object._y * -1 / this.img_object.display_height() * _img_height);
+        }
+        _height = Math.round(this.container[0].clientHeight / this.img_object.display_height() * _img_height);
+        _topPosHD = Math.round(scale_height * _topPos / _height);
+        if ( this.img_object._x < 0 ) {
+            _leftPos = Math.round(this.img_object._x * -1 / this.img_object.display_width() * _img_width );
+        }
+
+        _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
+        _leftPosHD = Math.round(scale_width * _leftPos /_width); 
+
+        var _src = this.options.src.replace(/show\/default/, this.display_options.format);
+        var res = 'print'  +  _src ;
+        res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
+
+        if ( this.display_options.negate ) {
+            res += '&n=true';
+        }
+
+        if ( this.display_options.rotate > 0 ) {
+            res += '&r=' + this.display_options.rotate;
+        }
+
+        var _path_info = window.location.href.split('/');
+        res = _path_info[0] + '//' + _path_info[2] + '/' + res;
+
+        window.location.href = res;
+    },
+
     /**
      * Create zoom buttons info box
      */
@@ -176,8 +239,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             } else {
                 _thumbview = $('<div id="thumbnails_view"></div>');
 
+                var _url = app_url + '/ajax/series/' + series_path  + '/thumbs';
+                if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
+                    _url += '?s=' + series_start + '&e=' + series_end;
+                }
+
                 $.get(
-                    app_url + '/ajax/series/thumbs',
+                    _url,
                     function(data){
                         var _thumbs = data['thumbs'];
                         var _meta = data['meta'];
@@ -185,7 +253,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
@@ -214,6 +282,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
         $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
         $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
+        $('#negate').bind('click touchstart', function(){ me.negate(); });
+        $("#print").bind('click touchstart', function(){ me.print(); });
         this.zoom_object = $('#zoominfos');
 
         //prevent this to execute on ios...
@@ -245,18 +315,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         //resize image
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
-            if ( series_path != '') {
-                var _src = app_url + '/ajax/img/' + series_path + '/' + me.image_name  + '/format/' + _format;
-            } else {
-                _src  = me.options.src.replace(/show\/.+\//, 'show/' + _format + '/');
-            }
+            me.display_options.format = _format;
+            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
             me.loadImage(_src);
         }).val('default');
 
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
             me.display(me._imgNameFromLink($(this)));
-            $('#formats > select').val('default');
+            $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
             return false;
         });
@@ -283,7 +350,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#negate").on('dblclick', function(e){
             e.stopPropagation();
         });
 
@@ -334,11 +401,33 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     display: function(img)
     {
-        this.image_name = img;
-        if ( series_path != '') {
-            img = series_path + '/' + img;
+        this.image_name = (img.split('/')).pop();
+
+        //store default format as source
+        this.options.src = '/show/default/' + img;
+        var _img_path = app_url + this.options.src.replace(
+            'default',
+            this.display_options.format
+        );
+
+        if ( this.display_options.negate ) {
+            _img_path = '/transform' + _img_path.replace('/show', '') + '?n=true';
         }
-        this.loadImage(app_url + '/ajax/img/' + img);
+
+        this.loadImage(_img_path);
+    },
+
+    /**
+     * Negate image
+     */
+    negate: function()
+    {
+        if ( this.display_options.negate == true ) {
+            this.display_options.negate = false;
+        } else {
+            this.display_options.negate = true;
+        }
+        this.display(this.options.src.replace('/show/default/', ''));
     },
 
     /**
@@ -349,22 +438,21 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
-        var _url = app_url + '/ajax/series/infos';
-        if ( this.image_name != undefined ) {
-            _url += '/' + this.image_name;
-        }
+        var _url = app_url + '/ajax/series/infos/';
+        _url += series_path + '/' + this.image_name;
+
         //check for subseries
-        var _subs = $('#previmg').attr('href').replace(/&img=(.+)/, '');
-        if ( _subs != '?img' ) {
-            _url += _subs;
+        if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
+            _url += '?s=' + series_start + '&e=' + series_end;
         }
+
         $.get(
             _url,
             function(data){
                 var _prev = $('#previmg');
-                _prev.attr('href', _prev.attr('href').replace(/img=(.+)/, 'img=' + data.prev));
+                _prev.attr('href', series_path + '?img=' + data.prev);
                 var _next = $('#nextimg');
-                _next.attr('href', _next.attr('href').replace(/img=(.+)/, 'img=' + data.next));
+                _next.attr('href', series_path + '?img=' + data.next);
                 $('#current_pos').html(data.position);
                 $('header > h2').html(data.current);
             },
@@ -627,10 +715,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     _imgNameFromLink: function(link) {
-        var _str = link.attr('href');
-        var _re = /img=(.*)/;
-        var _img = _str.match(_re)[1];
-        return _img;
+        var _str = link.attr('href').replace('/series', '');
+        var _re = /\?img=(.+)/;
+        return _str.replace(_re, '/$1');
     }
 }));
 

@@ -47,13 +47,13 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, &$session, $app_base_url) {
-        $req = $app->request();
-        $start = $req->get('s');
+    function ($path) use ($app, $conf, $app_base_url) {
+        $request = $app->request();
+        $start = $request->params('s');
         if ( trim($start) === '' ) {
             $start = null;
         }
-        $end = $req->get('e');
+        $end = $request->params('e');
         if ( trim($end) === '' ) {
             $end = null;
         }
@@ -61,7 +61,6 @@ $app->get(
         if ( $start === null && $end !== null || $start !== null && $end === null ) {
             $start = null;
             $end = null;
-            //FIXME: show a warning or throw an exception?
             throw new \RuntimeException(
                 _('Sub series cannot be instancied; missing one of start or end param!')
             );
@@ -96,14 +95,14 @@ $app->get(
         }
 
         $img = null;
-        if ( $req->get('img') !== null ) {
+        if ( $request->params('img') !== null ) {
             //get image from its name
-            if ( $series->setImage($req->get('img')) ) {
+            if ( $series->setImage($request->params('img')) ) {
                 $img = $series->getImage();
             }
-        } else if ( $req->get('num') !== null ) {
+        } else if ( $request->get('num') !== null ) {
             //get image from its position
-            if ( $series->setNumberedImage($req->get('num')) ) {
+            if ( $series->setNumberedImage($request->params('num')) ) {
                 $img = $series->getImage();
             }
         }
@@ -118,9 +117,6 @@ $app->get(
             $app_base_url,
             $series->getFullPath()
         );
-
-        $session['series'] = serialize($series);
-        $session['picture'] = serialize($picture);
 
         $args = array(
             'img'       => $img,
