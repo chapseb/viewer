@@ -1,3 +1,10 @@
+1.0.4 (2014-07-23)
+- Add crop feature
+- Add print feature as PDF, with customizable header and footer
+- Add Gd, Imagick and Gmagick handlers with same capabilities
+- Change default error level to avoid huge log file
+- Do not initialize series if not really needed (improve performance)
+
 1.0.3 (2014-06-26)
 - Add missing medium format per default
 - Update to latest Symfony-YAML and Atoum
