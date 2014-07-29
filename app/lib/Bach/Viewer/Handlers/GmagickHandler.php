@@ -60,7 +60,8 @@ class GmagickHandler extends AbstractHandler
     protected $capabilities = array(
         'rotate',
         'crop',
-        'print'
+        'print',
+        'brightness'
     );
 
     /**
@@ -169,6 +170,21 @@ class GmagickHandler extends AbstractHandler
                     $params['crop']['x'],
                     $params['crop']['y']
                 );
+            }
+
+            if ( isset($params['contrast']) ) {
+                $this->canContrast();
+            }
+
+            if ( isset($params['brightness']) ) {
+                $value = (int)$params['brightness'];
+                $brightness = null;
+                if ( $value <= 0 ) {
+                    $brightness = $value + 100;
+                } else {
+                    $brightness = $value * 3  + 100;
+                }
+                $image->modulateImage($brightness, 100, 100);
             }
 
             $ret = null;

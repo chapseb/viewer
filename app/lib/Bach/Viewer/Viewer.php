@@ -119,7 +119,9 @@ class Viewer
         $params = array(
             'rotate'    => $request->params('r'),
             'negate'    => $request->params('n'),
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => $request->params('c'),
+            'brightness'=> $request->params('b')
         );
 
         if ( $request->params('h') !== null && $request->params('w') !== null

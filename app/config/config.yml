@@ -51,6 +51,8 @@ ui:
     enable_right_click: true
     negate: true
     print: true
+    contrast: true
+    brightness: true
 
 roots:
     - /var/www/images

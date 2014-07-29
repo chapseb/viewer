@@ -100,6 +100,8 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="zoominfos">
                         <li id="zoomin" title="{% trans "Zoom in" %}">
                         {% if negate and picture.canNegate() %}<li id="negate" title="{% trans "Negate" %}">{% endif %}
+                        {% if contrast and picture.canContrast() %}<li id="contrast" title="{% trans "Contrast" %}">{% endif %}
+                        {% if brightness and picture.canBrightness() %}<li id="brightness" title="{% trans "Brightness" %}">{% endif %}
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
                         {% if print and picture.canPrint() %}<li id="print" title="{% trans "Print" %}">{% endif %}
