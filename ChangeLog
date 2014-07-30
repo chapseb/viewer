@@ -1,3 +1,7 @@
+1.0.5 (2014-07-30)
+- Add contrast and brightness capabilities,
+- Store image parameters (contrast, brightness, negate, rotation) between images inside a series
+
 1.0.4 (2014-07-23)
 - Add crop feature
 - Add print feature as PDF, with customizable header and footer
