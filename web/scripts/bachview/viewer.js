@@ -286,32 +286,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#print").bind('click touchstart', function(){ me.print(); });
         this.zoom_object = $('#zoominfos');
 
-        //prevent this to execute on ios...
-        var agent = navigator.userAgent.toLowerCase();
-        if ( !(agent.indexOf('iphone') > 0 || agent.indexOf('ipad') >= 0) && navigator.platform != 'Win32' ) {
-            var tflagin = false;
-            var tflagout = false;
-            var _hammer = $('#viewer').hammer({
-                prevent_default: true
-            });
-            _hammer.on('pinchin', function(ev){
-                if ( !tflagin ) {
-                    tflagin = true;
-                    setTimeout(function(){ tflagin = false;}, 100);
-                    me.zoom_by(-1);
-                }
-                ev.gesture.preventDefault()
-            });
-            _hammer.on('pinchout', function(ev){
-                if ( !tflagout ) {
-                    tflagout = true;
-                    timer = setTimeout(function(){tflagout = false;}, 100);
-                    me.zoom_by(1);
-                }
-                ev.gesture.preventDefault()
-            });
-        }
-
         //resize image
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
