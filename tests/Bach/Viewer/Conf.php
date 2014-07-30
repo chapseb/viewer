@@ -153,23 +153,33 @@ class Conf extends atoum
         $conf = new Viewer\Conf();
         $ui = $conf->getUI();
         $this->array($ui)
-            ->hasSize(3)
-            ->hasKey('enable_right_click');
+            ->hasSize(5)
+            ->hasKey('enable_right_click')
+            ->hasKey('negate')
+            ->hasKey('print')
+            ->hasKey('contrast')
+            ->hasKey('brightness');
 
         //right click is enabled in default configuration
         $rc_enabled = $ui['enable_right_click'];
         $this->boolean($rc_enabled)->isTrue();
 
         $negate_enabled = $ui['negate'];
-        $this->boolean($negate_enabled)->isFalse();
+        $this->boolean($negate_enabled)->isTrue();
 
         $print_enabled = $ui['print'];
-        $this->boolean($print_enabled)->isFalse();
+        $this->boolean($print_enabled)->isTrue();
+
+        $contrast_enabled = $ui['contrast'];
+        $this->boolean($contrast_enabled)->isTrue();
+
+        $brightness_enabled = $ui['brightness'];
+        $this->boolean($brightness_enabled)->isTrue();
 
         //then, test UT configuration
         $ui = $this->_conf->getUI();
         $this->array($ui)
-            ->hasSize(3)
+            ->hasSize(5)
             ->hasKey('enable_right_click')
             ->hasKey('negate')
             ->hasKey('print');
@@ -179,11 +189,16 @@ class Conf extends atoum
         $this->boolean($rc_enabled)->isFalse();
 
         $negate_enabled = $ui['negate'];
-        $this->boolean($negate_enabled)->isFalse();
+        $this->boolean($negate_enabled)->isTrue();
 
         $print_enabled = $ui['print'];
-        $this->boolean($print_enabled)->isFalse();
+        $this->boolean($print_enabled)->isTrue();
 
+        $contrast_enabled = $ui['contrast'];
+        $this->boolean($contrast_enabled)->isTrue();
+
+        $brightness_enabled = $ui['brightness'];
+        $this->boolean($brightness_enabled)->isTrue();
     }
 
     /**

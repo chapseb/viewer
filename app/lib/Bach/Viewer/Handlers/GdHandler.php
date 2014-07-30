@@ -61,7 +61,9 @@ class GdHandler extends AbstractHandler
         'rotate',
         'negate',
         'crop',
-        'print'
+        'print',
+        'contrast',
+        'brightness'
     );
 
     private $_supported_types = array(
@@ -229,6 +231,34 @@ class GdHandler extends AbstractHandler
             if ( $res === false ) {
                 throw new \RuntimeException(
                     _('Something went wrong in GD negate!')
+                );
+            }
+        }
+
+        if ( isset($params['contrast']) ) {
+            $res = imagefilter(
+                $image,
+                IMG_FILTER_CONTRAST,
+                $params['contrast'] * -10
+            );
+
+            if ( $res === false ) {
+                throw new \RuntimeException(
+                    _('Something went wrong in GD contrast!')
+                );
+            }
+        }
+
+        if ( isset($params['brightness']) ) {
+            $res = imagefilter(
+                $image,
+                IMG_FILTER_BRIGHTNESS,
+                $params['brightness'] * 2.55
+            );
+
+            if ( $res === false ) {
+                throw new \RuntimeException(
+                    _('Something went wrong in GD brightness!')
                 );
             }
         }

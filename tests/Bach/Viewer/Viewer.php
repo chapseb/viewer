@@ -74,7 +74,9 @@ class Viewer extends atoum
         'x' => 2,
         'y' => 3,
         'w' => 100,
-        'h' => 150
+        'h' => 150,
+        'c' => -2,
+        'b' => '70'
     );
 
     /**
@@ -133,7 +135,9 @@ class Viewer extends atoum
                 'y' => '3',
                 'w' => '100',
                 'h' => '150'
-            )
+            ),
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
 
@@ -151,7 +155,9 @@ class Viewer extends atoum
         $expected = array(
             'rotate'    => '92',
             'negate'    => '1',
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
 
@@ -169,7 +175,9 @@ class Viewer extends atoum
         $expected = array(
             'rotate'    => '92',
             'negate'    => '1',
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
 
@@ -187,7 +195,9 @@ class Viewer extends atoum
         $expected = array(
             'rotate'    => '92',
             'negate'    => '1',
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
 
@@ -205,7 +215,9 @@ class Viewer extends atoum
         $expected = array(
             'rotate'    => '92',
             'negate'    => '1',
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
 
@@ -224,8 +236,53 @@ class Viewer extends atoum
         $expected = array(
             'rotate'    => null,
             'negate'    => '1',
-            'crop'      => false
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> '70'
         );
         $this->array($binded)->isIdenticalTo($expected);
+
+        $params = $this->_request_params;
+        unset($params['x']);
+        unset($params['c']);
+        $request = new Request(
+            \Slim\Environment::mock(
+                array(
+                    'QUERY_STRING' => http_build_query($params)
+                )
+            )
+        );
+        $viewer = new V($this->_conf, '');
+        $binded = $viewer->bind($request);
+        $expected = array(
+            'rotate'    => '92',
+            'negate'    => '1',
+            'crop'      => false,
+            'contrast'  => null,
+            'brightness'=> '70'
+        );
+        $this->array($binded)->isIdenticalTo($expected);
+
+        $params = $this->_request_params;
+        unset($params['x']);
+        unset($params['b']);
+        $request = new Request(
+            \Slim\Environment::mock(
+                array(
+                    'QUERY_STRING' => http_build_query($params)
+                )
+            )
+        );
+        $viewer = new V($this->_conf, '');
+        $binded = $viewer->bind($request);
+        $expected = array(
+            'rotate'    => '92',
+            'negate'    => '1',
+            'crop'      => false,
+            'contrast'  => '-2',
+            'brightness'=> null
+        );
+        $this->array($binded)->isIdenticalTo($expected);
+
     }
 }

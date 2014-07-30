@@ -293,6 +293,46 @@ abstract class AbstractHandler
     }
 
     /**
+     * Check for contrast capability
+     *
+     * @return boolean
+     */
+    public function canContrast()
+    {
+        if ( in_array('contrast', $this->capabilities) ) {
+            return true;
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%ext',
+                    $this->extensionName(),
+                    _('Contrast is not supported with %ext!')
+                )
+            );
+        }
+    }
+
+    /**
+     * Check for brightness capability
+     *
+     * @return boolean
+     */
+    public function canBrightness()
+    {
+        if ( in_array('brightness', $this->capabilities) ) {
+            return true;
+        } else {
+            throw new \RuntimeException(
+                str_replace(
+                    '%ext',
+                    $this->extensionName(),
+                    _('Brightness is not supported with %ext!')
+                )
+            );
+        }
+    }
+
+    /**
      * Check if image suits handler capabilities
      *
      * @param boolean $pyramidal Image pyramidal or not

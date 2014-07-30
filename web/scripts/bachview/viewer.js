@@ -40,8 +40,24 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     display_options: {
         zoom: 'auto',
         format: 'default',
-        negate: false,
-        rotate: 0
+        transform: {
+            negate: false,
+            contrast: false,
+            brightness: false,
+            rotate: 0
+        }
+    },
+    params_win_init: false,
+
+    hasTransformations: function()
+    {
+        var _t = this.display_options.transform;
+        if ( _t.negate != false
+            || _t.contrast != false
+            || _t.brightness != false
+            || _t.rotate != 0 ) {
+            return true;
+        }
     },
 
     /* Overrides iviewer method to:
@@ -102,7 +118,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         this.options.angle = function(ev, angle) {
             me.nav_img_object.angle(angle.angle);
-            me.display_options.rotate = angle.angle
+            me.display_options.transform.rotate = angle.angle
 
             var _margin = 0;
             var _orig = '50% 50%';
@@ -210,12 +226,24 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var res = 'print'  +  _src ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
-        if ( this.display_options.negate ) {
-            res += '&n=true';
-        }
+        if ( this.hasTransformations() ) {
+            var _t = this.display_options.transform;
 
-        if ( this.display_options.rotate > 0 ) {
-            res += '&r=' + this.display_options.rotate;
+            if ( _t.negate ) {
+                res += '&n=true';
+            }
+
+            if ( _t.contrast ) {
+                res += '&c=' + _t.contrast;
+            }
+
+            if ( _t.brightness ) {
+                res += '&b=' + _t.brightness;
+            }
+
+            if ( _t.rotate > 0 ) {
+                res += '&r=' + _t.rotate;
+            }
         }
 
         var _path_info = window.location.href.split('/');
@@ -282,35 +310,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
         $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
         $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
-        $('#negate').bind('click touchstart', function(){ me.negate(); });
+        $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow() });
         $("#print").bind('click touchstart', function(){ me.print(); });
         this.zoom_object = $('#zoominfos');
-
-        //prevent this to execute on ios...
-        var agent = navigator.userAgent.toLowerCase();
-        if ( !(agent.indexOf('iphone') > 0 || agent.indexOf('ipad') >= 0) && navigator.platform != 'Win32' ) {
-            var tflagin = false;
-            var tflagout = false;
-            var _hammer = $('#viewer').hammer({
-                prevent_default: true
-            });
-            _hammer.on('pinchin', function(ev){
-                if ( !tflagin ) {
-                    tflagin = true;
-                    setTimeout(function(){ tflagin = false;}, 100);
-                    me.zoom_by(-1);
-                }
-                ev.gesture.preventDefault()
-            });
-            _hammer.on('pinchout', function(ev){
-                if ( !tflagout ) {
-                    tflagout = true;
-                    timer = setTimeout(function(){tflagout = false;}, 100);
-                    me.zoom_by(1);
-                }
-                ev.gesture.preventDefault()
-            });
-        }
 
         //resize image
         $('#formats > select').change(function(){
@@ -350,7 +352,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#negate").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#image_params").on('dblclick', function(e){
             e.stopPropagation();
         });
 
@@ -410,24 +412,131 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             this.display_options.format
         );
 
-        if ( this.display_options.negate ) {
-            _img_path = '/transform' + _img_path.replace('/show', '') + '?n=true';
+        if ( this.hasTransformations() ) {
+            var _img_path = '/transform' + _img_path.replace('/show', '') + '?';
+
+            var _t = this.display_options.transform;
+
+            if ( _t.negate ) {
+                _img_path += '&n=true';
+            }
+
+            if ( _t.contrast ) {
+                _img_path += '&c=' + _t.contrast;
+            }
+
+            if ( _t.brightness ) {
+                _img_path += '&b=' + _t.brightness;
+            }
+
+            if ( _t.rotate > 0 ) {
+                _img_path += '&r=' + _t.rotate;
+            }
         }
 
         this.loadImage(_img_path);
     },
 
     /**
-     * Negate image
+     * Display image parameters window
      */
-    negate: function()
+    imageParamsWindow: function()
     {
-        if ( this.display_options.negate == true ) {
-            this.display_options.negate = false;
+        var _win = $('#image_params');
+        if ( this.params_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
         } else {
-            this.display_options.negate = true;
+            var me = this;
+            this.params_win_init = true;
+            _win.css('display', 'block');
+
+            $('#image_params .close').on('click', function(){
+                me.imageParamsWindow();
+            });
+
+            _win.submit(function(event){
+                event.preventDefault();
+
+                var _v = $('#contrast_value').val();
+                if ( _v != 0 ) {
+                    me.display_options.transform.contrast = _v;
+                } else {
+                    me.display_options.transform.contrast = false;
+                }
+
+                _v = $('#brightness_value').val();
+                if ( _v != 0 ) {
+                    me.display_options.transform.brightness = _v;
+                } else {
+                    me.display_options.transform.brightness = false;
+                }
+
+                _v = $('#negate:checked');
+                if ( _v.length > 0 ) {
+                    me.display_options.transform.negate = true;
+                } else {
+                    me.display_options.transform.negate = false;
+                }
+
+                me.display(me.options.src.replace('/show/default/', ''));
+            });
+
+            _win.draggable({
+                handle: 'legend',
+                containment: 'parent'
+            });
+
+            if ( $('#change_contrast') ) {
+                $('#change_contrast').noUiSlider({
+                    start: 0,
+                    range: {
+                        'min': -10,
+                        'max': 10
+                    },
+                    step: 1,
+                    serialization: {
+                        lower: [
+                            $.Link ({
+                                target: $('#contrast_value')
+                            })
+                        ]
+                    }
+                });
+            }
+
+            if ( $('#change_brightness') ) {
+                $('#change_brightness').noUiSlider({
+                    start: 0,
+                    range: {
+                        'min': -80,
+                        'max': 80
+                    },
+                    step: 1,
+                    serialization: {
+                        lower: [
+                            $.Link ({
+                                target: $('#brightness_value')
+                            })
+                        ]
+                    }
+                });
+            }
+
+            $('#reset_parameters').on('click', function(event) {
+                var _t = me.display_options.transform;
+                _t.negate = false;
+                $('#negate').attr('checked', false);
+                _t.contrast = false;
+                $('#change_contrast').val(0);
+                _t.brightness = false;
+                $('#change_brightness').val(0);
+                _t.rotate = 0;
+            });
         }
-        this.display(this.options.src.replace('/show/default/', ''));
     },
 
     /**

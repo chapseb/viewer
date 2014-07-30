@@ -202,6 +202,14 @@ $app->hook(
             $ui['negate']
         );
         $v->setData(
+            'contrast',
+            $ui['contrast']
+        );
+        $v->setData(
+            'brightness',
+            $ui['brightness']
+        );
+        $v->setData(
             'print',
             $ui['print']
         );

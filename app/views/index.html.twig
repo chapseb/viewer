@@ -37,6 +37,9 @@ POSSIBILITY OF SUCH DAMAGE.
 {% block head %}
         {% if not(iip) %}
         <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.iviewer.css"/>
+        {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
+        <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.nouislider.css"/>
+        {% endif %}
         {% else %}
         <link rel="stylesheet" type="text/css" media="all" href="{{ app_web_url }}/styles/iip.css" />
         {% endif %}
@@ -99,11 +102,16 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
                         <li id="zoomin" title="{% trans "Zoom in" %}">
-                        {% if negate and picture.canNegate() %}<li id="negate" title="{% trans "Negate" %}">{% endif %}
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
-                        {% if print and picture.canPrint() %}<li id="print" title="{% trans "Print" %}">{% endif %}
-                        {# <li id="moreparams" title="{% trans "More parameters" %}"> #}
+                        {% if not iip %}
+                            {% if print and picture.canPrint() %}
+                        <li id="print" title="{% trans "Print image as currently displayed" %}">
+                            {% endif %}
+                            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
+                        <li id="moreparams" title="{% trans "Adjust image parameters" %}">
+                            {% endif %}
+                        {% endif %}
                     </ul>
                 </aside>
                 {% if not(iip) %}
@@ -115,6 +123,39 @@ POSSIBILITY OF SUCH DAMAGE.
                         </progress>
                     </div>
                 </aside>
+
+                    {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
+                <form id="image_params" action="">
+                    <fieldset>
+                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"/></legend>
+                        {% if contrast and picture.canContrast() %}
+                        <div>
+                            <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
+                            <input type="number" name="contrast_value" id="contrast_value" step="1" min="-10" max="10"/>
+                            <div id="change_contrast"></div>
+                        </div>
+                        {% endif %}
+                        {% if brightness and picture.canBrightness() %}
+                        <div>
+                            <label for="brightness_value">{% trans %}Brightness:{% endtrans %}</label>
+                            <input type="number" name="brightness_value" id="brightness_value" step="1" min="-80" max="80"/>
+                            <div id="change_brightness"></div>
+                        </div>
+                        {% if negate and picture.canNegate() %}
+                        <div>
+                            <label for="negate">{% trans %}Negate{% endtrans %}</label>
+                            <input type="checkbox" name="negate" id="negate" value="1"/>
+                            <div id="toggle_negate"></div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        <div>
+                            <input type="submit" id="reset_parameters" value="{% trans %}Reset{% endtrans %}"/>
+                            <input type="submit" id="set_parameters" value="{% trans %}Set{% endtrans %}"/>
+                        </div>
+                    </fieldset>
+                </form>
+                    {% endif %}
                 {% endif %}
             </figure>
         </section>
@@ -129,8 +170,10 @@ POSSIBILITY OF SUCH DAMAGE.
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.mousewheel.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
-        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.hammer.min.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/viewer.js"></script>
+            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/slider/jquery.nouislider.min.js"></script>
+            {% endif %}
         {% else %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-core-1.4.5-full-nocompat.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/mootools/mootools-more-1.4.0.1.js"></script>

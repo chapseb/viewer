@@ -63,7 +63,9 @@ class ImagickHandler extends AbstractHandler
         'rotate',
         'negate',
         'crop',
-        'print'
+        'print',
+        'contrast',
+        'brightness'
     );
 
     /**
@@ -175,6 +177,35 @@ class ImagickHandler extends AbstractHandler
                     $params['crop']['x'],
                     $params['crop']['y']
                 );
+            }
+
+            if ( isset($params['contrast']) ) {
+                $level = (int)$params['contrast'];
+                if ($level < -10) {
+                    $level = -10;
+                } else if ($level > 10) {
+                    $level = 10;
+                }
+                if ($level > 0) {
+                    for ($i = 0; $i < $level; $i++) {
+                        $image->contrastImage(1);
+                    }
+                } else if ($level < 0) {
+                    for ($i = $level; $i < 0; $i++) {
+                        $image->contrastImage(0);
+                    }
+                }
+            }
+
+            if ( isset($params['brightness']) ) {
+                $value = (int)$params['brightness'];
+                $brightness = null;
+                if ( $value <= 0 ) {
+                    $brightness = $value + 100;
+                } else {
+                    $brightness = $value * 3  + 100;
+                }
+                $image->modulateImage($brightness, 100, 100);
             }
 
             $ret = null;

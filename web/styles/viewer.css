@@ -281,10 +281,6 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background-position: -405px 0!important;
 }
 
-#negate {
-    background-position: -455px 0;
-}
-
 #print {
     background-position: -500px 0;
 }
@@ -408,7 +404,7 @@ aside#progressbar > div > progress {
     left: 0;
     border-style: solid;
     border-color: rgba(0, 0, 0, .5);
-    border-radius: 6px;
+    border-radius: 0 0 6px 6px;
 }
 
 .navwin .zone {
@@ -418,6 +414,96 @@ aside#progressbar > div > progress {
   z-index: 6;
 }
 /** /Overview */
+
+/** Image parameters window */
+#image_params {
+    position: absolute;
+    top: 3em;
+    left: 1em;
+    background-color: rgba(0,0,0,0.8);
+    display: none;
+    color: #9b9b9b;
+    border: 1px solid #660912;
+    border-radius: 6px;
+    padding-bottom: .3em;
+}
+
+#image_params legend {
+    text-align: center;
+    width: 100%;
+    padding: .3em 0;
+    font-weight: bold;
+    background-color: rgba(102, 9, 18, .8);
+    color: white;
+}
+
+#image_params legend .close {
+    display: block;
+    position: absolute;
+    background: url(../images/buttons/close.png) no-repeat top left;
+    height: 16px;
+    width: 16px;
+    top: 0.3em;
+    right: 0.2em;
+    cursor: pointer;
+}
+
+#image_params legend .close:hover {
+    background-image: url(../images/buttons/close-hover.png);
+}
+
+#image_params fieldset > div {
+    margin-top: .3em;
+    padding: 0 .3em;
+}
+
+#image_params fieldset > div:last-child {
+    text-align: right;
+}
+
+#image_params label {
+    display: inline-block;
+    width: 6em;
+}
+
+#change_contrast, #change_brightness {
+    width: 200px;
+    display: inline-block;
+    margin-right: 1.5em;
+}
+
+#contrast_value, #brightness_value {
+    width: 3em;
+    margin-right: 1.2em;
+}
+
+[id=image_params] .noUi-target {
+    border-color: #262525;
+    box-shadow: 0 1px 1px #262525 inset, 0 3px 6px -5px #262525;
+}
+
+[id=image_params] .noUi-background {
+    background-color: #262525;
+}
+
+[id=image_params] .noUi-horizontal {
+    height: 12px;
+}
+
+[id=image_params] .noUi-handle:before,
+[id=image_params] .noUi-handle:after {
+    top: 2px;
+}
+
+[id=image_params] .noUi-horizontal .noUi-handle {
+    height: 20px;
+}
+
+[id=image_params] .noUi-handle {
+    background: rgba(255, 255, 255, .7);
+}
+/** /Image parameters window */
+
 
 /** Thumbnails */
 #thumbnails_view {

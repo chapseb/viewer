@@ -283,6 +283,12 @@ class Picture
             if ( $transform_params['crop'] !== false ) {
                 $params['crop'] = $transform_params['crop'];
             }
+            if ( $transform_params['contrast'] !== null ) {
+                $params['contrast'] = $transform_params['contrast'];
+            }
+            if ( $transform_params['brightness'] !== null ) {
+                $params['brightness'] = $transform_params['brightness'];
+            }
 
             $content = $this->_handler->transform($file_path, $params, $store);
         }
@@ -521,6 +527,36 @@ class Picture
     {
         try {
             $this->_handler->canPrint();
+            return true;
+        } catch ( \RuntimeException $e ) {
+            return false;
+        }
+    }
+
+    /**
+     * Is contrast supported by current handler
+     *
+     * @return boolean
+     */
+    public function canContrast()
+    {
+        try {
+            $this->_handler->canContrast();
+            return true;
+        } catch ( \RuntimeException $e ) {
+            return false;
+        }
+    }
+
+    /**
+     * Is brightness supported by current handler
+     *
+     * @return boolean
+     */
+    public function canBrightness()
+    {
+        try {
+            $this->_handler->canBrightness();
             return true;
         } catch ( \RuntimeException $e ) {
             return false;
