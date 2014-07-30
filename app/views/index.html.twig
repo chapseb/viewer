@@ -108,7 +108,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
                             {% endif %}
-                            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
+                            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                         <li id="moreparams" title="{% trans "Adjust image parameters" %}">
                             {% endif %}
                         {% endif %}
