@@ -535,6 +535,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _t.brightness = false;
                 $('#change_brightness').val(0);
                 _t.rotate = 0;
+                me.display_options.format = 'default';
+                $('#formats > select').val('default');
             });
         }
     },
