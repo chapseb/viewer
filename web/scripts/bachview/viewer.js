@@ -49,6 +49,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
     params_win_init: false,
 
+    remote: false,
+
     hasTransformations: function()
     {
         var _t = this.display_options.transform;
@@ -71,6 +73,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         this.image_name = this.options.imageName;
 
+        if ( this.options.remote ) {
+            this.remote = this.options.remote;
+        }
+
         //add navigation overview
         this.drawNavigation();
 
@@ -89,6 +95,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
+            } else {
+                me.updateImageInfos();
             }
 
             //load navigation overview image
@@ -565,8 +573,36 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 var _next = $('#nextimg');
                 _next.attr('href', series_path + '?img=' + data.next);
                 $('#current_pos').html(data.position);
-                $('header > h2').html(data.current);
+                if ( data.remote ) {
+                    $('header > h2').html(data.remote);
+                } else {
+                    $('header > h2').html(data.current);
+                }
             },
+            'json'
+        ).fail(function(){
+            alert('An error occured loading series informations, navigation may fail.');
+        });
+    },
+
+    /**
+     * Update image informations:
+     * - title
+     */
+    updateImageInfos: function()
+    {
+        var _url = app_url + '/ajax/image/infos/';
+        if ( image_path ) {
+            _url += image_path + '/';
+        }
+        _url += this.image_name;
+
+        $.get(
+            _url,
+            function(data){
+                if ( data.remote ) {
+                    $('header > h2').html(data.remote);
+                }            },
             'json'
         ).fail(function(){
             alert('An error occured loading series informations, navigation may fail.');

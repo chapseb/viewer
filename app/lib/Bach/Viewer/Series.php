@@ -327,6 +327,21 @@ class Series
                 'count'     => $this->getCount(),
                 'position'  => $this->getCurrentPosition()
             );
+
+            $rinfos = $this->_conf->getRemoteInfos();
+            if ( $rinfos !== false ) {
+                $rcontents = Picture::getRemoteInfos(
+                    $rinfos,
+                    $this->_path,
+                    $this->_current
+                );
+
+                if ( $rcontents !== null ) {
+                    $infos['remote'] = $rcontents;
+                }
+
+            }
+
             return $infos;
         }
     }

@@ -114,6 +114,31 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/image/infos/:image_params+',
+    function ($img_params) use ($app, $conf, $app_base_url) {
+        $img = array_pop($img_params);
+        $path = null;
+        if ( count($img_params) > 0 ) {
+            $path = implode('/', $img_params) .'/';
+        }
+
+        $rcontents = Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            $path,
+            $img
+        );
+
+        $infos = array();
+
+        if ( $rcontents !== null ) {
+            $infos['remote'] = $rcontents;
+        }
+
+        echo json_encode($infos);
+    }
+);
+
+$app->get(
     '/ajax/series/:series/thumbs',
     function ($series_path) use ($app, $conf, $app_base_url) {
         $request = $app->request;

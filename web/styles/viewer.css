@@ -69,22 +69,30 @@ header {
     font-weight: bold;
     font-size: 0.85em;
     padding: .3em 0;
-    min-height: 25px;
 }
 
 h1 {
-    position: absolute;
-    left: .2em;
+    float: left;
+    margin: 0 .2em;
     color: white;
-    font-size: 1.9em;
-    top: .2em;
     font-weight: bolder;
 }
 
 h2 {
-    display: inline-block;
-    margin: 0 1em;
+    display: inline;
+    margin: 0;
     vertical-align: middle;
+    line-height: 1.9em;
+}
+
+header a {
+    color: #9b9b9b;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+header a:hover {
+    text-decoration: underline;
 }
 
 #viewer {
@@ -289,9 +297,8 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     width: 20px;
     height: 20px;
     background-image: url(../images/buttons/ico-full-screen.png);
-    position: absolute;
-    right: .2em;
-    top: .5em;
+    float: right;
+    margin: .2em;
 }
 
 #fullscreen > span {
