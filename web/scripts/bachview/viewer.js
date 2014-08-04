@@ -189,8 +189,17 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
     /** Overrides iviewr method to rotate navigation image */
     angle: function(deg, abs) {
-         var me = this;
-        $.ui.iviewer.prototype.angle.apply(this, arguments);
+        var me = this;
+        if ( typeof _isOldIE != 'undefined' ) {
+            deg += this.display_options.transform.rotate;
+            if (deg < 0) { deg += 360; }
+            if (deg >= 360) { deg -= 360; }
+
+            this.display_options.transform.rotate = deg;
+            this.display(this.image_name);
+        } else {
+            $.ui.iviewer.prototype.angle.apply(this, arguments);
+        }
     },
 
     print: function()

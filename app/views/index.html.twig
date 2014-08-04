@@ -225,9 +225,6 @@ POSSIBILITY OF SUCH DAMAGE.
             jQuery.noConflict();
             //jquery stuff
             (function($) {
-                if ( typeof _isOldIE != 'undefined' ) {
-                    $('#lrotate,#rrotate,#fullscreen').remove();
-                }
                 {% if not(enable_right_click) %}
                 $(this).bind("contextmenu", function(e) {
                     e.preventDefault();

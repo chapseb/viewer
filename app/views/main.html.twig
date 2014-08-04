@@ -39,11 +39,15 @@ POSSIBILITY OF SUCH DAMAGE.
         <link rel="stylesheet" href="{{ app_web_url  }}/styles/reset.css"/>
         <!--[if lte IE 9]>
             <script src="{{ app_web_url  }}/scripts/html5-ie.js"></script>
+            <link rel="stylesheet" href="{{ app_web_url }}/styles/ie.css"/>
+        <![endif]-->
+        <!--[if IE 8]>
             <script type="text/javascript">
                 var _isOldIE = true;
             </script>
             <link rel="stylesheet" href="{{ app_web_url }}/styles/ie.css"/>
         <![endif]-->
+
         {% block head %}{% endblock %}
         <link rel="shortcut icon" href="{{ app_web_url ~ '/favicon.png' }}" />
     </head>
