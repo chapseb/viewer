@@ -1,3 +1,8 @@
+1.0.6 (2014-08-04)
+- Fix some IE8 display issues,
+- Add server side rotation for IE8
+- Update 3rd party libs
+
 1.0.5 (2014-07-30)
 - Add contrast and brightness capabilities,
 - Store image parameters (contrast, brightness, negate, rotation) between images inside a series
@@ -15,14 +20,11 @@
 - FIx unit tests
 
 1.0.2 (2014-05-15)
-
 - Fix logo size in mobile view
 - Update to latest Slim, Slim-views, Symfony-YAML and HammerJS
 
 1.0.1 (2014-05-09)
-
 - Overridable logs dir
 
 1.0
-
 - First stable release
