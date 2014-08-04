@@ -50,16 +50,13 @@ POSSIBILITY OF SUCH DAMAGE.
         <section>
             <header>
                 <h1><img src="{{ app_web_url }}/images/logo.png" alt="BACH"/></h1>
+                <h2>{{ img }}</h2>
                 {% if series %}
                     {% set series_name = series.getPath() %}
                     <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
-                        {% trans %}
-                        Series {{ series_name }}:
-                        {% endtrans %}
-                        <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
+                        - {% trans %}Image{% endtrans %} <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
                     </span>
                 {% endif %}
-                <h2>{{ img }}</h2>
 
                 {% if not picture.isPyramidal %}
                 <div id="formats">
@@ -127,7 +124,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                 <form id="image_params" action="">
                     <fieldset>
-                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"/></legend>
+                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
                         {% if contrast and picture.canContrast() %}
                         <div>
                             <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
@@ -149,7 +146,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </div>
                         {% endif %}
                         {% endif %}
-                        <div>
+                        <div class="controls">
                             <input type="submit" id="reset_parameters" value="{% trans %}Reset{% endtrans %}"/>
                             <input type="submit" id="set_parameters" value="{% trans %}Set{% endtrans %}"/>
                         </div>
@@ -193,6 +190,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <script>
             //global variables
             var series_path = '{{ series.getPath() }}';
+            {% if not series %}
+            var image_path = '{{ picture.getPath() }}';
+            {% endif %}
             {% if not series.getStart is null and not series.getEnd is null -%}
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
@@ -225,17 +225,20 @@ POSSIBILITY OF SUCH DAMAGE.
             jQuery.noConflict();
             //jquery stuff
             (function($) {
-                if ( typeof _isOldIE != 'undefined' ) {
-                    $('#lrotate,#rrotate,#fullscreen').remove();
-                }
                 {% if not(enable_right_click) %}
                 $(this).bind("contextmenu", function(e) {
                     e.preventDefault();
                 });
                 {% endif %}
 
-                {% if not(iip) %}
+                {%- if not(iip) -%}
                 var viewer = $("#viewer").bviewer({
+                    {% if remote_method -%}
+                    remote: {
+                        method: '{{ remote_method }}',
+                        uri: '{{ remote_uri }}'
+                    },
+                    {% endif -%}
                     src: "{{ picture.getUrl(series) }}",
                     update_on_resize: true,
                     zoom_animation: false,
@@ -249,7 +252,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     || document.mozFullScreenEnabled != undefined
                     || document.webkitFullscreenEnabled != undefined
                 ){
-                    $('#formats').parent().append(
+                    $('#formats').parent().prepend(
                         $('<a href="#" id="fullscreen" title="{% trans "Enter/exit fullscreen" %}"><span>{% trans "Enter/exit fullscreen" %}</span></a>')
                     );
                     $('#fullscreen').bind('click touchstart', function(){

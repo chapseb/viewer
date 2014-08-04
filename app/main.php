@@ -216,6 +216,18 @@ $app->hook(
 
         $fmts = $conf->getFormats();
         $v->setData('thumb_format', $fmts['thumb']);
+
+        $remote_infos = $conf->getRemoteInfos();
+        if ( $remote_infos !== false ) {
+            $v->setData(
+                'remote_method',
+                $remote_infos['method']
+            );
+            $v->setData(
+                'remote_uri',
+                $remote_infos['uri']
+            );
+        }
     }
 );
 

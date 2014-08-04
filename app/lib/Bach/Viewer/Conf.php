@@ -64,12 +64,18 @@ class Conf
     private $_ui;
     private $_iip;
     private $_print;
+    private $_remote_infos;
 
     private $_path;
     private $_local_path;
     private $_prepared_path;
     private $_prepare_method;
     private $_known_methods;
+
+    private $_known_remote_methods = array(
+        'bach',
+        'pleade'
+    );
 
     /**
      * Main constructor
@@ -145,6 +151,25 @@ class Conf
         $this->_setRoots($this->_conf['roots']);
 
         $this->_print = $this->_conf['print'];
+
+        if ( $this->_conf['remote_infos'] === null ) {
+            $this->_remote_infos = false;
+        } else {
+            $rmethod = $this->_conf['remote_infos']['method'];
+            if ( !in_array($rmethod, $this->_known_remote_methods) ) {
+                throw new \RuntimeException(
+                    str_replace(
+                        '%method',
+                        $rmethod,
+                        'Unknwon remote method %method!'
+                    )
+                );
+            }
+            $this->_remote_infos = array(
+                'method'    => $rmethod,
+                'uri'       => $this->_conf['remote_infos']['uri']
+            );
+        }
     }
 
     /**
@@ -291,6 +316,16 @@ class Conf
     public function getPrintFooter()
     {
         return $this->_print['footer'];
+    }
+
+    /**
+     * Retrieve remote informations
+     *
+     * @return false|array
+     */
+    public function getRemoteInfos()
+    {
+        return $this->_remote_infos;
     }
 
     /**

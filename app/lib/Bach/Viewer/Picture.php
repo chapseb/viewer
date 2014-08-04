@@ -484,6 +484,16 @@ class Picture
     }
 
     /**
+     * Get image path
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return trim($this->_path, '/');
+    }
+
+    /**
      * Get image width
      *
      * @return int
@@ -563,4 +573,47 @@ class Picture
         }
     }
 
+    /**
+     * Retrive remote informations about image
+     *
+     * @param arra   $rinfos Remote informations configuration
+     * @param string $path   Image path
+     * @param string $img    Image name
+     *
+     * @return string
+     */
+    public static function getRemoteInfos($rinfos, $path, $img)
+    {
+        $uri = $rinfos['uri'];
+        if ( $rinfos['method'] === 'bach' ) {
+            $uri .= 'infosimage/' . $path . $img;
+        } else if ( $rinfos['method'] === 'pleade' ) {
+            $uri .= 'functions/ead/infosimage.xml?path=' .
+                $path  . '&name=' . $img;
+        }
+
+        if ( $rcontents = @file_get_contents($uri) ) {
+            if ( $rinfos['method'] === 'bach' ) {
+                $rcontents = str_replace(
+                    'href="',
+                    'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
+                    $rcontents
+                );
+            } else if ( $rinfos['method'] === 'pleade' ) {
+                $rxml = @simplexml_load_string($rcontents);
+                if ( $rxml->a ) {
+                    unset($rxml->a['onclick']);
+                    unset($rxml->a['id']);
+                    unset($rxml->a['attr']);
+                    $rxml->a['href'] = $rinfos['uri'] .
+                        str_replace('../', '', $rxml->a['href']);
+                    $rcontents = $rxml->a->asXML();
+                } else {
+                    $rcontents = null;
+                }
+            }
+
+        }
+        return $rcontents;
+    }
 }

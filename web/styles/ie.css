@@ -48,3 +48,8 @@ aside#progressbar > div {
   opacity: 0!important;
   filter:alpha(opacity=0);
 }
+
+#image_params {
+    filter:alpha(opacity=80);
+}
+
