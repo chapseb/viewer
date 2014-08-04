@@ -124,7 +124,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                 <form id="image_params" action="">
                     <fieldset>
-                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"/></legend>
+                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
                         {% if contrast and picture.canContrast() %}
                         <div>
                             <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
@@ -146,7 +146,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </div>
                         {% endif %}
                         {% endif %}
-                        <div>
+                        <div class="controls">
                             <input type="submit" id="reset_parameters" value="{% trans %}Reset{% endtrans %}"/>
                             <input type="submit" id="set_parameters" value="{% trans %}Set{% endtrans %}"/>
                         </div>
