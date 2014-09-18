@@ -213,6 +213,10 @@ $app->hook(
             'print',
             $ui['print']
         );
+        $v->setData(
+            'comment',
+            $conf->getComment()
+        );
 
         $fmts = $conf->getFormats();
         $v->setData('thumb_format', $fmts['thumb']);

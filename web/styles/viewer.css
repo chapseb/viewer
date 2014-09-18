@@ -85,13 +85,13 @@ h2 {
     line-height: 1.9em;
 }
 
-header a {
+header a, #comm_header a {
     color: #9b9b9b;
     font-weight: normal;
     text-decoration: none;
 }
 
-header a:hover {
+header a:hover, #comm_header a:hover {
     text-decoration: underline;
 }
 
@@ -493,7 +493,7 @@ aside#progressbar > div > progress {
 /** /Overview */
 
 /** Image parameters window */
-#image_params {
+#image_params, #image_comments {
     position: absolute;
     top: 3em;
     left: 1em;
@@ -506,7 +506,7 @@ aside#progressbar > div > progress {
     padding-bottom: .3em;
 }
 
-#image_params legend {
+#image_params legend, #comm_header {
     text-align: center;
     width: 100%;
     padding: .3em 0;
@@ -516,7 +516,8 @@ aside#progressbar > div > progress {
     color: white;
 }
 
-#image_params legend .close {
+#image_params legend .close,
+#comm_header .close {
     display: block;
     position: absolute;
     background: url(../images/buttons/close.png) no-repeat top left;
@@ -527,13 +528,44 @@ aside#progressbar > div > progress {
     cursor: pointer;
 }
 
-#image_params legend .close:hover {
+#image_params legend .close:hover,
+#comm_header .close:hover {
     background-image: url(../images/buttons/close-hover.png);
+}
+
+#comm_header a:visited {
+    color: #9b9b9b;
+}
+
+.linkComment {
+    padding-left: 1em;
 }
 
 #image_params fieldset > div {
     margin-top: .3em;
     padding: 0 .3em;
+}
+
+#image_comments {
+    width: 20%;
+}
+
+#allComments {
+    overflow-y: auto;
+    height: 400px;
+}
+
+.oneComment {
+    margin-top: .6em;
+    padding: 0 .6em;
+}
+
+.oneComment strong {
+    font-weight: bold;
+}
+
+.contentComment {
+    padding-top: .3em;
 }
 
 #image_params div.controls {

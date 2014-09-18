@@ -355,4 +355,19 @@ class Conf extends atoum
         $header = $this->_conf->getPrintHeaderImage('L');
         $this->string($header)->isIdenticalTo('/path/to/logo_landscape.png');
     }
+
+    /**
+     * Test comment settings
+     *
+     * @return void
+     */
+    public function testGetComment()
+    {
+        //first, test default configuration
+        $conf = new Viewer\Conf();
+        $commentParam = $conf->getComment();
+        $this->boolean($commentParam)->isTrue();
+    }
+
+
 }

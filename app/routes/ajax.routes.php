@@ -115,7 +115,7 @@ $app->get(
 
 $app->get(
     '/ajax/image/infos/:image_params+',
-    function ($img_params) use ($app, $conf, $app_base_url) {
+    function ($img_params) use ($app, $conf) {
         $img = array_pop($img_params);
         $path = null;
         if ( count($img_params) > 0 ) {
@@ -135,6 +135,33 @@ $app->get(
         }
 
         echo json_encode($infos);
+    }
+);
+
+$app->get(
+    '/ajax/image/comments/:image_params+',
+    function ($img_params) use ($app, $conf) {
+        $img = array_pop($img_params);
+        $path = null;
+        if ( count($img_params) > 0 ) {
+            $path = implode('/', $img_params) .'/';
+        }
+
+        $rcontents = Picture::getRemoteComments(
+            $conf->getRemoteInfos(),
+            $path,
+            $img
+        );
+
+        echo json_encode($rcontents);
+    }
+);
+
+$app->get(
+    '/ajax/image/comment/bachURL',
+    function () use ($app, $conf) {
+        $bachURL = $conf->getRemoteInfos();
+        echo $bachURL['uri'];
     }
 );
 

@@ -64,6 +64,7 @@ class Conf
     private $_ui;
     private $_iip;
     private $_print;
+    private $_comment;
     private $_remote_infos;
 
     private $_path;
@@ -124,6 +125,8 @@ class Conf
     {
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
+
+        $this->_comment = $this->_conf['comment'];
 
         $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
@@ -230,6 +233,16 @@ class Conf
     public function getFormats()
     {
         return $this->_formats;
+    }
+
+    /**
+     * Retrieve if comment is allowed
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->_comment;
     }
 
     /**

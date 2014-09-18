@@ -97,7 +97,7 @@ $app->get(
         $args = array(
             'img'       => $img,
             'picture'   => $picture,
-            'iip'       => $picture->isPyramidal()
+            'iip'       => $picture->isPyramidal(),
         );
 
         if ( $picture->isPyramidal() ) {
@@ -138,3 +138,4 @@ $app->get(
         'display' => 'true|false'
     )
 );
+

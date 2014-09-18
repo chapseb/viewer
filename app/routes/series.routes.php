@@ -122,7 +122,7 @@ $app->get(
             'img'       => $img,
             'picture'   => $picture,
             'iip'       => $picture->isPyramidal(),
-            'series'    => $series
+            'series'    => $series,
         );
 
         if ( $picture->isPyramidal() ) {
