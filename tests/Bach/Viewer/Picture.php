@@ -150,6 +150,11 @@ class Picture extends atoum
             null,
             rtrim($this->_series->getFullPath(), '/')
         );
+
+        $path = $picture->getPath();
+        $this->string($path)->isIdenticalTo(
+            trim($this->_series->getFullPath(), '/')
+        );
     }
 
     /**

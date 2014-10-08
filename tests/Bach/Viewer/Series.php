@@ -193,7 +193,7 @@ class Series extends atoum
 
         $infos = $this->_series->getInfos();
         $this->array($infos)
-            ->hasSize(6);
+            ->hasSize(7);
 
         $count = $infos['count'];
         $this->integer($count)->isEqualTo(7);
@@ -217,7 +217,7 @@ class Series extends atoum
 
         $infos = $this->_series->getInfos();
         $this->array($infos)
-            ->hasSize(6);
+            ->hasSize(7);
 
         $next = $infos['next'];
         $this->string($next)
