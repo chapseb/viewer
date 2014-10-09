@@ -357,4 +357,88 @@ class Picture extends atoum
 
         $this->integer($length)->isIdenticalTo(6827);
     }
+
+    /**
+     * Test for capabilities (negate, rotate, etc)
+     *
+     * @return void
+     */
+    public function testCapabilities()
+    {
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            $this->_series->getFullPath() . 'tech.jpg',
+            null
+        );
+
+        $negate = $picture->canNegate();
+        $print = $picture->canPrint();
+        $contrast = $picture->canContrast();
+        $brigthness = $picture->canBrightness();
+
+        $this->boolean($negate)->isTrue();
+        $this->boolean($print)->isTrue();
+        $this->boolean($contrast)->isTrue();
+        $this->boolean($brigthness)->isTrue();
+    }
+
+    /**
+     * Test for remote informations stuff
+     *
+     * @return void
+     */
+    public function testRemoteInfos()
+    {
+        $uri = Viewer\Picture::getRemoteInfosURI(
+            $this->_conf->getRemoteInfos(),
+            null,
+            'tech.jpg'
+        );
+        $this->string($uri)->isIdenticalTo(
+            'http://bach.localhost/infosimage/tech.jpg'
+        );
+
+        $rinfos = Viewer\Picture::getRemoteInfos(
+            $this->_conf->getRemoteInfos(),
+            null,
+            'tech.jpg'
+        );
+        $this->boolean($rinfos)->isFalse();
+
+        $rinfos = Viewer\Picture::getRemoteInfos(
+            $this->_conf->getRemoteInfos(),
+            null,
+            'tech.jpg',
+            TESTS_DIR . '/data/bach_remote_infos'
+        );
+
+        $this->string($rinfos)->isIdenticalTo(
+            '<a target="_blank" href="http://bach.localhost/document/test"' .
+            '>Test</a>' . "\n"
+        );
+
+        $config_path = APP_DIR . '/../tests/config/config-remotepleade.yml';
+        $conf = new Viewer\Conf($config_path);
+
+        $rinfos = Viewer\Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            null,
+            'tech.jpg'
+        );
+        $this->boolean($rinfos)->isFalse();
+
+        $rinfos = Viewer\Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            null,
+            'tech.jpg',
+            TESTS_DIR . '/data/pleade_remote_infos'
+        );
+
+        $this->string($rinfos)->isIdenticalTo(
+            '<a href="http://pleade.test.localhost/ead.html?id=Test&amp;c=' .
+            'Test_1" title="">Test</a>'
+        );
+
+
+    }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<span xmlns="http://www.w3.org/1999/xhtml" id="Test_1">
+   <a href="../../ead.html?id=Test&amp;c=Test_1"
+      id="piv-localisation-link"
+      title=""
+      attr="title"
+      onclick="&#xA;        if(window.opener){ window.opener.location.href=this.href; window.opener.focus();} else {window.location.href=this.href;}return false;&#xA;      ">Test</a>
+</span>
