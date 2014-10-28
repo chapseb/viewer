@@ -96,6 +96,7 @@ class Conf extends atoum
 
         //a test with no additional configuration file
         $conf = new Viewer\Conf();
+        $this->object($conf)->isInstanceOf('Bach\Viewer\Conf');
     }
 
     /**
@@ -313,13 +314,15 @@ class Conf extends atoum
             ->strictlyContainsValues(
                 array(
                     'bach',
-                    'http://bach.localhost/'
+                    'http://UT.bach.localhost/'
                 )
             );
 
             $this->exception(
                 function () {
-                    new Viewer\Conf(TESTS_DIR . '/config/config-unknownremotemethod.yml');
+                    new Viewer\Conf(
+                        TESTS_DIR . '/config/config-unknownremotemethod.yml'
+                    );
                 }
             )->hasMessage('Unknwon remote method noone!');
     }

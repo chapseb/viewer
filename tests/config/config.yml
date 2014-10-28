@@ -46,7 +46,7 @@ roots:
 
 remote_infos:
     method: bach
-    uri: http://bach.localhost/
+    uri: http://UT.bach.localhost/
 
 print:
     footer: A test.

@@ -404,7 +404,7 @@ class Picture extends atoum
             'tech.jpg'
         );
         $this->string($uri)->isIdenticalTo(
-            'http://bach.localhost/infosimage/tech.jpg'
+            'http://UT.bach.localhost/infosimage/tech.jpg'
         );
 
         $rinfos = Viewer\Picture::getRemoteInfos(
@@ -422,7 +422,7 @@ class Picture extends atoum
         );
 
         $this->string($rinfos)->isIdenticalTo(
-            '<a target="_blank" href="http://bach.localhost/document/test"' .
+            '<a target="_blank" href="http://UT.bach.localhost/document/test"' .
             '>Test</a>' . "\n"
         );
 
