@@ -29,28 +29,6 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-formats:
-    huge:
-        width: 2000
-        height: 2000
-prepared_images:
-    method: gd
-    path: /tmp
-iip:
-    server: /path/to/configured/iipsrv.fcgi
-ui:
-    enable_right_click: false
-roots:
-    - /path/to/images
-    - /path/to/another/images
-
 remote_infos:
-    method: bach
-    uri: http://UT.bach.localhost/
-
-print:
-    footer: A test.
-    header:
-        image: '/path/to/logo.png'
-        image_landscape: '/path/to/logo_landscape.png'
-        image_portrait: '/path/to/logo_portrait.png'
+    method: pleade
+    uri: http://pleade.test.localhost/

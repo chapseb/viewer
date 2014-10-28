@@ -96,6 +96,7 @@ class Conf extends atoum
 
         //a test with no additional configuration file
         $conf = new Viewer\Conf();
+        $this->object($conf)->isInstanceOf('Bach\Viewer\Conf');
     }
 
     /**
@@ -261,7 +262,6 @@ class Conf extends atoum
                 new Viewer\Conf(TESTS_DIR . '/config/config-unknownmethod.yml');
             }
         )->hasMessage('Prepare method  is not known.');
-
     }
 
     /**
@@ -296,5 +296,63 @@ class Conf extends atoum
         $conf = new Viewer\Conf(TESTS_DIR . '/config/config-woprepared.yml');
         $method = $conf->getPrepareMethod();
         $this->string($method)->isIdenticalTo('choose');
+    }
+
+    /**
+     * Test remote infos parameters
+     *
+     * @return void
+     */
+    public function testRemoteInfos()
+    {
+        $remote = $this->_conf->getRemoteInfos();
+
+        $this->array($remote)
+            ->hasSize(2)
+            ->hasKey('method')
+            ->hasKey('uri')
+            ->strictlyContainsValues(
+                array(
+                    'bach',
+                    'http://UT.bach.localhost/'
+                )
+            );
+
+            $this->exception(
+                function () {
+                    new Viewer\Conf(
+                        TESTS_DIR . '/config/config-unknownremotemethod.yml'
+                    );
+                }
+            )->hasMessage('Unknwon remote method noone!');
+    }
+
+    /**
+     * Test print footer getter
+     *
+     * @return void
+     */
+    public function testGetPrintFooter()
+    {
+        $footer = $this->_conf->getPrintFooter();
+
+        $this->string($footer)->isIdenticalTo('A test.');
+    }
+
+    /**
+     * Test print header image getter
+     *
+     * @return void
+     */
+    public function testGetPrintHeaderImage()
+    {
+        $header = $this->_conf->getPrintHeaderImage();
+        $this->string($header)->isIdenticalTo('/path/to/logo.png');
+
+        $header = $this->_conf->getPrintHeaderImage('P');
+        $this->string($header)->isIdenticalTo('/path/to/logo_portrait.png');
+
+        $header = $this->_conf->getPrintHeaderImage('L');
+        $this->string($header)->isIdenticalTo('/path/to/logo_landscape.png');
     }
 }

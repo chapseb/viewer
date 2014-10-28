@@ -25,4 +25,4 @@ app/config/config.inc.php
 .buildpath
 .project
 .settings/
-
+*.exvim*

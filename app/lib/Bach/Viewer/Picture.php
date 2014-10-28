@@ -574,15 +574,15 @@ class Picture
     }
 
     /**
-     * Retrive remote informations about image
+     * Get remoteinfos URI
      *
-     * @param arra   $rinfos Remote informations configuration
+     * @param array  $rinfos Remote informations configuration
      * @param string $path   Image path
      * @param string $img    Image name
      *
      * @return string
      */
-    public static function getRemoteInfos($rinfos, $path, $img)
+    public static function getRemoteInfosURI($rinfos, $path, $img)
     {
         $uri = $rinfos['uri'];
         if ( $rinfos['method'] === 'bach' ) {
@@ -590,6 +590,29 @@ class Picture
         } else if ( $rinfos['method'] === 'pleade' ) {
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
+        }
+        return $uri;
+    }
+
+    /**
+     * Retrieve remote informations about image
+     *
+     * @param array  $rinfos Remote informations configuration
+     * @param string $path   Image path
+     * @param string $img    Image name
+     * @param string $ruri   Remote URI (will be build with
+     *                       getRemoteInfosURI if null)
+     *
+     * @return string
+     */
+    public static function getRemoteInfos($rinfos, $path, $img, $ruri = null)
+    {
+        $uri = null;
+
+        if ( $ruri === null ) {
+            $uri = self::getRemoteInfosURI($rinfos, $path, $img);
+        } else {
+            $uri = $ruri;
         }
 
         if ( $rcontents = @file_get_contents($uri) ) {
