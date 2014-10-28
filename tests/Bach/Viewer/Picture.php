@@ -155,6 +155,15 @@ class Picture extends atoum
         $this->string($path)->isIdenticalTo(
             trim($this->_series->getFullPath(), '/')
         );
+
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            DEFAULT_PICTURE,
+            null
+        );
+        $path = $picture->getFullPath();
+
+        $this->string($path)->isIdenticalTo(WEB_DIR . '/images/' . DEFAULT_PICTURE);
     }
 
     /**
