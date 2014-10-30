@@ -98,7 +98,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         {% endif %}
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
-                        <li id="zoomin" title="{% trans "Zoom in" %}">
+                        {% if picture.hasFormat('full') and picture.hasFormat('default') %}
+                        <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
+                            <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
+                        </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
                         {% if not iip %}
@@ -198,6 +201,8 @@ POSSIBILITY OF SUCH DAMAGE.
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
             var app_url = '{{ app_base_url }}';
+            var hidef_off_title = '{% trans %}Switch to high resolution image{% endtrans %}';
+            var hidef_on_title = '{% trans %}Switch to low resolution image{% endtrans %}';
 
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
             function toggleFullScreen() {
@@ -225,6 +230,8 @@ POSSIBILITY OF SUCH DAMAGE.
             jQuery.noConflict();
             //jquery stuff
             (function($) {
+                $('#progressbar').fadeIn();
+
                 {% if not(enable_right_click) %}
                 $(this).bind("contextmenu", function(e) {
                     e.preventDefault();

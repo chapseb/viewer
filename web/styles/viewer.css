@@ -305,8 +305,8 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     display: none;
 }
 
-#zoominfos {
-    background-image: none;
+#zoominfos, #hidef {
+    background: #1b1a1a;
     background: -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
@@ -320,6 +320,75 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     font-size: 1em;
     line-height: 40px;
 }
+
+#zoominfos:hover {
+    background: #0d0d0d;
+    background: -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+}
+
+#hidef {
+    width: 60px;
+    background: #1b1a1a url(../images/buttons/hidef.png);
+    background: url(../images/buttons/hidef.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/hidef.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/hidef.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/hidef.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/hidef.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: 50% -35px, top left;
+}
+
+#hidef.on {
+    background-position: 50% 7px, top left;
+}
+
+#hidef:hover {
+    background: #0d0d0d url(../images/buttons/hidef.png);
+    background: url(../images/buttons/hidef.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/hidef.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/hidef.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/hidef.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/hidef.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: 50% -35px, top left;
+}
+
+#hidef.on:hover {
+    background-position: 50% 7px, top left;
+}
+
+#hidef .userinfo {
+    display: block;
+    position: absolute;
+    padding: .5em 1em;
+    line-height: 1.3em;
+    background: #1b1a1a;
+    background: -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    color: #fff;
+    text-align: center;
+    display: none;
+    border-radius: 10px;
+}
+
+#hidef .userinfo .inner {
+    display: block;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #1b1a1a;
+    border-top: 5px solid rgba(20, 19, 19, .8);
+    left: 50%;
+    position: absolute;
+    top: 100%;
+}
+
 /** /Common toolbar */
 
 /** === Progress bar */
@@ -329,6 +398,7 @@ aside#progressbar {
     background-color: black;
     background: rgba(0, 0, 0, .5);
     z-index: 100;
+    display: none;
 }
 
 aside#progressbar > div {

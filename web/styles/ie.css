@@ -53,3 +53,11 @@ aside#progressbar > div {
     filter:alpha(opacity=80);
 }
 
+#hidef {
+    background-repeat: no-repeat!important;
+    background-position: 50% -35px!important;
+}
+
+#hidef.on {
+    background-position: 50% 7px!important;
+}

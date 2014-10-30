@@ -452,7 +452,12 @@ class Picture
             $formats = $this->_conf->getFormats();
             foreach ( $formats as $k=>$fmt ) {
                 if ( $k !== 'thumb' && $k !== 'medium' ) {
-                    $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' . $fmt['height'];
+                    if ( $fmt['width'] < $this->_width
+                        || $fmt['height'] < $this->_height
+                    ) {
+                        $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' .
+                            $fmt['height'];
+                    }
                 }
             }
             if ( !isset($formats['full']) ) {
@@ -461,6 +466,21 @@ class Picture
             }
         }
         return $visibles;
+    }
+
+    /**
+     * Does format exists
+     *
+     * @param string $format Format name
+     *
+     * @return boolean
+     */
+    public function hasFormat($format)
+    {
+        return in_array(
+            $format,
+            array_keys($this->getVisibleFormats())
+        );
     }
 
     /**

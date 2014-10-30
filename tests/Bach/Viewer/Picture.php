@@ -342,11 +342,38 @@ class Picture extends atoum
         $this->boolean($isPyramidal)->isFalse();
         $this->string($fpath)->isIdenticalTo($this->_roots[0] . '/doms.jpg');
         $this->string($name)->isIdenticalTo('doms.jpg');
-        $this->array($vformats)->hasSize(3);
+        $this->array($vformats)->hasSize(1);
         $this->string($url)->isIdenticalTo('/show/default/doms.jpg');
         $this->string($surl)->isIdenticalTo(
             '/show/default/doms.jpg'
         );
+
+        $picture = new Viewer\Picture(
+            $this->_conf,
+            DEFAULT_PICTURE,
+            null
+        );
+
+        $width = $picture->getWidth();
+        $height = $picture->getHeight();
+        $isPyramidal = $picture->isPyramidal();
+        $fpath = $picture->getFullPath();
+        $vformats = $picture->getVisibleFormats();
+        $url = $picture->getUrl(null);
+        $surl = $picture->getUrl(null, 'default');
+        $name = $picture->getName();
+
+        $this->integer($width)->isEqualTo(3090);
+        $this->integer($height)->isEqualTo(4277);
+        $this->boolean($isPyramidal)->isFalse();
+        $this->string($fpath)->isIdenticalTo(WEB_DIR . '/images/' . DEFAULT_PICTURE);
+        $this->string($name)->isIdenticalTo(DEFAULT_PICTURE);
+        $this->array($vformats)->hasSize(3);
+        $this->string($url)->isIdenticalTo('/show/default/main.jpg');
+        $this->string($surl)->isIdenticalTo(
+            '/show/default/main.jpg'
+        );
+
     }
 
     /** Test image inside a subdirectory
