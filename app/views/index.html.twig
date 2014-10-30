@@ -201,8 +201,8 @@ POSSIBILITY OF SUCH DAMAGE.
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
             var app_url = '{{ app_base_url }}';
-            var hidef_off_title = '{% trans %}Switch to high resolution image{% endtrans %}';
-            var hidef_on_title = '{% trans %}Switch to low resolution image{% endtrans %}';
+            var hidef_off_title = '{{ "Switch to high resolution image"|escape('js')}}';
+            var hidef_on_title = '{{ "Switch to low resolution image"|escape('js') }}';
 
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
             function toggleFullScreen() {
