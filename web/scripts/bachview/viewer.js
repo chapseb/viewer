@@ -202,6 +202,42 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
     },
 
+    /**
+     * Overrides iviewer method to inform user a hidef version is available
+     */
+    zoom_by: function(delta, zoom_center)
+    {
+        $.ui.iviewer.prototype.zoom_by.apply(this, arguments);
+
+        if ( this.display_options.format !== 'full' ) {
+            var percent = Math.round(100*this.img_object.display_height()/this.img_object.orig_height());
+            var _uinfos = $('#hidef .userinfo');
+
+            if ( percent && percent >= 150 && !_uinfos.is(':visible') ) {
+                if ( !_uinfos.data('placed') ) {
+                    //calculate position.
+                    var _parent = $('#hidef');
+                    var _ppos = _parent.position();
+                    var _pheight = _parent.outerHeight();
+                    var _pwidth = _parent.outerWidth();
+
+                    var _height = _uinfos.outerHeight();
+                    var _width = _uinfos.outerWidth();
+
+                    var _top = _height + 5;
+                    var _left = _ppos.left + (_pwidth - _width) / 2;
+
+                    _uinfos.css('top', '-' + _top + 'px');
+                    _uinfos.css('left', _left  + 'px');
+                    _uinfos.data('placed', true);
+                }
+                _uinfos.fadeIn('slow');
+            } else if (percent && percent < 150 && _uinfos.is(':visible')) {
+                _uinfos.fadeOut('slow');
+            }
+        }
+    },
+
     print: function()
     {
         var _img_height = this.nav_img_object.display_height();
@@ -327,7 +363,31 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
         $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
         $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
-        $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow() });
+        $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow(); });
+        $('#hidef').bind('click touchstart', function(){
+            var _this = $(this);
+            var _state = _this.data('state');
+            var _format;
+            if ( _state == 'on' ) {
+                _format = 'default';
+                _this.data('state', 'off');
+                _this.attr('data-state', 'off');
+                _this.attr('title', hidef_off_title);
+            } else {
+                _format = 'full';
+                _this.data('state', 'on');
+                _this.attr('data-state', 'on');
+                _this.attr('title', hidef_on_title);
+            }
+            _this.toggleClass('on');
+            if ( $('#formats > select').length > 0 ) {
+                $('#formats > select').val(_format);
+            }
+            $('#hidef .userinfo').hide();
+            me.display_options.format = _format;
+            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
+            me.loadImage(_src);
+        });
         $("#print").bind('click touchstart', function(){ me.print(); });
         this.zoom_object = $('#zoominfos');
 
