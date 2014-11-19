@@ -102,6 +102,29 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             //load navigation overview image
             var _src;
             _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
+
+            if ( me.hasTransformations() ) {
+                _src = _src.replace('/show', '/transform') + '?';
+
+                var _t = me.display_options.transform;
+
+                if ( _t.negate ) {
+                    _src += '&n=true';
+                }
+
+                if ( _t.contrast ) {
+                    _src += '&c=' + _t.contrast;
+                }
+
+                if ( _t.brightness ) {
+                    _src += '&b=' + _t.brightness;
+                }
+
+                if ( _t.rotate > 0 ) {
+                    _src += '&r=' + _t.rotate;
+                }
+            }
+
             me.nav_img_object.load(_src, function() {
                 //remove buggy styles...
                 $('.navwin, .navwin > img, .outerzone').removeAttr('style')
