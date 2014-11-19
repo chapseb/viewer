@@ -1,3 +1,8 @@
+1.1.1 (2014-11-19)
+- Fix various path issues when viewer is not in its own subdomain
+- Fix a rotation issue on IE8 on series
+- Rotate thumbnail image as well on first load
+
 1.1 (2014-10-31)
 - Add hidef button
 
