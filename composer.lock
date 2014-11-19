@@ -62,12 +62,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "259202a7e917a201306d1029ccea6d24a6f1fb3a"
+                "reference": "980ffe256ddd1dc398c6e6c6405a061cfb845d5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/259202a7e917a201306d1029ccea6d24a6f1fb3a",
-                "reference": "259202a7e917a201306d1029ccea6d24a6f1fb3a",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/980ffe256ddd1dc398c6e6c6405a061cfb845d5c",
+                "reference": "980ffe256ddd1dc398c6e6c6405a061cfb845d5c",
                 "shasum": ""
             },
             "require": {
@@ -128,7 +128,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2014-07-30 11:55:47"
+            "time": "2014-11-13 10:42:42"
         },
         {
             "name": "psr/log",
@@ -270,17 +270,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.18",
+            "version": "v2.3.21",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "ec2c1cd7b55321f199c3653c30ef497e852678cd"
+                "reference": "34687c6236f1dfcebc874fbebd8da74d90f9f64f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/ec2c1cd7b55321f199c3653c30ef497e852678cd",
-                "reference": "ec2c1cd7b55321f199c3653c30ef497e852678cd",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/34687c6236f1dfcebc874fbebd8da74d90f9f64f",
+                "reference": "34687c6236f1dfcebc874fbebd8da74d90f9f64f",
                 "shasum": ""
             },
             "require": {
@@ -303,27 +303,31 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-07 10:13:42"
+            "time": "2014-10-01 05:38:33"
         },
         {
             "name": "tecnick.com/tcpdf",
-            "version": "6.0.089",
+            "version": "6.0.099",
             "source": {
                 "type": "git",
-                "url": "git://git.code.sf.net/p/tcpdf/code",
-                "reference": "979432f754965bc13960776df51cb28eabfc0938"
+                "url": "https://github.com/tecnickcom/TCPDF.git",
+                "reference": "75e7ad39458e060d0cae6fcb7d50a2c9f3af1b01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/75e7ad39458e060d0cae6fcb7d50a2c9f3af1b01",
+                "reference": "75e7ad39458e060d0cae6fcb7d50a2c9f3af1b01",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
@@ -361,7 +365,7 @@
                     "homepage": "http://nicolaasuni.tecnick.com"
                 }
             ],
-            "description": "TCPDF is a PHP class for generating PDF documents.",
+            "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
             "homepage": "http://www.tcpdf.org/",
             "keywords": [
                 "PDFD32000-2008",
@@ -372,29 +376,35 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-07-16 17:59:23"
+            "time": "2014-11-15 12:35:49"
         },
         {
             "name": "twig/extensions",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig-extensions.git",
-                "reference": "c0ab818595338dd5569369bfce2552d02cec5d50"
+                "url": "https://github.com/twigphp/Twig-extensions.git",
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/c0ab818595338dd5569369bfce2552d02cec5d50",
-                "reference": "c0ab818595338dd5569369bfce2552d02cec5d50",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
+                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
                 "shasum": ""
             },
             "require": {
                 "twig/twig": "~1.12"
             },
+            "require-dev": {
+                "symfony/translation": "~2.3"
+            },
+            "suggest": {
+                "symfony/translation": "Allow the time_diff output to be translated"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -409,31 +419,29 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Common additional features for Twig that do not directly belong in core",
-            "homepage": "https://github.com/fabpot/Twig-extensions",
+            "homepage": "http://twig.sensiolabs.org/doc/extensions/index.html",
             "keywords": [
                 "i18n",
                 "text"
             ],
-            "time": "2014-07-05 10:01:35"
+            "time": "2014-10-30 14:30:03"
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.0",
+            "version": "v1.16.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8ce37115802e257a984a82d38254884085060024"
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
-                "reference": "8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/42f758d9fe2146d1f0470604fc05ee43580873fc",
+                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc",
                 "shasum": ""
             },
             "require": {
@@ -477,7 +485,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2014-10-17 12:53:44"
         }
     ],
     "packages-dev": [],
