@@ -187,7 +187,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.nav_img_object.object().remove();
     },
 
-    /** Overrides iviewr method to rotate navigation image */
+    /** Overrides iviewer method to rotate navigation image */
     angle: function(deg, abs) {
         var me = this;
         if ( typeof _isOldIE != 'undefined' ) {
@@ -196,7 +196,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if (deg >= 360) { deg -= 360; }
 
             this.display_options.transform.rotate = deg;
-            this.display(this.image_name);
+            var _img = this.image_name;
+            if ( series_path != '' ) {
+                _img = series_path + '/' + _img;
+            }
+            this.display(_img);
         } else {
             $.ui.iviewer.prototype.angle.apply(this, arguments);
         }
@@ -273,10 +277,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         _width = Math.round(this.container[0].clientWidth / this.img_object.display_width() * _img_width);
-        _leftPosHD = Math.round(scale_width * _leftPos /_width); 
+        _leftPosHD = Math.round(scale_width * _leftPos /_width);
 
-        var _src = this.options.src.replace(/show\/default/, this.display_options.format);
-        var res = 'print'  +  _src ;
+        var _src = this.options.src.replace(/.*\/show\/default/, this.display_options.format);
+        var res = app_url.replace(/^\//, '') + '/print/'  +  _src ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
         if ( this.hasTransformations() ) {
@@ -483,14 +487,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.image_name = (img.split('/')).pop();
 
         //store default format as source
-        this.options.src = '/show/default/' + img;
-        var _img_path = app_url + this.options.src.replace(
+        this.options.src = app_url + '/show/default/' + img;
+        var _img_path = this.options.src.replace(
             'default',
             this.display_options.format
         );
 
         if ( this.hasTransformations() ) {
-            var _img_path = '/transform' + _img_path.replace('/show', '') + '?';
+            _img_path = _img_path.replace('/show', '/transform') + '?';
 
             var _t = this.display_options.transform;
 
@@ -559,7 +563,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     me.display_options.transform.negate = false;
                 }
 
-                me.display(me.options.src.replace('/show/default/', ''));
+                me.display(me.options.src.replace(/.*\/show\/default\//, ''));
             });
 
             _win.draggable({
