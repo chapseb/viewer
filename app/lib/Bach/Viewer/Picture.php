@@ -611,6 +611,9 @@ class Picture
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
         }
+        Analog::debug(
+            'Loading remote infos from ' . $uri
+        );
         return $uri;
     }
 
