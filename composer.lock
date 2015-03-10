@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "analog/analog",
-            "version": "1.0.4-stable",
+            "version": "1.0.6-stable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jbroadway/analog.git",
-                "reference": "b33febc06cb47593e23c74cccaceaaf618220b07"
+                "reference": "1fcc97fd842f37013587d64aba5f3f1fa6b0d911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jbroadway/analog/zipball/b33febc06cb47593e23c74cccaceaaf618220b07",
-                "reference": "b33febc06cb47593e23c74cccaceaaf618220b07",
+                "url": "https://api.github.com/repos/jbroadway/analog/zipball/1fcc97fd842f37013587d64aba5f3f1fa6b0d911",
+                "reference": "1fcc97fd842f37013587d64aba5f3f1fa6b0d911",
                 "shasum": ""
             },
             "require": {
@@ -38,8 +38,7 @@
                 {
                     "name": "Johnny Broadway",
                     "email": "johnny@johnnybroadway.com",
-                    "homepage": "http://www.johnnybroadway.com/",
-                    "role": "Main Developer"
+                    "homepage": "http://www.johnnybroadway.com/"
                 }
             ],
             "description": "PHP 5.3+ micro logging class that can be extended via closures. Includes several pre-built handlers including file, mail, syslog, HTTP post, and MongoDB.",
@@ -54,7 +53,7 @@
                 "logging",
                 "syslog"
             ],
-            "time": "2014-01-24 22:41:50"
+            "time": "2015-02-13 20:34:48"
         },
         {
             "name": "atoum/atoum",
@@ -62,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "980ffe256ddd1dc398c6e6c6405a061cfb845d5c"
+                "reference": "77778c968871b605f73289c72adb907fa5e601f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/980ffe256ddd1dc398c6e6c6405a061cfb845d5c",
-                "reference": "980ffe256ddd1dc398c6e6c6405a061cfb845d5c",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/77778c968871b605f73289c72adb907fa5e601f0",
+                "reference": "77778c968871b605f73289c72adb907fa5e601f0",
                 "shasum": ""
             },
             "require": {
@@ -88,6 +87,11 @@
                 "bin/atoum"
             ],
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "classes/"
@@ -128,7 +132,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2014-11-13 10:42:42"
+            "time": "2015-02-27 13:00:25"
         },
         {
             "name": "psr/log",
@@ -216,17 +220,16 @@
         },
         {
             "name": "slim/views",
-            "version": "0.1.2",
-            "target-dir": "Slim/Views",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Views.git",
-                "reference": "f0a05ea0b654218e40de692ed7cddcad1cf4b828"
+                "url": "https://github.com/slimphp/Slim-Views.git",
+                "reference": "8561c785e55a39df6cb6f95c3aba3281a60ed5b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Views/zipball/f0a05ea0b654218e40de692ed7cddcad1cf4b828",
-                "reference": "f0a05ea0b654218e40de692ed7cddcad1cf4b828",
+                "url": "https://api.github.com/repos/slimphp/Slim-Views/zipball/8561c785e55a39df6cb6f95c3aba3281a60ed5b0",
+                "reference": "8561c785e55a39df6cb6f95c3aba3281a60ed5b0",
                 "shasum": ""
             },
             "require": {
@@ -239,8 +242,8 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Slim\\Views": ""
+                "psr-4": {
+                    "Slim\\Views\\": "./"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -249,14 +252,14 @@
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://thoughts.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
+                },
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://thoughts.silentworks.co.uk/"
                 }
             ],
             "description": "Smarty and Twig View Parser package for the Slim Framework",
@@ -266,21 +269,21 @@
                 "slimphp",
                 "templating"
             ],
-            "time": "2014-04-03 16:31:10"
+            "time": "2014-12-09 23:48:51"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.21",
+            "version": "v2.3.25",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "34687c6236f1dfcebc874fbebd8da74d90f9f64f"
+                "reference": "11a44f3c52686517c12c9737126890dc232640a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/34687c6236f1dfcebc874fbebd8da74d90f9f64f",
-                "reference": "34687c6236f1dfcebc874fbebd8da74d90f9f64f",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/11a44f3c52686517c12c9737126890dc232640a3",
+                "reference": "11a44f3c52686517c12c9737126890dc232640a3",
                 "shasum": ""
             },
             "require": {
@@ -313,7 +316,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-10-01 05:38:33"
+            "time": "2015-01-25 03:54:01"
         },
         {
             "name": "tecnick.com/tcpdf",
@@ -432,16 +435,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.2",
+            "version": "v1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc"
+                "reference": "4cf7464348e7f9893a93f7096a90b73722be99cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/42f758d9fe2146d1f0470604fc05ee43580873fc",
-                "reference": "42f758d9fe2146d1f0470604fc05ee43580873fc",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4cf7464348e7f9893a93f7096a90b73722be99cf",
+                "reference": "4cf7464348e7f9893a93f7096a90b73722be99cf",
                 "shasum": ""
             },
             "require": {
@@ -450,7 +453,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.16-dev"
+                    "dev-master": "1.18-dev"
                 }
             },
             "autoload": {
@@ -476,7 +479,7 @@
                 },
                 {
                     "name": "Twig Team",
-                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
                     "role": "Contributors"
                 }
             ],
@@ -485,7 +488,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-10-17 12:53:44"
+            "time": "2015-01-25 17:32:08"
         }
     ],
     "packages-dev": [],
@@ -495,6 +498,7 @@
         "atoum/atoum": 20
     },
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">= 5.3.7"
     },
