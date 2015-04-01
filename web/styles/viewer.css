@@ -42,7 +42,7 @@ html, body, section, #pviewer {
     position: absolute;
     height: 100%;
     width: 100%;
-    top; 0;
+    top: 0;
     left: 0;
     min-height: 100%;
 }
@@ -305,7 +305,7 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     display: none;
 }
 
-#zoominfos, #hidef {
+#zoominfos, #hidef, #comments {
     background: #1b1a1a;
     background: -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
@@ -328,6 +328,32 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background: -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
     background: -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
     background: linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+}
+
+#comments {
+    background: url("../images/buttons/comment.png") ;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #1b1a1a url(../images/buttons/comment.png);
+    background: url(../images/buttons/comment.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#comments:hover {
+    background: #0d0d0d url(../images/buttons/comment.png);
+    background: url(../images/buttons/comment.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
 }
 
 #hidef {
@@ -553,11 +579,18 @@ aside#progressbar > div > progress {
 #allComments {
     overflow-y: auto;
     height: 400px;
+    padding: 0.5em;
+}
+
+#allComments hr {
+    margin: 1em 2.5em;
+    height: 0.5px;
 }
 
 .oneComment {
     margin-top: .6em;
     padding: 0 .6em;
+    text-align: justify;
 }
 
 .oneComment strong {

@@ -700,7 +700,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         comments[idx].subject +
                         "</strong><p class='contentComment'>" +
                         comments[idx].message +
-                        "</p></div>"
+                        "</p></div><hr />"
                     );
                 }
             },
