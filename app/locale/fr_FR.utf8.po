@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-02 11:41+0100\n"
+"PO-Revision-Date: 2015-04-02 11:50+0100\n"
 "Last-Translator: Sebastien Chaptal <sebastien.chaptal@anaphore.eu>\n"
 "Language-Team: French <>\n"
 "Language: fr\n"
@@ -175,7 +175,7 @@ msgstr "Définir"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:405
 msgid "Image comments"
-msgstr "Paramètres de l'image"
+msgstr "Commentaires"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:411
 msgid "New comment"
