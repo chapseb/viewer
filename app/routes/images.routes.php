@@ -107,6 +107,9 @@ $app->get(
             $args['image_format'] = 'default';
         }
 
+        if (file_exists('../web/themes/styles/themes.css') ) {
+            $args['themes'] = 'themes';
+        }
         $app->render(
             'index.html.twig',
             $args
