@@ -64,6 +64,7 @@ class Pdf extends \TCPDF
     private $_params;
     private $_image_format;
     private $_header_height = 0;
+    private $_footer_height = 0;
 
     /**
      * Main constructor
@@ -135,8 +136,23 @@ class Pdf extends \TCPDF
      */
     public function Footer()
     {
-        $this->SetY(-15);
-        $this->Cell(0, 10, $this->_conf->getPrintFooter(), 0, 0, 'C');
+        $image = $this->_conf->getPrintFooter($this->CurOrientation);
+        if ( file_exists($image) ) {
+            $this->SetY(280);
+            $this->writeHTML(
+                '<img src="' . $image . '"/>'
+            );
+
+            $this->_footer_height = ceil($this->getY());
+        } else {
+            Analog::error(
+                str_replace(
+                    '%file',
+                    $image,
+                    'File %file does not exists!'
+                )
+            );
+        }
     }
 
     /**

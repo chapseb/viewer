@@ -326,9 +326,24 @@ class Conf
      *
      * @return string
      */
-    public function getPrintFooter()
+    public function getPrintFooter($orientation = null)
     {
-        return $this->_print['footer'];
+
+        $image = $this->_print['footer']['image'];
+
+        if ( $orientation === 'P'
+            && isset($this->_print['footer']['image_portrait'])
+        ) {
+            $image = $this->_print['footer']['image_portrait'];
+        }
+
+        if ( $orientation === 'L'
+            && isset($this->_print['footer']['image_landscape'])
+        ) {
+            $image = $this->_print['footer']['image_landscape'];
+        }
+
+        return $image;
     }
 
     /**
