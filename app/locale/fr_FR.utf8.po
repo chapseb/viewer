@@ -134,7 +134,7 @@ msgstr "Imprimer l'image telle qu'affichée actuellement"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:295
 msgid "Adjust image parameters"
-msgstr "Ajuster les paramètre de l'image"
+msgstr "Ajuster les paramètres de l'image"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:313
 msgid "Loading image, please wait..."
