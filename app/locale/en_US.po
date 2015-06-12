@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-04-02 11:17+0100\n"
+"PO-Revision-Date: 2015-06-12 14:49+0100\n"
 "Last-Translator: Sebastien Chaptal <sebastien.chaptal@anaphore.eu>\n"
 "Language-Team: French <>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.7.6\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: /tmp/viewer_cache_temp/6a/35/020a9e50b7c353a5b7085ad75aa459489e6739f28b35e26ab2b8bd2a48f7.php:40
@@ -26,9 +26,8 @@ msgid "The page you're looking for does not exist, or has been removed."
 msgstr "The page you're looking for does not exist, or has been removed."
 
 #: /tmp/viewer_cache_temp/6a/35/020a9e50b7c353a5b7085ad75aa459489e6739f28b35e26ab2b8bd2a48f7.php:66
-#: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:72
-msgid "Back to home!"
-msgstr "Back to home!"
+msgid "Back to search"
+msgstr "Back to search!"
 
 #: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:40
 msgid "Bach's viewer - Error"
@@ -41,6 +40,10 @@ msgstr "An error has occured"
 #: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:70
 msgid "Please report issue to an admin."
 msgstr "Please report issue to an admin."
+
+#: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:72
+msgid "Back to home!"
+msgstr "Back to home!"
 
 #: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:74
 msgid "Warning!"
@@ -171,9 +174,8 @@ msgid "Set"
 msgstr "Set"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:405
-#, fuzzy
 msgid "Image comments"
-msgstr "Image parameters"
+msgstr "Image comments"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:411
 msgid "New comment"
