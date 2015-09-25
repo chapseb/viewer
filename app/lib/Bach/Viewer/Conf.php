@@ -64,6 +64,7 @@ class Conf
     private $_ui;
     private $_iip;
     private $_print;
+    private $_comment;
     private $_remote_infos;
 
     private $_path;
@@ -124,6 +125,8 @@ class Conf
     {
         $this->_ui = $this->_conf['ui'];
         $this->_formats = $this->_conf['formats'];
+
+        $this->_comment = $this->_conf['comment'];
 
         $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
@@ -233,6 +236,16 @@ class Conf
     }
 
     /**
+     * Retrieve if comment is allowed
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->_comment;
+    }
+
+    /**
      * Retrieve configured UI parts
      *
      * @return array
@@ -313,9 +326,24 @@ class Conf
      *
      * @return string
      */
-    public function getPrintFooter()
+    public function getPrintFooter($orientation = null)
     {
-        return $this->_print['footer'];
+
+        $image = $this->_print['footer']['image'];
+
+        if ( $orientation === 'P'
+            && isset($this->_print['footer']['image_portrait'])
+        ) {
+            $image = $this->_print['footer']['image_portrait'];
+        }
+
+        if ( $orientation === 'L'
+            && isset($this->_print['footer']['image_landscape'])
+        ) {
+            $image = $this->_print['footer']['image_landscape'];
+        }
+
+        return $image;
     }
 
     /**

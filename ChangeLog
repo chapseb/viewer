@@ -1,3 +1,13 @@
+1.2 (2015-09-25)
+
+- Close tab in return to search action
+- Fix 404 redirection link
+- Update footer to display image ressource like header
+- Update translations
+- Add comment for images in viewer
+- Update 3rd party libs
+- Add debug info loading remote URI 
+
 1.1.1 (2014-11-19)
 - Fix various path issues when viewer is not in its own subdomain
 - Fix a rotation issue on IE8 on series

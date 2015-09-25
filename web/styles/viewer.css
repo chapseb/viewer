@@ -42,7 +42,7 @@ html, body, section, #pviewer {
     position: absolute;
     height: 100%;
     width: 100%;
-    top; 0;
+    top: 0;
     left: 0;
     min-height: 100%;
 }
@@ -85,13 +85,13 @@ h2 {
     line-height: 1.9em;
 }
 
-header a {
+header a, #comm_header a {
     color: #9b9b9b;
     font-weight: normal;
     text-decoration: none;
 }
 
-header a:hover {
+header a:hover, #comm_header a:hover {
     text-decoration: underline;
 }
 
@@ -305,7 +305,7 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     display: none;
 }
 
-#zoominfos, #hidef {
+#zoominfos, #hidef, #comments {
     background: #1b1a1a;
     background: -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
@@ -328,6 +328,32 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background: -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
     background: -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
     background: linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+}
+
+#comments {
+    background: url("../images/buttons/comment.png") ;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #1b1a1a url(../images/buttons/comment.png);
+    background: url(../images/buttons/comment.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/comment.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#comments:hover {
+    background: #0d0d0d url(../images/buttons/comment.png);
+    background: url(../images/buttons/comment.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/comment.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
 }
 
 #hidef {
@@ -493,7 +519,7 @@ aside#progressbar > div > progress {
 /** /Overview */
 
 /** Image parameters window */
-#image_params {
+#image_params, #image_comments {
     position: absolute;
     top: 3em;
     left: 1em;
@@ -506,7 +532,7 @@ aside#progressbar > div > progress {
     padding-bottom: .3em;
 }
 
-#image_params legend {
+#image_params legend, #comm_header {
     text-align: center;
     width: 100%;
     padding: .3em 0;
@@ -516,7 +542,8 @@ aside#progressbar > div > progress {
     color: white;
 }
 
-#image_params legend .close {
+#image_params legend .close,
+#comm_header .close {
     display: block;
     position: absolute;
     background: url(../images/buttons/close.png) no-repeat top left;
@@ -527,13 +554,51 @@ aside#progressbar > div > progress {
     cursor: pointer;
 }
 
-#image_params legend .close:hover {
+#image_params legend .close:hover,
+#comm_header .close:hover {
     background-image: url(../images/buttons/close-hover.png);
+}
+
+#comm_header a:visited {
+    color: #9b9b9b;
+}
+
+.linkComment {
+    padding-left: 1em;
 }
 
 #image_params fieldset > div {
     margin-top: .3em;
     padding: 0 .3em;
+}
+
+#image_comments {
+    width: 20%;
+}
+
+#allComments {
+    overflow-y: auto;
+    height: 400px;
+    padding: 0.5em;
+}
+
+#allComments hr {
+    margin: 1em 2.5em;
+    height: 0.5px;
+}
+
+.oneComment {
+    margin-top: .6em;
+    padding: 0 .6em;
+    text-align: justify;
+}
+
+.oneComment strong {
+    font-weight: bold;
+}
+
+.contentComment {
+    padding-top: .3em;
 }
 
 #image_params div.controls {

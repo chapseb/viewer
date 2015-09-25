@@ -416,6 +416,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.loadImage(_src);
         });
         $("#print").bind('click touchstart', function(){ me.print(); });
+        $('#comments').bind('click touchstart', function(){ me.imageCommentsWindow() });
         this.zoom_object = $('#zoominfos');
 
         //resize image
@@ -646,6 +647,94 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     /**
+     * Display image comments window
+     */
+    imageCommentsWindow: function()
+    {
+        var _win = $('#image_comments');
+        var _name = this.image_name;
+        var _path = series_path;
+
+        if ( this.comments_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.comments_win_init = true;
+            _win.css('display', 'block');
+
+            // get the comments of the image
+            if(($('#allComments').is(':empty'))){
+                me.getComment(app_url, _path, _name);
+            }
+
+            me.addComment(app_url, _path, _name);
+
+            $('#image_comments .close').on('click', function(){
+                me.imageCommentsWindow();
+            });
+
+            _win.draggable({
+                handle: '#comm_header',
+                containment: 'parent'
+            });
+
+        }
+    },
+
+    getComment: function(app_url, path, name)
+    {
+        if (path != '' ) {
+            path += '/';
+        }
+        $.get(
+            app_url + '/ajax/image/comments/' + path + name,
+            function(data){
+                var comments = JSON.parse(data);
+                for (var idx in comments ) {
+                    $("#allComments").append(
+                        "<div class='oneComment'><strong>" +
+                        comments[idx].subject +
+                        "</strong><p class='contentComment'>" +
+                        comments[idx].message +
+                        "</p></div><hr />"
+                    );
+                }
+            },
+            'json'
+        ).fail(function(){
+            alert('An error occured loading form commentary, navigation may fail.');
+        });
+    },
+
+    /**
+     * Add a comment
+     */
+    addComment: function(appUrl, path, name)
+    {
+        $('#add_comment').unbind();
+
+        if (path != '' ) {
+            path += '/';
+        }
+        $('#add_comment').on('click', function(event) {
+            event.preventDefault();
+            $.get(
+                appUrl + '/ajax/image/comment/bachURL',
+                function(urlBach) {
+                    urlBach += 'comment/images/'+ path + name +'/add';
+                    var commentTab = window.open(urlBach);
+                    commentTab.focus();
+                }
+            );
+        });
+    },
+
+
+    /**
      * Update series informations:
      * - navigation on previous/next images
      * - position in current series
@@ -660,7 +749,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
             _url += '?s=' + series_start + '&e=' + series_end;
         }
-
         $.get(
             _url,
             function(data){
@@ -679,6 +767,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         ).fail(function(){
             alert('An error occured loading series informations, navigation may fail.');
         });
+
+        $('#allComments').empty();
+        var _name = this.image_name;
+        var _path = series_path;
+
+        this.getComment(app_url, _path, _name);
+
+        this.addComment(app_url, _path, _name);
+
     },
 
     /**

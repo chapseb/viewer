@@ -611,6 +611,9 @@ class Picture
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
         }
+        Analog::debug(
+            'Loading remote infos from ' . $uri
+        );
         return $uri;
     }
 
@@ -659,4 +662,27 @@ class Picture
         }
         return $rcontents;
     }
+
+    /**
+     * Retrive remote comments about image
+     *
+     * @param array  $rinfos Remote informations configuration
+     * @param string $path   Image path
+     * @param string $img    Image name
+     *
+     * @return string
+     */
+    public static function getRemoteComments($rinfos, $path, $img)
+    {
+        $uri = $rinfos['uri'];
+        if ( $rinfos['method'] === 'bach' ) {
+            $uri .= 'comment/images/' . $path . $img . '/get';
+        } else {
+            return;
+        }
+
+        $rcontents = @file_get_contents($uri);
+        return $rcontents;
+    }
+
 }

@@ -104,6 +104,9 @@ POSSIBILITY OF SUCH DAMAGE.
                         </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
+                        {% if comment %}
+                        <li id="comments" title="{% trans "Show related comments" %}">
+                        {% endif %}
                         {% if not iip %}
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
@@ -124,10 +127,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     </div>
                 </aside>
 
+                {% endif %}
+
+            </figure>
                     {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                 <form id="image_params" action="">
                     <fieldset>
-                        <legend>{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
+                        <legend class="iviewer_cursor">{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
                         {% if contrast and picture.canContrast() %}
                         <div>
                             <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
@@ -156,8 +162,14 @@ POSSIBILITY OF SUCH DAMAGE.
                     </fieldset>
                 </form>
                     {% endif %}
-                {% endif %}
-            </figure>
+
+             <div id="image_comments">
+                <div id="comm_header" class="iviewer_cursor">
+                    {% trans %}Image comments{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span>
+                    <span class="linkComment"><a href="#" target="_blank" id="add_comment">{% trans %}New comment{% endtrans %}</a></span>
+                </div>
+                <div id="allComments"></div>
+            </div>
         </section>
 {% endblock %}
 
