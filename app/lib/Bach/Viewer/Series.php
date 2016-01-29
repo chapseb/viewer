@@ -107,21 +107,36 @@ class Series
 
             $all_entries = array();
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            while ( false !== ($entry = readdir($handle)) ) {
-                if ($entry != "."
-                    && $entry != ".."
-                    && !is_dir($this->_full_path . '/' . $entry)
-                ) {
+            $go = ($this->_start === null ) ? true : false;
+            if ($go === true) {
+                while ( false !== ($entry = readdir($handle)) ) {
+                    if ($entry != "."
+                        && $entry != ".."
+                        && !is_dir($this->_full_path . '/' . $entry)
+                    ) {
+                        $mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                        if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                            $all_entries[] = $entry;
+                        }
+                    }
+                }
+                closedir($handle);
+                sort($all_entries, SORT_STRING);
+            } else {
+                $listFiles = scandir($this->_full_path);
+                $begin = array_search($this->_start, $listFiles);
+                $end   = array_search($this->_end, $listFiles);
+                $diff  = $end + 1 - $begin;
+                $arrayDif = array_slice($listFiles, $begin, $diff);
+
+                foreach ($arrayDif as $entry) {
                     $mimetype = $finfo->file($this->_full_path . '/' . $entry);
                     if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
                         $all_entries[] = $entry;
                     }
                 }
             }
-            closedir($handle);
-            sort($all_entries, SORT_STRING);
 
-            $go = ($this->_start === null ) ? true : false;
             foreach ( $all_entries as $entry ) {
                 //check for subseries start
                 if ( !$go
