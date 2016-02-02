@@ -622,7 +622,7 @@ aside#progressbar > div > progress {
 }
 
 #contrast_value, #brightness_value {
-    width: 3em;
+    width: 3.5em;
     margin-right: 1.2em;
 }
 
