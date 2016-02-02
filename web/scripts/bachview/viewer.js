@@ -432,6 +432,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.display(me._imgNameFromLink($(this)));
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
+
+            // rebind of toolbarbtn navigation when change image
+            $('.toolbarbtn').bind('click touchstart', function() {
+                $('.navwin').toggle();
+                $(this).toggleClass('off');
+            });
+
             return false;
         });
 
