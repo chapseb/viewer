@@ -124,6 +124,7 @@ class Series
                 sort($all_entries, SORT_STRING);
             } else {
                 $listFiles = scandir($this->_full_path);
+                sort($listFiles, SORT_STRING);
                 $begin = array_search($this->_start, $listFiles);
                 $end   = array_search($this->_end, $listFiles);
                 $diff  = $end + 1 - $begin;
