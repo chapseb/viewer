@@ -521,7 +521,7 @@ aside#progressbar > div > progress {
 /** Image parameters window */
 #image_params, #image_comments {
     position: absolute;
-    top: 3em;
+    bottom: em;
     left: 1em;
     background-color: black;
     background-color: rgba(0,0,0,0.8);
@@ -530,6 +530,15 @@ aside#progressbar > div > progress {
     border: 1px solid #660912;
     border-radius: 6px;
     padding-bottom: .3em;
+}
+
+#image_params {
+    top: 3em;
+}
+
+#image_comments {
+    width: 20%;
+    bottom: 0;
 }
 
 #image_params legend, #comm_header {
@@ -570,10 +579,6 @@ aside#progressbar > div > progress {
 #image_params fieldset > div {
     margin-top: .3em;
     padding: 0 .3em;
-}
-
-#image_comments {
-    width: 20%;
 }
 
 #allComments {
@@ -617,7 +622,7 @@ aside#progressbar > div > progress {
 }
 
 #contrast_value, #brightness_value {
-    width: 3em;
+    width: 3.5em;
     margin-right: 1.2em;
 }
 

@@ -358,14 +358,26 @@ class Picture
         $prepared_path .= '/' . $this->_getRelativePath($image_name);
 
         $image_path = $prepared_path . $image_name;
+        $flagChangeImage = false;
+        if (file_exists($image_path) ) {
+            $dateImage = new \DateTime();
+            $datePreparedImage = new \DateTime();
+            $dateImage->setTimestamp(filectime($this->_full_path));
+            $datePreparedImage->setTimestamp(filectime($image_path));
+            if ($dateImage > $datePreparedImage) {
+                $flagChangeImage = true;
+            }
+        }
 
-        if ( !file_exists($image_path) ) {
+        if (!file_exists($image_path)
+            || $flagChangeImage
+        ) {
             //prepared image does not exists yet
-            if ( file_exists($this->_conf->getPreparedPath())
+            if (file_exists($this->_conf->getPreparedPath())
                 && is_dir($this->_conf->getPreparedPath())
                 && is_writable($this->_conf->getPreparedPath())
             ) {
-                if ( !file_exists($prepared_path) ) {
+                if (!file_exists($prepared_path)) {
                     mkdir($prepared_path, 0755, true);
                 }
                 $this->_prepareImage($image_path, $format);
