@@ -1,3 +1,11 @@
+1.2.1 (2016-04-11)
+
+- Fix display comment view position
+- Improve load display performance in series
+- Generate new thumb when image was replaced
+- Fix sort issue in series
+- Fix some display issues
+
 1.2 (2015-09-25)
 
 - Close tab in return to search action
