@@ -54,7 +54,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% if series %}
                     {% set series_name = series.getPath() %}
                     <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
-                        - {% trans %}Image{% endtrans %} <span id="current_pos">{{ series.getCurrentPosition() }}</span> / {{ series.getCount() }}
+                        - {% trans %}Image{% endtrans %} <span id="current_pos">{{ series.getCurrentPosition() }}</span> / <span id="number_total">{{ series.getCount() }}</span>
                     </span>
                 {% endif %}
 

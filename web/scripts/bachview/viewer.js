@@ -763,7 +763,22 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _prev.attr('href', series_path + '?img=' + data.prev);
                 var _next = $('#nextimg');
                 _next.attr('href', series_path + '?img=' + data.next);
-                $('#current_pos').html(data.position);
+                $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
+                $("#search_img input").keypress(function(event) {
+                    if (event.which == 13) {
+                        event.preventDefault();
+                        var posnum = $('#number_image').val();
+                        var numtotal = $('#number_total').text();
+                        if( !(isNaN(posnum)) && (parseInt(posnum) < parseInt(numtotal) )) {
+                            var app_series_url = app_url + '/series/' + series_path;
+                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                            } else {
+                                window.location.href = app_series_url + '?num=' + posnum;
+                            }
+                        }
+                    }
+                });
                 if ( data.remote ) {
                     $('header > h2').html(data.remote);
                 } else {
