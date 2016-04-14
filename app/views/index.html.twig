@@ -107,12 +107,16 @@ POSSIBILITY OF SUCH DAMAGE.
                         {% if comment %}
                         <li id="comments" title="{% trans "Show related comments" %}">
                         {% endif %}
+                        <li id="infosRemote" title="{% trans "Zoom out"%}">
                         {% if not iip %}
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
                             {% endif %}
                             {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                         <li id="moreparams" title="{% trans "Adjust image parameters" %}">
+                            {% endif %}
+                            {% if series %}
+                        <li id="lockparams" class="off" title="{% trans "Lock image parameters" %}">
                             {% endif %}
                         {% endif %}
                     </ul>
@@ -128,7 +132,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 </aside>
 
                 {% endif %}
-
+            <noscript><div id="warning_js">{% trans "JavaScript is off. Some feature may not work." %}</div></noscript>
             </figure>
                     {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                 <form id="image_params" action="">
@@ -170,6 +174,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
                 <div id="allComments"></div>
             </div>
+            <div id="remoteInfos_content">
+                <div id="infos_header" class="iviewer_cursor">
+                {% trans %}Information images{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span>
+                </div>
+                <div id="allInfosRemote">{% trans %}No information for this picture. {% endtrans %}</div>
+           </div>
         </section>
 {% endblock %}
 
@@ -216,7 +226,12 @@ POSSIBILITY OF SUCH DAMAGE.
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
             var hidef_on_title = '{{ "Switch to low resolution image"|trans|escape('js') }}';
             var alert_bad_value = '{{ "Warning, this is a bad value!"|trans|escape('js') }}';
+            var header_matricule = '{{ "Matricule informations"|trans|escape('js') }}';
+            var header_ead = '{{ "Ead informations"|trans|escape('js') }}';
+            var link_ead = '{{ "Link to an ead document: "|trans|escape('js') }}';
+            var link_record = '{{ "Link to the record: "|trans|escape('js') }}';
 
+            var contentRemoteDefault = '{{ "No information for this picture."|trans|escape('js') }}';
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
             function toggleFullScreen() {
                 if (!document.fullscreenElement &&    // alternative standard method
