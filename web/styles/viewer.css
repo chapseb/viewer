@@ -684,7 +684,7 @@ aside#progressbar > div > progress {
 }
 
 #thumbnails_view a.current {
-    box-shadow: 0 0 3px rgba(255, 0, 0, .6);
+    box-shadow: 0 0 10px rgba(255, 0, 0, .6);
 }
 
 #thumbnails_view a:hover {

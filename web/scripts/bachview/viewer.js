@@ -346,6 +346,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _thumbview.remove();
             } else {
                 _thumbview = $('<div id="thumbnails_view"></div>');
+                _thumbview.bind('click touch', function() {
+                    _thumbview.remove();
+                });
+                $('body').bind('keydown', function(event) {
+                    if (event.which == 27) {
+                        _thumbview.remove();
+                    }
+                });
 
                 var _url = app_url + '/ajax/series/' + series_path  + '/thumbs';
                 if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
@@ -360,8 +368,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
                             var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
+                            var index = i + 1;
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '" name="image' + index + '" title="'+_thumbs[i].path+'"></a>');
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
@@ -375,6 +384,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             _a.appendTo(_thumbview);
                         }
                         _thumbview.prependTo('body');
+                        var posnum = $('#number_image').val();
+                        location.hash = '#' + 'image' + posnum;
                     },
                     'json'
                 ).fail(function(){
