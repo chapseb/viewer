@@ -95,6 +95,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
+                me.updateImageInfos();
             } else {
                 me.updateImageInfos();
             }
@@ -763,6 +764,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _url = app_url + '/ajax/series/infos/';
         _url += series_path + '/' + this.image_name;
 
+        image_path = series_path;
         //check for subseries
         if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
             _url += '?s=' + series_start + '&e=' + series_end;
