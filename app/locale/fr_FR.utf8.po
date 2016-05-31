@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-02 12:23+0200\n"
+"PO-Revision-Date: 2016-05-31 10:19+0200\n"
 "Last-Translator: Sebastien Chaptal <sebastien.chaptal@anaphore.eu>\n"
 "Language-Team: French <>\n"
 "Language: fr\n"
@@ -42,11 +42,11 @@ msgstr "Une erreur est survenue"
 msgid "Please report issue to an admin."
 msgstr "Veuillez rapporter l'erreur à un administrateur."
 
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:74
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:84
 msgid "Warning!"
 msgstr "Attention !"
 
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:78
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:88
 msgid ""
 "Your browser is too old and is not supported by the image viewer.<br/>Please "
 "consider upgrading your browser, or use an alternative, more recent one."
@@ -55,179 +55,182 @@ msgstr ""
 "<br/>Veuillez considérer la mise à jour de votre navigateur, ou le passage à "
 "un logiciel alternatif, plus récent."
 
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:100
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:110
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:41
 msgid "Bach Viewer"
 msgstr "Visionneuse Bach"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:103
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:111
 #, fuzzy, php-format
 msgid "You are currently browsing '%series_name%' series."
 msgstr "Vous parcourez actuellement la série « %series_name% »."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:107
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:115
 msgid "Image"
 msgstr "Image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:191
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:199
 msgid "Go to previous image"
 msgstr "Aller à l'image précédente"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:193
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:201
 msgid "Previous"
 msgstr "Précédente"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:204
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:212
 msgid "Go to next image"
 msgstr "Aller à l'image suivante"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:206
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:214
 msgid "Next"
 msgstr "Suivante"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:220
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:228
 msgid "Show thumbnails"
 msgstr "Afficher les miniatures"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:231
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:239
 msgid "Rotate 90 degrees by left"
 msgstr "Effectuer une rotation de 90° en sens anti-horaire"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:235
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:243
 msgid "Rotate 90 degrees by right"
 msgstr "Effectuer une rotation de 90° en sens horaire"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:241
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:280
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:249
 msgid "Zoom out"
 msgstr "Zoom arrière"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:249
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:581
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:257
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:595
 msgid "Switch to high resolution image"
 msgstr "Passer à l'image en haute résolution"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:253
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:261
 msgid "Want a better quality?<br/>Get the high resolution version!"
 msgstr ""
 "Vous souhaitez une meilleure qualité ?<br/>Affichez la version haute "
 "résolution !"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:259
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:267
 msgid "Zoom in"
 msgstr "Zoom avant"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:263
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:271
 msgid "Fit image to screen"
 msgstr "Ajuster l'image à l'écran"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:267
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:275
 msgid "Show full size image"
 msgstr "Afficher l'image en pleine taille"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:274
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:282
 msgid "Show related comments"
 msgstr "Afficher les commentaires"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:290
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:288
+msgid "Show related informations"
+msgstr "Afficher les informations associées"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:298
 msgid "Print image as currently displayed"
 msgstr "Imprimer l'image telle qu'affichée actuellement"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:299
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:307
 msgid "Adjust image parameters"
 msgstr "Ajuster les paramètres de l'image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:305
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:316
 msgid "Lock image parameters"
 msgstr "Verrouiller les paramètres de l'image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:320
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:334
 msgid "Loading image, please wait..."
 msgstr "Chargement de l'image, veuillez patienter..."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:325
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:339
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:335
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:349
 msgid "JavaScript is off. Some feature may not work."
 msgstr ""
 "Le JavaScript n'est pas activé. Certaines fonctionnalités peuvent ne pas "
 "fonctionner correctement."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:346
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:360
 msgid "Image parameters"
 msgstr "Paramètres de l'image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:348
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:416
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:431
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:362
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:430
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:445
 msgid "Close window"
 msgstr "Fermer la fenêtre"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:357
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:371
 msgid "Contrast:"
 msgstr "Contraste:"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:371
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:385
 msgid "Brightness:"
 msgstr "Luminosité :"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:383
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:397
 msgid "Negate"
 msgstr "Négatif"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:397
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:411
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:401
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:415
 msgid "Set"
 msgstr "Définir"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:414
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:428
 msgid "Image comments"
 msgstr "Commentaires"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:420
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:434
 msgid "New comment"
 msgstr "Nouveau commentaire"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:429
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:443
 msgid "Information images"
 msgstr "Information sur l'image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:436
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:610
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:450
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:624
 msgid "No information for this picture."
 msgstr "Pas d'informations sur cette image."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:585
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:599
 msgid "Switch to low resolution image"
 msgstr "Passer à l'image en basse résolution"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:589
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:603
 msgid "Warning, this is a bad value!"
 msgstr "Attention, vous avez saisi une valeur incorrecte!"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:593
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:607
 msgid "Matricule informations"
 msgstr "Informations sur le matricule"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:597
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:611
 msgid "Ead informations"
 msgstr "Informations sur un document lié"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:601
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:615
 msgid "Link to an ead document: "
 msgstr "Vers le document ead lié: "
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:605
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:619
 msgid "Link to the record: "
 msgstr "Lien vers l'enregistrement: "
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:693
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:695
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:707
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:709
 msgid "Enter/exit fullscreen"
 msgstr "Entrer/Sortir du mode plein écran"
 
