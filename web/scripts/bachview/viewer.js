@@ -891,17 +891,23 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             function(data){
                 if ( data.remote ) {
                     $('#allInfosRemote').html('');
-                    if( data.remote.mat ) {
+                    if (data.remote.mat) {
                         $('header > h2').html(data.remote.mat.link_mat);
                         $('#allInfosRemote').append('<h3 class="header_infos">' + header_matricule + '</h3>');
                         $('#allInfosRemote').append('<ul id="mat_list_record"></ul>');
                         $.each(data.remote.mat.record, function(key, value){
-                            if(key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement') {
+                            if (key in remote_infos_key) {
+                                label = remote_infos_key[key];
+                            }
+                            else{
+                                label = key;
+                            }
+                            if (key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement') {
                                 var date = new Date(value);
-                                $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">'+ key + "</span> : " + date.getFullYear() + "</li>");
+                                $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">'+ label + "</span> : " + date.getFullYear() + "</li>");
                             } else {
                                 if ( !(key == 'txt_prenoms') ){
-                                    $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">' + key + "</span> : " + value + "</li>");
+                                    $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">' + label + "</span> : " + value + "</li>");
                                 }
                             }
                         });
