@@ -85,13 +85,13 @@ h2 {
     line-height: 1.9em;
 }
 
-header a, #comm_header a {
+header a, #comm_header a, #infos_header a {
     color: #9b9b9b;
     font-weight: normal;
     text-decoration: none;
 }
 
-header a:hover, #comm_header a:hover {
+header a:hover, #comm_header a:hover, #infos_header a:hover {
     text-decoration: underline;
 }
 
@@ -126,6 +126,14 @@ header a:hover, #comm_header a:hover {
     border: 0;
     border-radius: 0;
     width: 14em;
+}
+
+#search_img {
+    display: inline;
+}
+
+#search_img input {
+    width: 30px;
 }
 
 /** /Main viewer styles */
@@ -356,6 +364,84 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background-position: center;
 }
 
+#infosRemote {
+    background: url("../images/buttons/icone-info.png") ;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #1b1a1a url(../images/buttons/icone-info.png);
+    background: url(../images/buttons/icone-info.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/icone-info.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/icone-info.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/icone-info.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/icone-info.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#infosRemote:hover {
+    background: #0d0d0d url(../images/buttons/icone-info.png);
+    background: url(../images/buttons/icone-info.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/icone-info.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/icone-info.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/icone-info.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/icone-info.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#lockparams {
+    background: url("../images/buttons/lock.png") ;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #1b1a1a url(../images/buttons/lock.png);
+    background: url(../images/buttons/lock.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#lockparams.off {
+    background: url(../images/buttons/lock-unlock.png);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: #1b1a1a url(../images/buttons/lock-unlock.png);
+    background: url(../images/buttons/lock-unlock.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock-unlock.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock-unlock.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock-unlock.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/lock-unlock.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#lockparams:hover {
+    background: #0d0d0d url(../images/buttons/lock.png);
+    background: url(../images/buttons/lock.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+#lockparams.off:hover {
+    background: #0d0d0d url(../images/buttons/lock-unlock.png);
+    background: url(../images/buttons/lock-unlock.png), -webkit-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock-unlock.png), -moz-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock-unlock.png), -ms-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock-unlock.png), -o-linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background: url(../images/buttons/lock-unlock.png), linear-gradient(to bottom, rgba(13, 13, 13, .8), rgba(10, 9, 9, .8));
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
 #hidef {
     width: 60px;
     background: #1b1a1a url(../images/buttons/hidef.png);
@@ -536,12 +622,26 @@ aside#progressbar > div > progress {
     top: 3em;
 }
 
-#image_comments {
+#image_comments, #remoteInfos_content {
     width: 20%;
     bottom: 0;
+    height: 450px;
 }
 
-#image_params legend, #comm_header {
+#remoteInfos_content {
+    position: absolute;
+    bottom: em;
+    background-color: black;
+    background-color: rgba(0,0,0,0.8);
+    display: none;
+    color: #9b9b9b;
+    border: 1px solid #660912;
+    border-radius: 6px;
+    padding-bottom: .3em;
+    right: 50px;
+}
+
+#image_params legend, #comm_header, #infos_header {
     text-align: center;
     width: 100%;
     padding: .3em 0;
@@ -552,7 +652,7 @@ aside#progressbar > div > progress {
 }
 
 #image_params legend .close,
-#comm_header .close {
+#comm_header .close, #infos_header .close {
     display: block;
     position: absolute;
     background: url(../images/buttons/close.png) no-repeat top left;
@@ -564,11 +664,12 @@ aside#progressbar > div > progress {
 }
 
 #image_params legend .close:hover,
-#comm_header .close:hover {
+#comm_header .close:hover,
+#infos_header .close:hover{
     background-image: url(../images/buttons/close-hover.png);
 }
 
-#comm_header a:visited {
+#comm_header a:visited, #infos_header a:visited {
     color: #9b9b9b;
 }
 
@@ -590,6 +691,25 @@ aside#progressbar > div > progress {
 #allComments hr {
     margin: 1em 2.5em;
     height: 0.5px;
+}
+
+#allInfosRemote {
+    overflow-y: auto;
+    height: 400px;
+    padding: 0.5em;
+}
+
+#allInfosRemote hr {
+    margin: 1em 2.5em;
+    height: 0.5px;
+}
+
+#mat_list_record li a {
+    color: #9b9b9b;
+}
+
+#ead_list_infos li a {
+    color: #9b9b9b;
 }
 
 .oneComment {
@@ -676,7 +796,7 @@ aside#progressbar > div > progress {
 }
 
 #thumbnails_view a.current {
-    box-shadow: 0 0 3px rgba(255, 0, 0, .6);
+    box-shadow: 0 0 10px rgba(255, 0, 0, .6);
 }
 
 #thumbnails_view a:hover {
@@ -695,6 +815,32 @@ aside#progressbar > div > progress {
 
 .navcontainer .loadBarContainer.invisible {
     visibility: hidden!important;
+}
+
+#warning_js {
+    position: absolute;
+    top: 37px;
+    right: 20px;
+    background-color: #660912;
+}
+
+.header_infos {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.mat_record {
+   padding: 4px 0;
+}
+
+.mat_record_head {
+    font-weight: bold;
+    padding: 1px;
 }
 
 /* Mobile view */

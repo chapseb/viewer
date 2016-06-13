@@ -90,11 +90,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 || _io.orig_width() < _io.display_width()
             ) {
                 //set intial zoom to 100% max
-                me.set_zoom(100);
+                    me.set_zoom(100);
             }
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
+                me.updateImageInfos();
             } else {
                 me.updateImageInfos();
             }
@@ -346,6 +347,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _thumbview.remove();
             } else {
                 _thumbview = $('<div id="thumbnails_view"></div>');
+                _thumbview.bind('click touch', function() {
+                    _thumbview.remove();
+                });
+                $('body').bind('keydown', function(event) {
+                    if (event.which == 27) {
+                        _thumbview.remove();
+                    }
+                });
 
                 var _url = app_url + '/ajax/series/' + series_path  + '/thumbs';
                 if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
@@ -360,8 +369,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
                             var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
                             var _img = $('<img src="' + _src  + '" alt=""/>');
+                            var index = i + 1;
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '"></a>');
+                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '" name="image' + index + '" title="'+_thumbs[i].path+'"></a>');
                             if ( me.image_name == _thumbs[i].name ) {
                                 _a.addClass('current');
                             }
@@ -375,13 +385,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             _a.appendTo(_thumbview);
                         }
                         _thumbview.prependTo('body');
+                        var posnum = $('#number_image').val();
+                        location.hash = '#' + 'image' + posnum;
                     },
                     'json'
                 ).fail(function(){
                     alert('An error occured loading series thumbnails.');
                 });
-
-
             }
         });
         $("#zoomin").bind('click touchstart', function(){ me.zoom_by(1); });
@@ -417,6 +427,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
         $("#print").bind('click touchstart', function(){ me.print(); });
         $('#comments').bind('click touchstart', function(){ me.imageCommentsWindow() });
+        $('#infosRemote').bind('click touchstart', function(){ me.displayRemoteInfosWindow() });
+        $('#lockparams').bind('click touchstart', function() {
+            $(this).toggleClass('off');
+        });
+
         this.zoom_object = $('#zoominfos');
 
         //resize image
@@ -429,6 +444,25 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
+            if($("#lockparams").hasClass('off')) {
+                _this  = $(this);
+                var _t = me.display_options.transform;
+                _t.negate = false;
+                $('#negate').attr('checked', false);
+                _t.contrast = false;
+                $('#change_contrast').val(0);
+                _t.brightness = false;
+                $('#change_brightness').val(0);
+                _t.rotate = 0;
+                me.display_options.format = 'default';
+                $('#formats > select').val('default');
+                _format = 'full';
+                _this.data('state', 'on');
+                _this.attr('data-state', 'on');
+                _this.attr('title', hidef_on_title);
+
+            }
+
             me.display(me._imgNameFromLink($(this)));
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
@@ -464,7 +498,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#image_params").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#image_params,#lockparams,#infosRemote,#moreparams,#print").on('dblclick', function(e){
             e.stopPropagation();
         });
 
@@ -654,6 +688,36 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     },
 
     /**
+     * Display remote infos window
+     */
+    displayRemoteInfosWindow: function()
+    {
+        var _win = $('#remoteInfos_content');
+
+        if ( this.remoteInfos_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.remoteInfos_win_init = true;
+            _win.css('display', 'block');
+
+            $('#remoteInfos_content .close').on('click', function(){
+                me.displayRemoteInfosWindow();
+            });
+
+            _win.draggable({
+                handle: '#infos_header',
+                containment: 'parent'
+            });
+
+        }
+    },
+
+    /**
      * Display image comments window
      */
     imageCommentsWindow: function()
@@ -752,6 +816,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _url = app_url + '/ajax/series/infos/';
         _url += series_path + '/' + this.image_name;
 
+        image_path = series_path;
         //check for subseries
         if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
             _url += '?s=' + series_start + '&e=' + series_end;
@@ -763,11 +828,35 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _prev.attr('href', series_path + '?img=' + data.prev);
                 var _next = $('#nextimg');
                 _next.attr('href', series_path + '?img=' + data.next);
-                $('#current_pos').html(data.position);
+                $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
+                $("#search_img input").keypress(function(event) {
+                    if (event.which == 13) {
+                        event.preventDefault();
+                        var posnum = $('#number_image').val();
+                        var numtotal = $('#number_total').text();
+                        if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
+                            var app_series_url = app_url + '/series/' + series_path;
+                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                            } else {
+                                window.location.href = app_series_url + '?num=' + posnum;
+                            }
+                        }
+                        else {
+                            alert(alert_bad_value);
+                        }
+                    }
+                });
                 if ( data.remote ) {
-                    $('header > h2').html(data.remote);
+                    $('header > h2').html(data.remote.link);
+                    if( data.mat ) {
+                        $('header > h2').html(data.remote.mat.link_mat);
+                        $('#allInfosRemote').html(data.remote.mat.record);
+                    }
+                    $('#allInfosRemote').html(data.remote.unitid);
                 } else {
                     $('header > h2').html(data.current);
+                    $('#allInfosRemote').html(contentRemoteDefault);
                 }
             },
             'json'
@@ -801,10 +890,35 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             _url,
             function(data){
                 if ( data.remote ) {
-                    $('header > h2').html(data.remote);
-                }            },
+                    $('#allInfosRemote').html('');
+                    if( data.remote.mat ) {
+                        $('header > h2').html(data.remote.mat.link_mat);
+                        $('#allInfosRemote').append('<h3 class="header_infos">' + header_matricule + '</h3>');
+                        $('#allInfosRemote').append('<ul id="mat_list_record"></ul>');
+                        $.each(data.remote.mat.record, function(key, value){
+                            if(key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement') {
+                                var date = new Date(value);
+                                $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">'+ key + "</span> : " + date.getFullYear() + "</li>");
+                            } else {
+                                if ( !(key == 'txt_prenoms') ){
+                                    $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">' + key + "</span> : " + value + "</li>");
+                                }
+                            }
+                        });
+                        $('#mat_list_record').append('<li>' + link_record + data.remote.mat.link_mat + '</li>');
+                    }
+                    if(data.remote.ead ) {
+                        $('header > h2').html(data.remote.ead.link);
+                        $('#allInfosRemote').append('<h3 class="header_infos">' + header_ead + '</h3>');
+                        $('#allInfosRemote').append('<ul id="ead_list_infos"></ul>');
+                        $('#ead_list_infos').append('<li>' + data.remote.ead.cUnittitle + '</li>');
+                        $('#ead_list_infos').append('<li>' + data.remote.ead.unitid + '</li>');
+                        $('#ead_list_infos').append('<li>' + link_ead + data.remote.ead.doclink + '</li>');
+                    }
+                }
+            },
             'json'
-        ).fail(function(){
+        ).fail(function(jqXHR, textStatus, errorThrown){
             alert('An error occured loading series informations, navigation may fail.');
         });
     },

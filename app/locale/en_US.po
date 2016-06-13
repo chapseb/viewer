@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-06-12 14:49+0100\n"
+"PO-Revision-Date: 2016-05-31 10:19+0200\n"
 "Last-Translator: Sebastien Chaptal <sebastien.chaptal@anaphore.eu>\n"
 "Language-Team: French <>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.8.5\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: /tmp/viewer_cache_temp/6a/35/020a9e50b7c353a5b7085ad75aa459489e6739f28b35e26ab2b8bd2a48f7.php:40
@@ -26,6 +26,7 @@ msgid "The page you're looking for does not exist, or has been removed."
 msgstr "The page you're looking for does not exist, or has been removed."
 
 #: /tmp/viewer_cache_temp/6a/35/020a9e50b7c353a5b7085ad75aa459489e6739f28b35e26ab2b8bd2a48f7.php:66
+#: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:72
 msgid "Back to search"
 msgstr "Back to search!"
 
@@ -41,15 +42,11 @@ msgstr "An error has occured"
 msgid "Please report issue to an admin."
 msgstr "Please report issue to an admin."
 
-#: /tmp/viewer_cache_temp/7d/88/03e2456496a3beb2312e57881a8115532e2a1bd0c57beb664b0d42a81efa.php:72
-msgid "Back to home!"
-msgstr "Back to home!"
-
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:74
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:84
 msgid "Warning!"
 msgstr "Warning!"
 
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:78
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:88
 msgid ""
 "Your browser is too old and is not supported by the image viewer.<br/>Please "
 "consider upgrading your browser, or use an alternative, more recent one."
@@ -57,136 +54,178 @@ msgstr ""
 "Your browser is too old and is not supported by the image viewer.<br/>Please "
 "consider upgrading your browser, or use an alternative, more recent one."
 
-#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:100
+#: /tmp/viewer_cache_temp/8b/52/613a28b3c1896396cead174f6cb29537073378dae074837fb385fb540fec.php:110
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:41
 msgid "Bach Viewer"
 msgstr "Bach Viewer"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:103
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:111
 #, php-format
 msgid "You are currently browsing '%series_name%' series."
 msgstr "You are currently browsing '%series_name%' series."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:107
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:115
 msgid "Image"
 msgstr "Image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:191
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:199
 msgid "Go to previous image"
 msgstr "Go to previous image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:193
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:201
 msgid "Previous"
 msgstr "Previous"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:204
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:212
 msgid "Go to next image"
 msgstr "Go to next image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:206
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:214
 msgid "Next"
 msgstr "Next"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:220
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:228
 msgid "Show thumbnails"
 msgstr "Show thumbnails"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:231
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:239
 msgid "Rotate 90 degrees by left"
 msgstr "Rotate 90 degrees by left"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:235
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:243
 msgid "Rotate 90 degrees by right"
 msgstr "Rotate 90 degrees by right"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:241
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:249
 msgid "Zoom out"
 msgstr "Zoom out"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:249
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:558
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:257
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:595
 msgid "Switch to high resolution image"
 msgstr "Switch to high resolution image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:253
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:261
 msgid "Want a better quality?<br/>Get the high resolution version!"
 msgstr "Want a better quality?<br/>Get the high resolution version!"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:259
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:267
 msgid "Zoom in"
 msgstr "Zoom in"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:263
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:271
 msgid "Fit image to screen"
 msgstr "Fit image to screen"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:267
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:275
 msgid "Show full size image"
 msgstr "Show full size image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:274
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:282
 msgid "Show related comments"
 msgstr "Show related comments"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:286
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:288
+msgid "Show related informations"
+msgstr "Show related informations"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:298
 msgid "Print image as currently displayed"
 msgstr "Print image as currently displayed"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:295
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:307
 msgid "Adjust image parameters"
 msgstr "Adjust image parameters"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:313
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:316
+msgid "Lock image parameters"
+msgstr "Lock image parameters"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:334
 msgid "Loading image, please wait..."
 msgstr "Loading image, please wait..."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:318
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:339
 msgid "Loading..."
 msgstr "Loading..."
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:337
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:349
+msgid "JavaScript is off. Some feature may not work."
+msgstr "JavaScript is off. Some feature may not work."
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:360
 msgid "Image parameters"
 msgstr "Image parameters"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:339
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:407
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:362
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:430
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:445
 msgid "Close window"
 msgstr "Close window"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:348
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:371
 msgid "Contrast:"
 msgstr "Contrast:"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:362
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:385
 msgid "Brightness:"
 msgstr "Brightness:"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:374
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:397
 msgid "Negate"
 msgstr "Negate"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:388
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:411
 msgid "Reset"
 msgstr "Reset"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:392
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:415
 msgid "Set"
 msgstr "Set"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:405
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:428
 msgid "Image comments"
 msgstr "Image comments"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:411
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:434
 msgid "New comment"
 msgstr "New comment"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:562
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:443
+msgid "Information images"
+msgstr "Information images"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:450
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:624
+msgid "No information for this picture."
+msgstr "No information for this picture."
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:599
 msgid "Switch to low resolution image"
 msgstr "Switch to low resolution image"
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:646
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:648
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:603
+msgid "Warning, this is a bad value!"
+msgstr "Warning, this is a bad value!"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:607
+msgid "Matricule informations"
+msgstr "Matricule informations"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:611
+msgid "Ead informations"
+msgstr "Ead informations"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:615
+msgid "Link to an ead document: "
+msgstr "Link to an ead document: "
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:619
+msgid "Link to the record: "
+msgstr "Link to the record: "
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:707
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:709
 msgid "Enter/exit fullscreen"
 msgstr "Enter/exit fullscreen"
 
@@ -268,15 +307,15 @@ msgstr "Series path set to \"%path\""
 msgid "No matching root found!"
 msgstr "No matching root found!"
 
-#: app/lib/Bach/Viewer/Series.php:217
+#: app/lib/Bach/Viewer/Series.php:233
 msgid "Image %image is not part of current series!"
 msgstr "Image %image is not part of current series!"
 
-#: app/lib/Bach/Viewer/Series.php:241
+#: app/lib/Bach/Viewer/Series.php:257
 msgid "No image at position %pos!"
 msgstr "No image at position %pos!"
 
-#: app/lib/Bach/Viewer/Series.php:319
+#: app/lib/Bach/Viewer/Series.php:335
 msgid "Series has not been initialized yet."
 msgstr "Series has not been initialized yet."
 
@@ -301,11 +340,11 @@ msgstr "Unable to get image height!"
 msgid "Falling back to Gd method."
 msgstr "Falling back to Gd method."
 
-#: app/lib/Bach/Viewer/Picture.php:377
+#: app/lib/Bach/Viewer/Picture.php:389
 msgid "%path does not exists or is not writable!"
 msgstr "%path does not exists or is not writable!"
 
-#: app/lib/Bach/Viewer/Picture.php:464
+#: app/lib/Bach/Viewer/Picture.php:476
 msgid "full"
 msgstr "full"
 
@@ -333,6 +372,9 @@ msgstr "Cannot load series: "
 #, php-format
 msgid "Series \"%s\" is empty!"
 msgstr "Series \"%s\" is empty!"
+
+#~ msgid "Back to home!"
+#~ msgstr "Back to home!"
 
 #~ msgid "Series %series_name%:"
 #~ msgstr "Series %series_name%:"

@@ -649,16 +649,32 @@ class Picture
         } else {
             $uri = $ruri;
         }
-
-        if ( $rcontents = @file_get_contents($uri) ) {
+        if ( $remoteContents = json_decode(@file_get_contents($uri)) ) {
             if ( $rinfos['method'] === 'bach' ) {
-                $rcontents = str_replace(
-                    'href="',
-                    'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
-                    $rcontents
-                );
+                if( isset($remoteContents->mat) ) {
+                    $rcontents['mat']['link_mat'] = str_replace(
+                        'href="',
+                        'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
+                        $remoteContents->mat->link_mat
+                    );
+                    $rcontents['mat']['record'] = $remoteContents->mat->record;
+                }
+                if ( isset($remoteContents->ead) ) {
+                    $rcontents['ead']['link'] = str_replace(
+                        'href="',
+                        'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
+                        $remoteContents->ead->link
+                    );
+                    $rcontents['ead']['unitid'] = $remoteContents->ead->unitid;
+                    $rcontents['ead']['cUnittitle'] = $remoteContents->ead->cUnittitle;
+                    $rcontents['ead']['doclink'] = str_replace(
+                        'href="',
+                        'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
+                        $remoteContents->ead->doclink
+                    );
+                }
             } else if ( $rinfos['method'] === 'pleade' ) {
-                $rxml = @simplexml_load_string($rcontents);
+                $rxml = @simplexml_load_string($remoteContents->link);
                 if ( $rxml->a ) {
                     unset($rxml->a['onclick']);
                     unset($rxml->a['id']);
@@ -671,6 +687,8 @@ class Picture
                 }
             }
 
+        } else {
+            $rcontents = null;
         }
         return $rcontents;
     }

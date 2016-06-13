@@ -37,6 +37,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <title>{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="stylesheet" href="{{ app_web_url  }}/styles/reset.css"/>
+        {% if themes is defined %}
+            <link rel="stylesheet" href="{{ app_web_url  }}/themes/styles/themes.css"/>
+        {% endif %}
         <!--[if lte IE 9]>
             <script src="{{ app_web_url  }}/scripts/html5-ie.js"></script>
             <link rel="stylesheet" href="{{ app_web_url }}/styles/ie.css"/>
