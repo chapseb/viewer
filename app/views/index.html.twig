@@ -230,6 +230,14 @@ POSSIBILITY OF SUCH DAMAGE.
             var header_ead = '{{ "Ead informations"|trans|escape('js') }}';
             var link_ead = '{{ "Link to an ead document: "|trans|escape('js') }}';
             var link_record = '{{ "Link to the record: "|trans|escape('js') }}';
+            var remote_infos_key = {
+                'date_enregistrement':'{{ "record date"|trans|escape('js') }}',
+                "lieu_enregistrement":'{{ "record place"|trans|escape('js') }}',
+                "annee_naissance": '{{ "birth year"|trans|escape('js') }}',
+                "lieu_naissance":'{{ "place of birth"|trans|escape('js') }}',
+                "additional_informations":'{{ "additional informations"|trans|escape('js') }}',
+                "lieu_residence": '{{ "place of residence"|trans|escape('js') }}'
+                }
 
             var contentRemoteDefault = '{{ "No information for this picture."|trans|escape('js') }}';
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode

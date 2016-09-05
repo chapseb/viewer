@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-31 10:19+0200\n"
+"PO-Revision-Date: 2016-06-13 14:47+0200\n"
 "Last-Translator: Sebastien Chaptal <sebastien.chaptal@anaphore.eu>\n"
 "Language-Team: French <>\n"
 "Language: fr\n"
@@ -201,7 +201,7 @@ msgid "Information images"
 msgstr "Information sur l'image"
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:450
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:624
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:650
 msgid "No information for this picture."
 msgstr "Pas d'informations sur cette image."
 
@@ -229,8 +229,32 @@ msgstr "Vers le document ead lié: "
 msgid "Link to the record: "
 msgstr "Lien vers l'enregistrement: "
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:707
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:709
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:624
+msgid "record date"
+msgstr "année d'enregistrement"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:628
+msgid "record place"
+msgstr "lieu d'enregistrement"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:632
+msgid "birth year"
+msgstr "année de naissance"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:636
+msgid "place of birth"
+msgstr "lieu de naissance"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:640
+msgid "additional informations"
+msgstr "informations complémentaires"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:644
+msgid "place of residence"
+msgstr "lieu de résidence"
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:733
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:735
 msgid "Enter/exit fullscreen"
 msgstr "Entrer/Sortir du mode plein écran"
 
@@ -382,6 +406,9 @@ msgstr "Impossible de charger la série :"
 #, php-format
 msgid "Series \"%s\" is empty!"
 msgstr "La série « %s » est vide !"
+
+#~ msgid "record year"
+#~ msgstr "année d'enregistrement"
 
 #~ msgid "Back to home!"
 #~ msgstr "Retour à l'accueil&nbsp;!"
