@@ -48,10 +48,27 @@ use \Bach\Viewer\Pdf;
 
 $app->get(
     '/show/:format(/:series)/:image',
-    function ($format = null, $series_path = null, $image) use ($app, $viewer) {
-        $picture = $viewer->getImage($series_path, $image);
+    function ($format = null, $series_path = null, $image) use ($app, $viewer, $conf) {
+        $rcontents = Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            $series_path,
+            '',
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path
+        );
+
+        $current_date = new DateTime();
+        $current_year = $current_date->format("Y");
+        if ($rcontents['ead']['communicability_general'] == null
+            || (isset($rcontents['ead']['communicability_general'])
+            && $rcontents['ead']['communicability_general'] <= $current_year)
+        ) {
+            $picture = $viewer->getImage($series_path, $image);
+        } else {
+            $picture = $viewer->getImage(null, 'main.jpg');
+        }
         $display = $picture->getDisplay($format);
         $response = $app->response();
+
         foreach ( $display['headers'] as $key=>$header ) {
             $response[$key] = $header;
         }
@@ -110,6 +127,73 @@ $app->get(
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
         }
+
+        $rcontents = Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            $path,
+            $img,
+            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+        );
+
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        $args['communicability'] = false;
+        $current_date = new DateTime();
+        $current_year = $current_date->format("Y");
+
+        if (isset($rcontents['ead'])) {
+            $remoteInfosEad = $rcontents['ead'];
+            if ($remoteInfosEad['communicability_general'] == null
+                || (isset($remoteInfosEad['communicability_general'])
+                && $remoteInfosEad['communicability_general'] <= $current_year)
+                || ($ip == $conf->getReadingroom()
+                && isset($remoteInfosEad['communicability_sallelecture'])
+                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
+            ) {
+                $args['communicability'] = true;
+            }
+        }
+
+        if (!isset($rcontents)) {
+            $args['communicability'] = true;
+        } else {
+            if (isset($rcontents['mat']['record'])) {
+                $remoteInfosMat = $rcontents['mat']['record'];
+                if (isset($remoteInfosMat->communicability_general)) {
+                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
+                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
+                    if ($communicabilityGeneralMat <= $current_date
+                        || ($ip == $conf->getReadingroom()
+                        && $communicabilitySallelectureMat <= $current_date)
+                    ) {
+                        $args['communicability'] = true;
+                    }
+                }
+
+                if (!isset($remoteInfosMat->communicability_general)
+                    && !isset($remoteInfosMat->communicability_sallelecture)
+                ) {
+                        $args['communicability'] = true;
+                }
+            }
+        }
+        if ($args['communicability'] == false) {
+            $args['remote_infos_url'] = $picture->getPath()
+                . '/' . $picture->getName();
+            $args['picture'] = new Picture(
+                $conf,
+                DEFAULT_PICTURE,
+                $app_base_url
+            );
+        }
+
         $app->render(
             'index.html.twig',
             $args

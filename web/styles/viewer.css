@@ -102,6 +102,18 @@ header a:hover, #comm_header a:hover, #infos_header a:hover {
     margin: 0;
 }
 
+#nocommunicability {
+    position: fixed;
+    top: 45%;
+    left: 45%;
+}
+
+#nocommunicabilityJS {
+    position: fixed;
+    top: 6%;
+    left: 45%;
+}
+
 #image_formats {
     position: absolute;
     left: .5em;

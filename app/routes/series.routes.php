@@ -135,6 +135,27 @@ $app->get(
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
         }
+
+        $rcontents = Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            $path[0],
+            $img,
+            $conf->getRemoteInfos()['uri']."infosimage". $path[0] . '/' . $img
+        );
+
+        if (isset($rcontents['mat']['record']->communicability_general)) {
+            $args['communicability'] = false;
+        }
+
+        $args['communicability'] = false;
+        $current_date = new DateTime();
+        $current_year = $current_date->format("Y");
+        if (isset($rcontents['ead']['communicability_general'])
+            && $rcontents['ead']['communicability_general'] <= $current_year
+        ) {
+            $args['communicability'] = true;
+        }
+
         $app->render(
             'index.html.twig',
             $args

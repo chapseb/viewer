@@ -673,6 +673,8 @@ class Picture
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
                         $remoteContents->ead->doclink
                     );
+                    $rcontents['ead']['communicability_general'] = $remoteContents->ead->communicability_general;
+                    $rcontents['ead']['communicability_sallelecture'] = $remoteContents->ead->communicability_sallelecture;
                 }
             } else if ( $rinfos['method'] === 'pleade' ) {
                 $rxml = @simplexml_load_string($remoteContents->link);

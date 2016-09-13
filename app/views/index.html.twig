@@ -69,9 +69,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
             </header>
             <figure id="viewer">
+                {% if communicability is defined and communicability == false %}
+                <noscript>
+                    <div id="nocommunicability">{% trans %}Image is not communicable.{% endtrans %}</div>
+                </noscript>
+                <div id="nocommunicabilityJS"></div>
+                {% else %}
                 <noscript>
                     <img src="{{ picture.getUrl(series) }}" alt=""/>
                 </noscript>
+                {% endif %}
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
                 <!-- Browse series, if series there is -->
                 {% if series %}
@@ -218,6 +225,9 @@ POSSIBILITY OF SUCH DAMAGE.
             {% if not series %}
             var image_path = '{{ picture.getPath() }}';
             {% endif %}
+            {% if remote_infos_url is defined %}
+            var remote_infos_url = '{{ remote_infos_url }}';
+            {% endif%}
             {% if not series.getStart is null and not series.getEnd is null -%}
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
@@ -275,6 +285,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
 
                 {%- if not(iip) -%}
+                var comm;
+                comm = '{{ picture.getUrl(series)}}';
                 var viewer = $("#viewer").bviewer({
                     {% if remote_method -%}
                     remote: {
@@ -282,7 +294,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         uri: '{{ remote_uri }}'
                     },
                     {% endif -%}
-                    src: "{{ picture.getUrl(series) }}",
+                    src: comm,
                     update_on_resize: true,
                     zoom_animation: false,
                     mousewheel: true,

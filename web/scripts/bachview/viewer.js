@@ -896,7 +896,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         _url += this.image_name;
-
+        if (typeof remote_infos_url !== 'undefined') {
+            _url = app_url + '/ajax/image/infos/' + remote_infos_url;
+        }
         $.get(
             _url,
             function(data){

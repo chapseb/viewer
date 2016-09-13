@@ -65,6 +65,7 @@ class Conf
     private $_iip;
     private $_print;
     private $_comment;
+    private $_readingroom;
     private $_remote_infos;
 
     private $_path;
@@ -127,6 +128,7 @@ class Conf
         $this->_formats = $this->_conf['formats'];
 
         $this->_comment = $this->_conf['comment'];
+        $this->_readingroom = $this->_conf['readingroom'];
 
         $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
@@ -243,6 +245,16 @@ class Conf
     public function getComment()
     {
         return $this->_comment;
+    }
+
+    /**
+     * Retrieve readingroom ip
+     *
+     * @return string
+     */
+    public function getReadingroom()
+    {
+        return $this->_readingroom;
     }
 
     /**
