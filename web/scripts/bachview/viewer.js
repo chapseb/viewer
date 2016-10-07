@@ -367,7 +367,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         var _thumbs = data['thumbs'];
                         var _meta = data['meta'];
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
-                            var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
+                            if (typeof _thumbs[i].path_image == 'undefined') {
+                                var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
+                            } else {
+                                var _src = app_url + '/ajax/img/' + _thumbs[i].path_image + '/format/thumb';
+                            }
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var index = i + 1;
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
