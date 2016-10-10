@@ -725,7 +725,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _win = $('#image_comments');
         var _name = this.image_name;
         var _path = series_path;
-
+        if (series_path == '') {
+            _path = image_path;
+        }
         if ( this.comments_win_init == true ) {
             if ( _win.is(':visible') ) {
                 _win.fadeOut();
@@ -743,7 +745,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
 
             me.addComment(app_url, _path, _name);
-
             $('#image_comments .close').on('click', function(){
                 me.imageCommentsWindow();
             });
@@ -758,7 +759,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
     getComment: function(app_url, path, name)
     {
-        if (path != '' ) {
+        if (path != '' && path.substr(-1) != '/') {
             path += '/';
         }
         $.get(
@@ -788,9 +789,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     {
         $('#add_comment').unbind();
 
-        if (path != '' ) {
+        if (path != '' && path.substr(-1) != '/') {
             path += '/';
         }
+
         $('#add_comment').on('click', function(event) {
             event.preventDefault();
             $.get(
@@ -814,7 +816,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     updateSeriesInfos: function()
     {
         var _url = app_url + '/ajax/series/infos/';
-        _url += series_path + '/' + this.image_name;
+        if (series_path.substr(-1) != '/') {
+            _url += series_path + '/' + this.image_name;
+        } else {
+            _url += series_path + this.image_name;
+        }
 
         image_path = series_path;
         //check for subseries
@@ -882,8 +888,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
     {
         var _url = app_url + '/ajax/image/infos/';
         if ( image_path ) {
-            _url += image_path + '/';
+            if (image_path.substr(-1) != '/') {
+                _url += image_path + '/';
+            } else {
+                _url += image_path;
+            }
         }
+
         _url += this.image_name;
 
         $.get(
