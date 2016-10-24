@@ -649,6 +649,7 @@ class Picture
         } else {
             $uri = $ruri;
         }
+        $rcontents = null;
         if ( $remoteContents = json_decode(@file_get_contents($uri)) ) {
             if ( $rinfos['method'] === 'bach' ) {
                 if( isset($remoteContents->mat) ) {
@@ -687,8 +688,6 @@ class Picture
                 }
             }
 
-        } else {
-            $rcontents = null;
         }
         return $rcontents;
     }
