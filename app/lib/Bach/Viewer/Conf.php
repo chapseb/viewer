@@ -75,6 +75,8 @@ class Conf
     private $_known_methods;
     private $_aws_key;
     private $_aws_secret;
+    private $_aws_version;
+    private $_aws_region;
 
     private $_known_remote_methods = array(
         'bach',
@@ -179,6 +181,8 @@ class Conf
         }
         $this->_aws_key = $this->_conf['aws_key'];
         $this->_aws_secret = $this->_conf['aws_secret'];
+        $this->_aws_version = $this->_conf['aws_version'];
+        $this->_aws_region = $this->_conf['aws_region'];
     }
 
     /**
@@ -193,31 +197,7 @@ class Conf
         $this->_roots = array();
         //check roots
         foreach ( $roots as $root ) {
-            if ( file_exists($root) && is_dir($root) ) {
-                //normalize path
-                if ( substr($root, - 1) != '/' ) {
-                    $root .= '/';
-                }
-                //path does exists and is a directory
-                Analog::log(
-                    str_replace(
-                        '%root',
-                        $root,
-                        _('Added root path: %root')
-                    ),
-                    Analog::DEBUG
-                );
                 $this->_roots[] = $root;
-            } else {
-                Analog::log(
-                    str_replace(
-                        '%root',
-                        $root,
-                        _('The root path "%root" does not exists or is not a directory!')
-                    ),
-                    Analog::ERROR
-                );
-            }
         }
     }
 
@@ -409,4 +389,25 @@ class Conf
     {
         return $this->_aws_secret;
     }
+
+    /**
+     * Retrieve AWS Version
+     *
+     * @return string
+     */
+    public function getAWSVersion()
+    {
+        return $this->_aws_version;
+    }
+
+    /**
+     * Retrieve AWS Region
+     *
+     * @return string
+     */
+    public function getAWSRegion()
+    {
+        return $this->_aws_region;
+    }
+
 }

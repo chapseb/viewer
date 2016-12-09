@@ -32,6 +32,8 @@ comment: true
 readingroom: null
 aws_key: null
 aws_secret: null
+aws_version: 'latest'
+aws_region: null
 
 formats:
     #default format *MUST* be present

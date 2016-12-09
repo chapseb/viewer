@@ -114,10 +114,10 @@ class Series
                         && $entry != ".."
                         && !is_dir($this->_full_path . '/' . $entry)
                     ) {
-                        $mimetype = $finfo->file($this->_full_path . '/' . $entry);
-                        if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                        //$mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                        //if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
                             $all_entries[] = $entry;
-                        }
+                        //}
                     }
                 }
                 closedir($handle);
@@ -131,10 +131,10 @@ class Series
                 $arrayDif = array_slice($listFiles, $begin, $diff);
 
                 foreach ($arrayDif as $entry) {
-                    $mimetype = $finfo->file($this->_full_path . '/' . $entry);
-                    if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                    //$mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                    //if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
                         $all_entries[] = $entry;
-                    }
+                    //}
                 }
             }
 
