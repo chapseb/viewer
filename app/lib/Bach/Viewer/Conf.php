@@ -73,6 +73,8 @@ class Conf
     private $_prepared_path;
     private $_prepare_method;
     private $_known_methods;
+    private $_aws_key;
+    private $_aws_secret;
 
     private $_known_remote_methods = array(
         'bach',
@@ -175,6 +177,8 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
+        $this->_aws_key = $this->_conf['aws_key'];
+        $this->_aws_secret = $this->_conf['aws_secret'];
     }
 
     /**
@@ -384,5 +388,25 @@ class Conf
         if ( defined('APP_TESTS') ) {
             $this->_setRoots($roots);
         }
+    }
+
+    /**
+     * Retrieve AWS Key
+     *
+     * @return string
+     */
+    public function getAWSKey()
+    {
+        return $this->_aws_key;
+    }
+
+    /**
+     * Retrieve AWS Secret
+     *
+     * @return string
+     */
+    public function getAWSSecret()
+    {
+        return $this->_aws_secret;
     }
 }

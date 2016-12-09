@@ -117,10 +117,17 @@ class Picture
             if ( isset($this->_conf) ) {
                 $roots = $this->_conf->getRoots();
                 foreach ( $roots as $root ) {
-                    if ( file_exists($root . $this->_full_path)
-                        && is_file($root . $this->_full_path)
+                    if (substr($this->_full_path, 0, 1) == '/'
+                        && substr($root, -1) == '/'
                     ) {
-                        $this->_full_path = $root . $this->_full_path;
+                        $allPathFile = substr_replace($root, "", -1) . $this->_full_path;
+                    } else {
+                        $allPathFile = $root . $this->_full_path;
+                    }
+                    if ( file_exists($allPathFile)
+                        && is_file($allPathFile)
+                    ) {
+                        $this->_full_path = $allPathFile;
                         Analog::log(
                             str_replace(
                                 '%path',
