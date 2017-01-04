@@ -188,3 +188,90 @@ $app->get(
         echo json_encode($thumbs);
     }
 );
+
+$app->get(
+    '/ajax/generateimages',
+    function () use ($app, $conf) {
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+
+        // get image need to be prepared
+        $imagesToTreat = $app->request->get('imagesName');
+        $imageEnd = $app->request->get('endImage');
+
+        // get end image if it exists
+        if (!empty($imageEnd)) {
+            $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
+        } else {
+            $imagePrefix = $imagesToTreat;
+        }
+        $results = array();
+        $roots = $conf->getRoots();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => $root . $imagePrefix,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                if (empty($imageEnd)
+                    || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
+                    && strcmp($object['Key'], $root.$imageEnd) <= 0)
+                ) {
+                    array_push($results, $object['Key']);
+                }
+            }
+        }
+
+        // generate prepared images
+        $fmts = $conf->getFormats();
+        foreach ($results as $result) {
+            foreach ($fmts as $key => $fmt) {
+                $h = $fmt['height'];
+                $w = $fmt['width'];
+
+                if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
+                    try {
+                        $handle = fopen(
+                            "s3://".$conf->getAWSBucket()."/".$result,
+                            'rb'
+                        );
+                        $image = new Imagick();
+                        $image->readImageFile($handle);
+
+                        $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                        $image->setImageCompressionQuality(70);
+
+                        $image->thumbnailImage($w, $h, true);
+                        $pathDisk = __DIR__.'/../cache/';
+                        $image->writeImage($pathDisk . 'tmp_' . $key .'.jpg');
+                        $s3->putObject(
+                            array(
+                                'Bucket'    => $conf->getAWSBucket(),
+                                'Key'       => 'prepared_images/' . $key . '/' . $result,
+                                'SourceFile'=> $pathDisk . 'tmp_' . $key . '.jpg',
+                                'ACL'       => 'public-read',
+                                'Metadata'  => array("Content-Type"=>'image/jpeg')
+                            )
+                        );
+                        $image->destroy();
+                    } catch ( \ImagickException $e ) {
+                        $image->destroy();
+                        throw new \RuntimeException($e->getMessage());
+                    }
+                }
+            }
+        }
+    }
+);

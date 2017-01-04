@@ -77,6 +77,9 @@ class Conf
     private $_aws_secret;
     private $_aws_version;
     private $_aws_region;
+    private $_aws_flag;
+    private $_cloudfront;
+    private $_aws_bucket;
 
     private $_known_remote_methods = array(
         'bach',
@@ -179,10 +182,13 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
-        $this->_aws_key = $this->_conf['aws_key'];
-        $this->_aws_secret = $this->_conf['aws_secret'];
+        $this->_aws_key     = $this->_conf['aws_key'];
+        $this->_aws_secret  = $this->_conf['aws_secret'];
         $this->_aws_version = $this->_conf['aws_version'];
-        $this->_aws_region = $this->_conf['aws_region'];
+        $this->_aws_region  = $this->_conf['aws_region'];
+        $this->_aws_flag    = $this->_conf['aws_flag'];
+        $this->_cloudfront  = $this->_conf['cloudfront'];
+        $this->_aws_bucket  = $this->_conf['aws_bucket'];
     }
 
     /**
@@ -408,6 +414,36 @@ class Conf
     public function getAWSRegion()
     {
         return $this->_aws_region;
+    }
+
+     /**
+     * Retrieve AWS Flag
+     *
+     * @return boolean
+     */
+    public function getAWSFlag()
+    {
+        return $this->_aws_flag;
+    }
+
+    /**
+     * Retrieve Cloudfront url
+     *
+     * @return string
+     */
+    public function getCloudfront()
+    {
+        return $this->_cloudfront;
+    }
+
+    /**
+     * Retrieve aws bucket
+     *
+     * @return string
+     */
+    public function getAWSBucket()
+    {
+        return $this->_aws_bucket;
     }
 
 }
