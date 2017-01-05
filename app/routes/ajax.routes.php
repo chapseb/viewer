@@ -189,7 +189,7 @@ $app->get(
     }
 );
 
-$app->get(
+$app->post(
     '/ajax/generateimages',
     function () use ($app, $conf) {
         $s3 = new Aws\S3\S3Client(
@@ -204,8 +204,8 @@ $app->get(
         );
 
         // get image need to be prepared
-        $imagesToTreat = $app->request->get('imagesName');
-        $imageEnd = $app->request->get('endImage');
+        $imagesToTreat = stripslashes($app->request->post('href'));
+        $imageEnd = stripslashes($app->request->post('end_dao'));
 
         // get end image if it exists
         if (!empty($imageEnd)) {
@@ -273,5 +273,6 @@ $app->get(
                 }
             }
         }
+        echo json_encode(0);
     }
 );
