@@ -207,72 +207,80 @@ $app->post(
         $imagesToTreat = stripslashes($app->request->post('href'));
         $imageEnd = stripslashes($app->request->post('end_dao'));
 
-        // get end image if it exists
-        if (!empty($imageEnd)) {
-            $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
-        } else {
-            $imagePrefix = $imagesToTreat;
-        }
-        $results = array();
-        $roots = $conf->getRoots();
-        foreach ($roots as $root) {
-            $objects = $s3->getIterator(
-                'ListObjects',
-                array(
-                    "Bucket" => $conf->getAWSBucket(),
-                    "Prefix" => $root . $imagePrefix,
-                    "Delimiter" => "/",
-                )
-            );
-            foreach ($objects as $object) {
-                if (empty($imageEnd)
-                    || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
-                    && strcmp($object['Key'], $root.$imageEnd) <= 0)
-                ) {
-                    array_push($results, $object['Key']);
-                }
+        $jsonPost = $app->request()->getBody();
+        $datas = json_decode($jsonPost, true);
+        foreach ($datas as $data) {
+            $imagesToTreat = stripslashes($data['href']);
+            $imageEnd = stripslashes($data['end_dao']);
+            // get end image if it exists
+            if (!empty($imageEnd)) {
+                $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
+            } else {
+                $imagePrefix = $imagesToTreat;
             }
-        }
-
-        // generate prepared images
-        $fmts = $conf->getFormats();
-        foreach ($results as $result) {
-            foreach ($fmts as $key => $fmt) {
-                $h = $fmt['height'];
-                $w = $fmt['width'];
-
-                if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
-                    try {
-                        $handle = fopen(
-                            "s3://".$conf->getAWSBucket()."/".$result,
-                            'rb'
-                        );
-                        $image = new Imagick();
-                        $image->readImageFile($handle);
-
-                        $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
-                        $image->setImageCompressionQuality(70);
-
-                        $image->thumbnailImage($w, $h, true);
-                        $pathDisk = __DIR__.'/../cache/';
-                        $image->writeImage($pathDisk . 'tmp_' . $key .'.jpg');
-                        $s3->putObject(
-                            array(
-                                'Bucket'    => $conf->getAWSBucket(),
-                                'Key'       => 'prepared_images/' . $key . '/' . $result,
-                                'SourceFile'=> $pathDisk . 'tmp_' . $key . '.jpg',
-                                'ACL'       => 'public-read',
-                                'Metadata'  => array("Content-Type"=>'image/jpeg')
-                            )
-                        );
-                        $image->destroy();
-                    } catch ( \ImagickException $e ) {
-                        $image->destroy();
-                        throw new \RuntimeException($e->getMessage());
+            $results = array();
+            $roots = $conf->getRoots();
+            foreach ($roots as $root) {
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => $root . $imagePrefix,
+                        "Delimiter" => "/",
+                    )
+                );
+                foreach ($objects as $object) {
+                    if (empty($imageEnd)
+                        || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
+                        && strcmp($object['Key'], $root.$imageEnd) <= 0)
+                    ) {
+                        array_push($results, $object['Key']);
                     }
                 }
             }
+
+            // generate prepared images
+            $fmts = $conf->getFormats();
+            foreach ($results as $result) {
+                $handle = fopen(
+                    "s3://".$conf->getAWSBucket()."/".$result,
+                    'rb'
+                );
+                foreach ($fmts as $key => $fmt) {
+                    $h = $fmt['height'];
+                    $w = $fmt['width'];
+
+                    if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
+                        try {
+                            $image = new Imagick();
+                            $image->readImageFile($handle);
+
+                            $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                            $image->setImageCompressionQuality(70);
+
+                            $image->thumbnailImage($w, $h, true);
+                            $pathDisk = __DIR__.'/../cache/';
+                            $image->writeImage($pathDisk . 'tmp_' . $key .'.jpg');
+                            $s3->putObject(
+                                array(
+                                    'Bucket'    => $conf->getAWSBucket(),
+                                    'Key'       => 'prepared_images/' . $key . '/' . $result,
+                                    'SourceFile'=> $pathDisk . 'tmp_' . $key . '.jpg',
+                                    'ACL'       => 'public-read',
+                                    'Metadata'  => array(
+                                        "Content-Type"=>'image/jpeg'
+                                    )
+                                )
+                            );
+                            $image->destroy();
+                        } catch ( \ImagickException $e ) {
+                            $image->destroy();
+                            throw new \RuntimeException($e->getMessage());
+                        }
+                    }
+                }
+            }
+            echo json_encode(0);
         }
-        echo json_encode(0);
     }
 );
