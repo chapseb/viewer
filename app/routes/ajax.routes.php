@@ -204,9 +204,6 @@ $app->post(
         );
 
         // get image need to be prepared
-        $imagesToTreat = stripslashes($app->request->post('href'));
-        $imageEnd = stripslashes($app->request->post('end_dao'));
-
         $jsonPost = $app->request()->getBody();
         $datas = json_decode($jsonPost, true);
         foreach ($datas as $data) {
@@ -220,6 +217,10 @@ $app->post(
             }
             $results = array();
             $roots = $conf->getRoots();
+            if (strrpos($imagePrefix, '.') == '') {
+                $imagePrefix .= '/';
+            }
+
             foreach ($roots as $root) {
                 $objects = $s3->getIterator(
                     'ListObjects',
@@ -242,16 +243,24 @@ $app->post(
             // generate prepared images
             $fmts = $conf->getFormats();
             foreach ($results as $result) {
-                $handle = fopen(
-                    "s3://".$conf->getAWSBucket()."/".$result,
-                    'rb'
-                );
+                $previousKey = '';
                 foreach ($fmts as $key => $fmt) {
                     $h = $fmt['height'];
                     $w = $fmt['width'];
-
                     if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
                         try {
+                            $pathDisk = __DIR__.'/../cache/';
+                            if ($key == 'default') {
+                                $handle = fopen(
+                                    's3://' . $conf->getAWSBucket(). '/' .$result,
+                                    'rb'
+                                );
+                            } else {
+                                $handle = fopen(
+                                    $pathDisk . 'tmp_' . $previousKey . '.jpg',
+                                    'rb'
+                                );
+                            }
                             $image = new Imagick();
                             $image->readImageFile($handle);
 
@@ -259,8 +268,7 @@ $app->post(
                             $image->setImageCompressionQuality(70);
 
                             $image->thumbnailImage($w, $h, true);
-                            $pathDisk = __DIR__.'/../cache/';
-                            $image->writeImage($pathDisk . 'tmp_' . $key .'.jpg');
+                            $image->writeImage($pathDisk . 'tmp_' . $key . '.jpg');
                             $s3->putObject(
                                 array(
                                     'Bucket'    => $conf->getAWSBucket(),
@@ -275,9 +283,14 @@ $app->post(
                             $image->destroy();
                         } catch ( \ImagickException $e ) {
                             $image->destroy();
-                            throw new \RuntimeException($e->getMessage());
+                            throw new \RuntimeException(
+                                $key . ' :::: ' .
+                                $result . ' ==== ' .
+                                $e->getMessage()
+                            );
                         }
                     }
+                    $previousKey = $key;
                 }
             }
             echo json_encode(0);
