@@ -42,6 +42,7 @@
  * @link     http://anaphore.eu
  */
 
+use \Analog\Analog;
 use \Bach\Viewer\Picture;
 use \Bach\Viewer\Series;
 
@@ -283,6 +284,10 @@ $app->post(
                             $image->destroy();
                         } catch ( \ImagickException $e ) {
                             $image->destroy();
+                            Analog::log(
+                                'Error image generation : '.
+                                $key. ' ::::: '. $result
+                            );
                             throw new \RuntimeException(
                                 $key . ' :::: ' .
                                 $result . ' ==== ' .
@@ -292,6 +297,9 @@ $app->post(
                     }
                     $previousKey = $key;
                 }
+                Analog::log(
+                    ('Creation prepared image for '. $result)
+                );
             }
             echo json_encode(0);
         }
