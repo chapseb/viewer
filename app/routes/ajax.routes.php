@@ -203,7 +203,6 @@ $app->post(
                 )
             ]
         );
-
         // get image need to be prepared
         $jsonPost = $app->request()->getBody();
         $datas = json_decode($jsonPost, true);
@@ -282,6 +281,7 @@ $app->post(
                                 )
                             );
                             $image->destroy();
+                            fclose($handle);
                         } catch ( \ImagickException $e ) {
                             $image->destroy();
                             Analog::log(
@@ -301,7 +301,9 @@ $app->post(
                     ('Creation prepared image for '. $result)
                 );
             }
-            echo json_encode(0);
         }
+        Analog::log(
+            ('The treatment is over.')
+        );
     }
 );
