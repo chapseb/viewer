@@ -247,12 +247,21 @@ $app->post(
                 foreach ($fmts as $key => $fmt) {
                     $h = $fmt['height'];
                     $w = $fmt['width'];
+                    $time_start = microtime(true);
+
                     if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
                         try {
                             $pathDisk = __DIR__.'/../cache/';
                             if ($key == 'default') {
+                                $s3->getObject(
+                                    array(
+                                        'Bucket' => $conf->getAWSBucket(),
+                                        'Key'    => $result,
+                                        'SaveAs' =>  $pathDisk . 'tmp.jpg',
+                                    )
+                                );
                                 $handle = fopen(
-                                    's3://' . $conf->getAWSBucket(). '/' .$result,
+                                    $pathDisk. 'tmp.jpg',
                                     'rb'
                                 );
                             } else {
@@ -261,14 +270,43 @@ $app->post(
                                     'rb'
                                 );
                             }
+                            $time_open = microtime(true);
+                            Analog::log(
+                                'fopen  : '.
+                                $key. ' ::::: '. $result.
+                                ' a mis '. ($time_open - $time_start)
+                            );
+
                             $image = new Imagick();
                             $image->readImageFile($handle);
 
                             $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
                             $image->setImageCompressionQuality(70);
 
+                            $timeBeforeThumbnailImage = microtime(true);
+                            Analog::log(
+                                'create imagegick  : '.
+                                $key. ' ::::: '. $result.
+                                ' a mis '. ($timeBeforeThumbnailImage - $time_open)
+                            );
+
                             $image->thumbnailImage($w, $h, true);
+                            $time_generate = microtime(true);
+                            Analog::log(
+                                'apres thumbnail  : '.
+                                $key. ' ::::: '. $result.
+                                ' a mis '. ($time_generate - $timeBeforeThumbnailImage)
+                            );
+
                             $image->writeImage($pathDisk . 'tmp_' . $key . '.jpg');
+                            $time_write = microtime(true);
+                            Analog::log(
+                                'ecriture disque  : '.
+                                $key. ' ::::: '. $result.
+                                ' a mis '. ($time_write - $time_generate)
+                            );
+
+                            $image->destroy();
                             $s3->putObject(
                                 array(
                                     'Bucket'    => $conf->getAWSBucket(),
@@ -280,7 +318,13 @@ $app->post(
                                     )
                                 )
                             );
-                            $image->destroy();
+                            $time_upload = microtime(true);
+                            Analog::log(
+                                'upload  : '.
+                                $key. ' ::::: '. $result.
+                                ' a mis '. ($time_upload - $time_write)
+                            );
+
                             fclose($handle);
                         } catch ( \ImagickException $e ) {
                             $image->destroy();
