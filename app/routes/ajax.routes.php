@@ -346,8 +346,12 @@ $app->post(
                 );
             }
         }
+        $url = $conf->getRemoteInfos()['uri'] . 'deleteImage';
+        $cmd = "curl -X POST -H 'Content-Type: application/json'";
+        $cmd.= " -d '" . $jsonPost . "' " . "'" . $url . "'";
+        $out = exec($cmd, $output);
         Analog::log(
-            ('The treatment is over.')
+            ($out)
         );
     }
 );
