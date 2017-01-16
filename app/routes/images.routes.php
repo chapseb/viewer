@@ -150,40 +150,82 @@ $app->get(
         if ( count($img_params) > 0 ) {
             $path = '/' . implode('/', $img_params);
         }
-        $picture = null;
-        if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture(
-                $conf,
-                DEFAULT_PICTURE,
-                $app_base_url
+
+        if ($conf->getAWSFlag() == true) {
+            $s3 = new \Aws\S3\S3Client(
+                [
+                    'version' => $conf->getAWSVersion(),
+                    'region'  => $conf->getAWSRegion(),
+                    'credentials' => array(
+                        'key' => $conf->getAWSKey(),
+                        'secret' =>$conf->getAWSSecret()
+                    )
+                ]
+            );
+            $results = array();
+
+            $roots = $conf->getRoots();
+
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => $root.$path.'/'.$img,
+                        "Delimiter" => "/",
+                    )
+                );
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+
+            }
+            $args = array(
+                'cloudfront' => $conf->getCloudfront(),
+                'path'       => $results[0],
+                'img'        => $conf->getCloudfront().$results[0],
+                'default_src'=> $conf->getCloudfront().'prepared_images/default/'.$results[0],
+                'thumb_src'  => $conf->getCloudfront().'prepared_images/thumb/'.$results[0]
             );
         } else {
-            $picture = new Picture($conf, $img, $app_base_url, $path);
+            $picture = null;
+            if ( $img === DEFAULT_PICTURE ) {
+                $picture = new Picture(
+                    $conf,
+                    DEFAULT_PICTURE,
+                    $app_base_url
+                );
+            } else {
+                $picture = new Picture($conf, $img, $app_base_url, $path);
+            }
+
+            $args = array(
+                'img'       => $img,
+                'picture'   => $picture,
+                'iip'       => $picture->isPyramidal(),
+            );
+
+            if ( $picture->isPyramidal() ) {
+                $iip = $conf->getIIP();
+                $args['iipserver'] = $iip['server'];
+            } else {
+                $args['image_format'] = 'default';
+            }
+
+            if (file_exists('../web/themes/styles/themes.css') ) {
+                $args['themes'] = 'themes';
+            }
+
+            $rcontents = Picture::getRemoteInfos(
+                $conf->getRemoteInfos(),
+                $path,
+                $img,
+                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+            );
         }
-
-        $args = array(
-            'img'       => $img,
-            'picture'   => $picture,
-            'iip'       => $picture->isPyramidal(),
-        );
-
-        if ( $picture->isPyramidal() ) {
-            $iip = $conf->getIIP();
-            $args['iipserver'] = $iip['server'];
-        } else {
-            $args['image_format'] = 'default';
-        }
-
-        if (file_exists('../web/themes/styles/themes.css') ) {
-            $args['themes'] = 'themes';
-        }
-
-        $rcontents = Picture::getRemoteInfos(
-            $conf->getRemoteInfos(),
-            $path,
-            $img,
-            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
-        );
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -245,6 +287,7 @@ $app->get(
             );
         }
 
+        $args['awsFlag'] = $conf->getAWSFlag();
         $app->render(
             'index.html.twig',
             $args

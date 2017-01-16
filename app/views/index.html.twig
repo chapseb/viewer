@@ -76,7 +76,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div id="nocommunicabilityJS"></div>
                 {% else %}
                 <noscript>
-                    <img src="{{ picture.getUrl(series) }}" alt=""/>
+                    {% if awsFlag == true %}
+                        <img src="{{ cloudfront ~ 'prepared_images/default/' ~ path }}" alt=""/>
+                    {% else %}
+                        <img src="{{ picture.getUrl(series) }}" alt=""/>
+                    {% endif %}
                 </noscript>
                 {% endif %}
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
@@ -105,7 +109,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         {% endif %}
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
-                        {% if picture.hasFormat('full') and picture.hasFormat('default') %}
+                        {% if (picture.hasFormat('full') and picture.hasFormat('default')) or awsFlag == true %}
                         <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
                             <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
                         </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
@@ -223,7 +227,10 @@ POSSIBILITY OF SUCH DAMAGE.
             //global variables
             var series_path = '{{ series.getPath() }}';
             {% if not series %}
-            var image_path = '{{ picture.getPath() }}';
+            var image_path = '{{ cloudfront ~ path }}';
+            var aws_flag = '{{ awsFlag }}';
+            var src_default = '{{ default_src }}';
+            var src_thumb = '{{ thumb_src}}';
             {% endif %}
             {% if remote_infos_url is defined %}
             var remote_infos_url = '{{ remote_infos_url }}';
@@ -284,9 +291,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
                 {% endif %}
 
-                {%- if not(iip) -%}
                 var comm;
-                comm = '{{ picture.getUrl(series)}}';
+                if (aws_flag == 1) {
+                    comm = '{{ default_src }}';
+                }
+                else{
+                    comm = '{{ picture.getUrl(series)}}';
+                }
+
+                {%- if not(iip) -%}
                 var viewer = $("#viewer").bviewer({
                     {% if remote_method -%}
                     remote: {

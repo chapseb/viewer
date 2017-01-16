@@ -102,7 +102,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             //load navigation overview image
             var _src;
-            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
+            if (aws_flag == true) {
+                _src  = me.options.src.replace('default', 'thumb');
+            } else {
+                _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
+            }
 
             if ( me.hasTransformations() ) {
                 _src = _src.replace('/show', '/transform') + '?';
@@ -426,8 +430,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             $('#hidef .userinfo').hide();
             me.display_options.format = _format;
-            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
-            me.loadImage(_src);
+            if(aws_flag){
+                me.loadImage(image_path);
+            } else {
+                _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
+                me.loadImage(_src);
+            }
         });
         $("#print").bind('click touchstart', function(){ me.print(); });
         $('#comments').bind('click touchstart', function(){ me.imageCommentsWindow() });
