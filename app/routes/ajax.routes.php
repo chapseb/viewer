@@ -209,6 +209,7 @@ $app->post(
         foreach ($datas as $data) {
             $imagesToTreat = stripslashes($data['href']);
             $imageEnd = stripslashes($data['end_dao']);
+            $lastFile = stripslashes($data['last_file']);
             // get end image if it exists
             if (!empty($imageEnd)) {
                 $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
@@ -235,13 +236,16 @@ $app->post(
                         || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
                         && strcmp($object['Key'], $root.$imageEnd) <= 0)
                     ) {
-                        array_push($results, $object['Key']);
+                        if (strcmp($object['Key'], $lastFile) >= 0) {
+                            array_push($results, $object['Key']);
+                        }
                     }
                 }
             }
 
             // generate prepared images
             $fmts = $conf->getFormats();
+            $cpt = 0;
             foreach ($results as $result) {
                 $previousKey = '';
                 foreach ($fmts as $key => $fmt) {
@@ -270,43 +274,15 @@ $app->post(
                                     'rb'
                                 );
                             }
-                            $time_open = microtime(true);
-                            Analog::log(
-                                'fopen  : '.
-                                $key. ' ::::: '. $result.
-                                ' a mis '. ($time_open - $time_start)
-                            );
-
                             $image = new Imagick();
                             $image->readImageFile($handle);
 
                             $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
                             $image->setImageCompressionQuality(70);
 
-                            $timeBeforeThumbnailImage = microtime(true);
-                            Analog::log(
-                                'create imagegick  : '.
-                                $key. ' ::::: '. $result.
-                                ' a mis '. ($timeBeforeThumbnailImage - $time_open)
-                            );
-
                             $image->thumbnailImage($w, $h, true);
-                            $time_generate = microtime(true);
-                            Analog::log(
-                                'apres thumbnail  : '.
-                                $key. ' ::::: '. $result.
-                                ' a mis '. ($time_generate - $timeBeforeThumbnailImage)
-                            );
-
                             $image->writeImage($pathDisk . 'tmp_' . $key . '.jpg');
-                            $time_write = microtime(true);
-                            Analog::log(
-                                'ecriture disque  : '.
-                                $key. ' ::::: '. $result.
-                                ' a mis '. ($time_write - $time_generate)
-                            );
-
-                            $image->destroy();
+                            $image->clear();
                             $s3->putObject(
                                 array(
                                     'Bucket'    => $conf->getAWSBucket(),
@@ -318,13 +294,6 @@ $app->post(
                                     )
                                 )
                             );
-                            $time_upload = microtime(true);
-                            Analog::log(
-                                'upload  : '.
-                                $key. ' ::::: '. $result.
-                                ' a mis '. ($time_upload - $time_write)
-                            );
-
                             fclose($handle);
                         } catch ( \ImagickException $e ) {
                             $image->destroy();
@@ -338,12 +307,25 @@ $app->post(
                                 $e->getMessage()
                             );
                         }
+                        $cpt += 1;
                     }
                     $previousKey = $key;
                 }
-                Analog::log(
-                    ('Creation prepared image for '. $result)
-                );
+                if ($cpt > 0) {
+                    Analog::log(
+                        ('Creation prepared image for '. $result)
+                    );
+                }
+                if ($cpt >= 30) {
+                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?flag=finish&lastfile='.$result;
+                    $cmd = "curl -X POST -H 'Content-Type: application/json'";
+                    $cmd.= " -d '" . $jsonPost . "' " . "'" . $url . "'";
+                    $out = exec($cmd, $output);
+                    Analog::log(
+                        ($out)
+                    );
+                    exit();
+                }
             }
         }
         $url = $conf->getRemoteInfos()['uri'] . 'deleteImage';
