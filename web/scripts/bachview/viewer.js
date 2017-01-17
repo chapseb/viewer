@@ -774,8 +774,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if (path != '' && path.substr(-1) != '/') {
             path += '/';
         }
+
+        if (typeof image_database_name !== 'undefined') {
+            _url = app_url + '/ajax/image/comments'+ image_database_name;
+        } else {
+            _url = app_url + '/ajax/image/comments/' + path + name;
+        }
         $.get(
-            app_url + '/ajax/image/comments/' + path + name,
+            _url,
             function(data){
                 var comments = JSON.parse(data);
                 for (var idx in comments ) {
@@ -810,7 +816,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             $.get(
                 appUrl + '/ajax/image/comment/bachURL',
                 function(urlBach) {
-                    urlBach += 'comment/images/'+ path + name +'/add';
+                    if (typeof image_database_name !== 'undefined') {
+                        urlBach += 'comment/images'+image_database_name+'/add';
+                    } else {
+                        urlBach += 'comment/images/'+ path + name +'/add';
+                    }
                     var commentTab = window.open(urlBach);
                     commentTab.focus();
                 }
@@ -910,6 +920,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _url += this.image_name;
         if (typeof remote_infos_url !== 'undefined') {
             _url = app_url + '/ajax/image/infos/' + remote_infos_url;
+        }
+        if (typeof image_database_name !== 'undefined') {
+            _url = app_url + '/ajax/image/infos/' + image_database_name;
         }
         $.get(
             _url,

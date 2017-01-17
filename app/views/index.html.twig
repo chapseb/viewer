@@ -49,8 +49,12 @@ POSSIBILITY OF SUCH DAMAGE.
 {% block content %}
         <section>
             <header>
-                <h1>{% if themes is defined %}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
+                <h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined %}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
+                {% if image_database_name is defined %}
+                <h2>{{ image_database_name}}</h2>
+                {% else %}
                 <h2>{{ img }}</h2>
+                {% endif %}
                 {% if series %}
                     {% set series_name = series.getPath() %}
                     <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}">
@@ -58,7 +62,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </span>
                 {% endif %}
 
-                {% if not picture.isPyramidal %}
+                {% if not picture.isPyramidal and awsFlag != true %}
                 <div id="formats">
                     <select name="formats">
                         {% for key, fmt in picture.getVisibleFormats() %}
@@ -239,6 +243,9 @@ POSSIBILITY OF SUCH DAMAGE.
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
+            {% if image_database_name is defined %}
+            var image_database_name = '{{ image_database_name}}'
+            {% endif %}
             var app_url = '{{ app_base_url }}';
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
             var hidef_on_title = '{{ "Switch to low resolution image"|trans|escape('js') }}';
@@ -292,7 +299,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
 
                 var comm;
-                if (aws_flag == 1) {
+                if (typeof aws_flag !== 'undefined' && aws_flag == true) {
                     comm = '{{ default_src }}';
                 }
                 else{

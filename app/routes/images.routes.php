@@ -184,11 +184,14 @@ $app->get(
 
             }
             $args = array(
-                'cloudfront' => $conf->getCloudfront(),
-                'path'       => $results[0],
-                'img'        => $conf->getCloudfront().$results[0],
-                'default_src'=> $conf->getCloudfront().'prepared_images/default/'.$results[0],
-                'thumb_src'  => $conf->getCloudfront().'prepared_images/thumb/'.$results[0]
+                'cloudfront'          => $conf->getCloudfront(),
+                'path'                => $results[0],
+                'img'                 => $conf->getCloudfront().$results[0],
+                'default_src'         => $conf->getCloudfront()
+                                            .'prepared_images/default/'.$results[0],
+                'thumb_src'           => $conf->getCloudfront()
+                                            .'prepared_images/thumb/'.$results[0],
+                'image_database_name' => $path .'/'. $img
             );
         } else {
             $picture = null;
