@@ -99,7 +99,7 @@ $app->get(
 
         $series = new Series(
             $conf,
-            $series_path,
+            $series_path.'/',
             $app_base_url,
             $start,
             $end

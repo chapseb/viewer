@@ -107,6 +107,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             } else {
                 _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/thumb');
             }
+            if (thumb_src != '') {
+                _src = thumb_src;
+            }
 
             if ( me.hasTransformations() ) {
                 _src = _src.replace('/show', '/transform') + '?';
@@ -141,6 +144,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             });
 
             $('#progressbar').fadeOut('slow');
+
         };
 
         this.options.onAfterZoom = function(ev, new_zoom) {
@@ -365,7 +369,42 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     _url += '?s=' + series_start + '&e=' + series_end;
                 }
 
-                $.get(
+                for ( var i =0 ; i < listImage.length ; i++) {
+                    var _src = cloudfront + 'prepared_images/thumb/'+ full_path +listImage[i];
+
+                    var _img = $('<img src="' + _src  + '" alt=""/>');
+                    var index = i + 1;
+                    var _style = '';//'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
+                    var _a = $('<a href="'+ listImage[i] +'" style="' + _style  + '" name="image' + index + '" title="'+listImage[i]+'" onClick="return false;"></a>');
+
+                    if ( i == image_position ) {
+                        _a.addClass('current');
+                    }
+                    _a.bind('click touch', function(){
+                        me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +$(this).attr('href'));
+                        thumb_src = cloudfront +'prepared_images/thumb/'+full_path+$(this).attr('href');
+                        console.log($(this).attr('href'));
+                        current_image = $(this).attr('href');
+                        for (var i=0; i <listImage.length ; i++) {
+                            if (listImage[i] == current_image) {
+                                image_position = i ;
+                                imageShow = i + 1;
+                            }
+                        }
+                        //me.display(me._imgNameFromLink($(this)));
+                        $('#formats > select').val('default');
+                        _thumbview.remove();
+                        return false;
+                    });
+                    _img.appendTo(_a);
+                    _a.appendTo(_thumbview);
+                }
+                _thumbview.prependTo('body');
+                var posnum = $('#number_image').val();
+                location.hash = '#' + 'image' + posnum;
+
+
+                /*$.get(
                     _url,
                     function(data){
                         var _thumbs = data['thumbs'];
@@ -399,7 +438,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     'json'
                 ).fail(function(){
                     alert('An error occured loading series thumbnails.');
-                });
+                });*/
             }
         });
         $("#zoomin").bind('click touchstart', function(){ me.zoom_by(1); });
@@ -430,8 +469,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             $('#hidef .userinfo').hide();
             me.display_options.format = _format;
-            if(aws_flag){
-                me.loadImage(image_path);
+            if(aws_flag && series_path == ''){
+                if (_format == 'full') {
+                    me.loadImage(image_path);
+                } else {
+                    me.loadImage(src_default);
+                }
+            }else if(aws_flag && series_path != '') {
+                if (_format == 'full' ){
+                    me.loadImage(pathHD + listImage[image_position]);
+                } else {
+                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                }
             } else {
                 _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
                 me.loadImage(_src);
@@ -454,6 +503,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.loadImage(_src);
         }).val('default');
 
+
+
+
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
             if($("#lockparams").hasClass('off')) {
@@ -475,15 +527,40 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             }
 
-            me.display(me._imgNameFromLink($(this)));
+            /*me.display(me._imgNameFromLinkAws($(this)));
+            console.debug(me._imgNameFromLinkAws($(this)));*/
+            console.debug(viewer);
+
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
+
 
             // rebind of toolbarbtn navigation when change image
             $('.toolbarbtn').bind('click touchstart', function() {
                 $('.navwin').toggle();
                 $(this).toggleClass('off');
             });
+
+            if($(this).attr('id') == 'nextimg') {
+                image_position += 1;
+                if (image_position == listImage.length) {
+                    image_position = 0;
+                }
+            } else {
+                image_position -= 1;
+                if (image_position < 0) {
+                    image_position = listImage.length -1;
+                }
+            }
+            imageShow = image_position + 1;
+            $("#number_image").val(imageShow);
+
+            me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+            thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
+
+            current_image = listImage[image_position];
+            $('#hidef').attr('data-state', 'off');
+            $('#hidef').attr('class', 'off');
 
             return false;
         });
@@ -513,7 +590,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#image_params,#lockparams,#infosRemote,#moreparams,#print").on('dblclick', function(e){
             e.stopPropagation();
         });
-
         //bind keys
         $('body').bind('keydown', function(event) {
             if (event.which == 107) { //+
@@ -837,6 +913,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
+        var me = this;
         var _url = app_url + '/ajax/series/infos/';
         if (series_path.substr(-1) != '/') {
             _url += series_path + '/' + this.image_name;
@@ -849,32 +926,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
             _url += '?s=' + series_start + '&e=' + series_end;
         }
-        $.get(
+        if (aws_flag == true) {
+            _url += image_strictname;
+        }
+        /*$.get(
             _url,
             function(data){
-                var _prev = $('#previmg');
-                _prev.attr('href', series_path + '?img=' + data.prev);
-                var _next = $('#nextimg');
-                _next.attr('href', series_path + '?img=' + data.next);
-                $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
-                $("#search_img input").keypress(function(event) {
-                    if (event.which == 13) {
-                        event.preventDefault();
-                        var posnum = $('#number_image').val();
-                        var numtotal = $('#number_total').text();
-                        if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
-                            var app_series_url = app_url + '/series/' + series_path;
-                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
-                            } else {
-                                window.location.href = app_series_url + '?num=' + posnum;
-                            }
-                        }
-                        else {
-                            alert(alert_bad_value);
-                        }
-                    }
-                });
                 if ( data.remote ) {
                     $('header > h2').html(data.remote.link);
                     if( data.mat ) {
@@ -890,7 +947,47 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             'json'
         ).fail(function(){
             alert('An error occured loading series informations, navigation may fail.');
-        });
+        });*/
+        var _prev = $('#previmg');
+                if (aws_flag != true) {
+                    _prev.attr('href', series_path + '?img=' + data.prev);
+                }
+                var _next = $('#nextimg');
+                if (aws_flag != true) {
+                    _next.attr('href', series_path + '?img=' + data.next);
+                }
+                imageShow = image_position + 1;
+                $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+imageShow+'"/></form>');
+                $("#search_img input").keypress(function(event) {
+                    if (event.which == 13) {
+
+                        event.preventDefault();
+                        var posnum = $('#number_image').val();
+                        var numtotal = $('#number_total').text();
+                        if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
+                            var app_series_url = app_url + '/series/' + series_path;
+                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                                //window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                            } else {
+                                //window.location.href = app_series_url + '?num=' + posnum;
+                            }
+
+                            image_position = parseInt(posnum) - 1;
+
+                            me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+
+                            console.debug($("#hidef"));
+                            $('#hidef').attr('data-state', 'off');
+                            $('#hidef').attr('class', 'off');
+
+                            thumb_src = cloudfront +'prepared_images/thumb/'+ full_path +listImage[image_position];
+                            current_image = listImage[image_position];
+                        }
+                        else {
+                            alert(alert_bad_value);
+                        }
+                    }
+                });
 
         $('#allComments').empty();
         var _name = this.image_name;
@@ -1223,7 +1320,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _str = link.attr('href').replace('/series', '');
         var _re = /\?img=(.+)/;
         return _str.replace(_re, '/$1');
-    }
+    },
+    _imgNameFromLinkAws: function(link) {
+        var _str = link.attr('href').replace('/series', '');
+        var _re = /\?img=(.+)/;
+        _str = _str.replace(_re, '/$1');
+        _str = 'http://cdn-ad84.anaphore.org/prepared_images/default/destination'+_str;
+        return _str;
+    },
+   
 }));
 
 $.ui.bviewer.defaults = $.extend({}, $.ui.iviewer.defaults);

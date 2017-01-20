@@ -82,18 +82,64 @@ class Series
         $this->_start = $start;
         $this->_end = $end;
         $roots = $conf->getRoots();
+        if ($start != null) {
+            $path .= '/';
+        }
 
-        foreach ( $roots as $root ) {
-            if ( file_exists($root . $path) && is_dir($root . $path) ) {
-                $this->_full_path = $root . $path;
-                Analog::log(
-                    str_replace(
-                        '%path',
-                        $this->_full_path,
-                        _('Series path set to "%path"')
+        if ($conf->getAWSFlag() == true) {
+            $s3 = new \Aws\S3\S3Client(
+                [
+                    'version' => $conf->getAWSVersion(),
+                    'region'  => $conf->getAWSRegion(),
+                    'credentials' => array(
+                        'key' => $conf->getAWSKey(),
+                        'secret' =>$conf->getAWSSecret()
+                    )
+                ]
+            );
+            $results = array();
+
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => $root . '/' . $path,
+                        "Delimiter" => "/",
                     )
                 );
-                break;
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+
+                if (!empty($results)) {
+                    $this->_full_path = $root . '/' . $path;
+                    Analog::log(
+                        str_replace(
+                            '%path',
+                            $this->_full_path,
+                         _('Series path set to "%path"')
+                        )
+                    );
+                    break;
+                }
+            }
+        } else {
+            foreach ( $roots as $root ) {
+                if ( file_exists($root . $path) && is_dir($root . $path) ) {
+                    $this->_full_path = $root . $path;
+                    Analog::log(
+                        str_replace(
+                            '%path',
+                            $this->_full_path,
+                            _('Series path set to "%path"')
+                        )
+                    );
+                    break;
+                }
             }
         }
 
@@ -103,11 +149,11 @@ class Series
             );
         } else {
             $this->_content = array();
-            $handle = opendir($this->_full_path);
+            $handle = opendir('s3://'.$conf->getAWSBucket().'/'.$this->_full_path);
 
             $all_entries = array();
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
-            $go = ($this->_start === null ) ? true : false;
+            $go = true;//$go = ($this->_start === null ) ? true : false;
             if ($go === true) {
                 while ( false !== ($entry = readdir($handle)) ) {
                     if ($entry != "."
@@ -122,6 +168,7 @@ class Series
                 }
                 closedir($handle);
                 sort($all_entries, SORT_STRING);
+
             } else {
                 $listFiles = scandir($this->_full_path);
                 sort($listFiles, SORT_STRING);
@@ -148,12 +195,12 @@ class Series
 
                 if ( $go ) {
                     try {
-                        $picture = new Picture(
+                        /*$picture = new Picture(
                             $this->_conf,
                             $entry,
                             $app_base_url,
                             $this->_full_path
-                        );
+                        );*/
                         $this->_content[] = $entry;
                     } catch (\RuntimeException $re) {
                         Analog::warning(
@@ -489,6 +536,16 @@ class Series
     public function getEnd()
     {
         return $this->_end;
+    }
+
+    /**
+     * Get content Series
+     *
+     * @return array
+     */
+    public function getContent()
+    {
+        return $this->_content;
     }
 
 }

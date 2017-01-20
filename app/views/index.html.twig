@@ -50,8 +50,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <section>
             <header>
                 <h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined %}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
-                {% if image_database_name is defined %}
-                <h2>{{ image_database_name}}</h2>
+                {% if imageStrictName is defined %}
+                <h2>{{ imageStrictName }}</h2>
                 {% else %}
                 <h2>{{ img }}</h2>
                 {% endif %}
@@ -97,7 +97,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         {%- endif -%}
                     {%- endset -%}
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" id="nextimg" onClick="return false;" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->
@@ -129,11 +129,12 @@ POSSIBILITY OF SUCH DAMAGE.
                             {% endif %}
                             {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
                         <li id="moreparams" title="{% trans "Adjust image parameters" %}">
-                            {% endif %}
-                            {% if series %}
+                                {% if series %}
                         <li id="lockparams" class="off" title="{% trans "Lock image parameters" %}">
+                                {% endif %}
                             {% endif %}
                         {% endif %}
+                        <li id="print" title="{% trans "Print image as currently displayed" %}">
                     </ul>
                 </aside>
                 {% if not(iip) %}
@@ -232,20 +233,29 @@ POSSIBILITY OF SUCH DAMAGE.
             var series_path = '{{ series.getPath() }}';
             {% if not series %}
             var image_path = '{{ cloudfront ~ path }}';
+            {% endif %}
             var aws_flag = '{{ awsFlag }}';
             var src_default = '{{ default_src }}';
-            var src_thumb = '{{ thumb_src}}';
-            {% endif %}
+            var thumb_src = '{{ thumb_src}}';
             {% if remote_infos_url is defined %}
             var remote_infos_url = '{{ remote_infos_url }}';
+            {% endif%}
+            {% if series %}
+            var pathHD = '{{pathHD}}';
+            var current_image = '{{ series.getRepresentative() }}';
+            var image_position = 0;
+            var full_path = '{{ series.getFullPath()}}';
             {% endif%}
             {% if not series.getStart is null and not series.getEnd is null -%}
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
             {% if image_database_name is defined %}
-            var image_database_name = '{{ image_database_name}}'
+            var image_database_name = '{{ image_database_name}}';
             {% endif %}
+            var image_strictname = '{{ imageStrictName}}';
+            var cloudfront = '{{ cloudfront}}';
+            var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
             var app_url = '{{ app_base_url }}';
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
             var hidef_on_title = '{{ "Switch to low resolution image"|trans|escape('js') }}';
@@ -299,7 +309,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
 
                 var comm;
-                if (typeof aws_flag !== 'undefined' && aws_flag == true) {
+                if (aws_flag == true) {
                     comm = '{{ default_src }}';
                 }
                 else{

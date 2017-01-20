@@ -111,26 +111,25 @@ $app->get(
             $img = $series->getRepresentative();
         }
 
-        $picture = new Picture(
+        /*$picture = new Picture(
             $conf,
             $img,
             $app_base_url,
             $series->getFullPath()
-        );
-
+        );*/
         $args = array(
-            'img'       => $img,
-            'picture'   => $picture,
-            'iip'       => $picture->isPyramidal(),
+            'cloudfront'          => $conf->getCloudfront(),
+            'pathHD'                 => $conf->getCloudfront().$series->getFullPath(),
             'series'    => $series,
+            'default_src' => $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+            'imageStrictName' => substr($series->getRepresentative(), strrpos($series->getRepresentative(), '/'))
         );
-
-        if ( $picture->isPyramidal() ) {
+        /*if ( $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
             $args['iipserver'] = $iip['server'];
-        } else {
+        } else {*/
             $args['image_format'] = 'default';
-        }
+        //}
 
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
@@ -191,6 +190,7 @@ $app->get(
             }
         }
 
+        $args['awsFlag'] = $conf->getAWSFlag();
         $app->render(
             'index.html.twig',
             $args
