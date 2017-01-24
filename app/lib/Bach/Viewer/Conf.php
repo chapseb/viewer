@@ -80,6 +80,7 @@ class Conf
     private $_aws_flag;
     private $_cloudfront;
     private $_aws_bucket;
+    private $_nb_images_to_prepare;
 
     private $_known_remote_methods = array(
         'bach',
@@ -189,6 +190,7 @@ class Conf
         $this->_aws_flag    = $this->_conf['aws_flag'];
         $this->_cloudfront  = $this->_conf['cloudfront'];
         $this->_aws_bucket  = $this->_conf['aws_bucket'];
+        $this->_nb_images_to_prepare  = $this->_conf['nb_images_to_prepare'];
     }
 
     /**
@@ -445,5 +447,16 @@ class Conf
     {
         return $this->_aws_bucket;
     }
+
+    /**
+     * Retrieve number image to prepare each call
+     *
+     * @return string
+     */
+    public function getNbImagesToPrepare()
+    {
+        return $this->_nb_images_to_prepare;
+    }
+
 
 }

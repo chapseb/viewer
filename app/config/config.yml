@@ -36,6 +36,7 @@ aws_version: 'latest'
 aws_region: null
 aws_flag: false
 cloudfront: null
+nb_images_to_prepare: 10
 
 formats:
     #default format *MUST* be present

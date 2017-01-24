@@ -413,7 +413,7 @@ $app->post(
                         ('Creation prepared image for '. $result)
                     );
                 }
-                if ($cpt >= 30) {
+                if ($cpt >= ($conf->getNbImagesToPrepare() * 3)) {
                     $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?flag=finish&lastfile='.$result;
                     $cmd = "curl -X POST -H 'Content-Type: application/json'";
                     $cmd.= " -d '" . $jsonPost . "' " . "'" . $url . "'";
