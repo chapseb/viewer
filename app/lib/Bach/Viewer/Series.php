@@ -168,7 +168,18 @@ class Series
                 }
                 closedir($handle);
                 sort($all_entries, SORT_STRING);
+                if ($this->_start != null) {
+                    $tmp_entry = array();
+                    foreach ($all_entries as $entry) {
+                        if (strcmp($this->_start, $entry) <= 0
+                            && strcmp($this->_end, $entry) >= 0
+                        ) {
+                            array_push($tmp_entry, $entry);
 
+                        }
+                    }
+                    $all_entries = $tmp_entry;
+                }
             } else {
                 $listFiles = scandir($this->_full_path);
                 sort($listFiles, SORT_STRING);
