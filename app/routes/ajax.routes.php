@@ -346,6 +346,8 @@ $app->post(
             foreach ($results as $result) {
                 $previousKey = '';
                 foreach ($fmts as $key => $fmt) {
+                    $ext = substr(strrchr($result, '.'), 1);
+
                     $h = $fmt['height'];
                     $w = $fmt['width'];
                     $time_start = microtime(true);
@@ -353,41 +355,51 @@ $app->post(
                     if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
                         try {
                             $pathDisk = __DIR__.'/../cache/';
+                            $ext = substr(strrchr($result, '.'), 1);
                             if ($key == 'default') {
                                 $s3->getObject(
                                     array(
                                         'Bucket' => $conf->getAWSBucket(),
                                         'Key'    => $result,
-                                        'SaveAs' =>  $pathDisk . 'tmp.jpg',
+                                        'SaveAs' =>  $pathDisk . 'tmp.'.$ext,
                                     )
                                 );
                                 $handle = fopen(
-                                    $pathDisk. 'tmp.jpg',
+                                    $pathDisk. 'tmp.'.$ext,
                                     'rb'
                                 );
                             } else {
                                 $handle = fopen(
-                                    $pathDisk . 'tmp_' . $previousKey . '.jpg',
+                                    $pathDisk . 'tmp_' . $previousKey . '.'.$ext,
                                     'rb'
                                 );
                             }
                             $image = new Imagick();
                             $image->readImageFile($handle);
 
-                            $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                            $extContentType = 'jpeg';
+                            if ($ext == 'jpg' || $ext == 'jpeg'
+                                || $ext == 'JPG' || $ext == 'JPEG'
+                            ) {
+                                $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                            }
                             $image->setImageCompressionQuality(70);
 
                             $image->thumbnailImage($w, $h, true);
-                            $image->writeImage($pathDisk . 'tmp_' . $key . '.jpg');
+                            $image->writeImage($pathDisk . 'tmp_' . $key . '.'.$ext);
                             $image->clear();
+
+                            if ($ext == 'png' || $ext == 'PNG') {
+                                $extContentType = 'png';
+                            }
                             $s3->putObject(
                                 array(
                                     'Bucket'    => $conf->getAWSBucket(),
                                     'Key'       => 'prepared_images/' . $key . '/' . $result,
-                                    'SourceFile'=> $pathDisk . 'tmp_' . $key . '.jpg',
+                                    'SourceFile'=> $pathDisk . 'tmp_' . $key . '.'.$ext,
                                     'ACL'       => 'public-read',
                                     'Metadata'  => array(
-                                        "Content-Type"=>'image/jpeg'
+                                        "Content-Type"=>'image/'.$extContentType
                                     )
                                 )
                             );
