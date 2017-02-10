@@ -63,21 +63,22 @@ $app->get(
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = $_SERVER['REMOTE_ADDR'];
         }
         $current_date = new DateTime();
         $current_year = $current_date->format("Y");
 
         $communicability = false;
-
+        $readerFlag = $rcontents['reader'];
         if (isset($rcontents['ead'])) {
             $remoteInfosEad = $rcontents['ead'];
             if ($remoteInfosEad['communicability_general'] == null
                 || (isset($remoteInfosEad['communicability_general'])
                 && $remoteInfosEad['communicability_general'] <= $current_year)
                 || ($ip == $conf->getReadingroom()
+                && $readerFlag == true
                 && isset($remoteInfosEad['communicability_sallelecture'])
                 && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
             ) {
@@ -95,6 +96,7 @@ $app->get(
                     $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
                     if ($communicabilityGeneralMat <= $current_date
                         || ($ip == $conf->getReadingroom()
+                        && $readerFlag == true
                         && $communicabilitySallelectureMat <= $current_date)
                     ) {
                         $communicability = true;
@@ -183,7 +185,6 @@ $app->get(
             $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
         );
 
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -202,6 +203,7 @@ $app->get(
                 || (isset($remoteInfosEad['communicability_general'])
                 && $remoteInfosEad['communicability_general'] <= $current_year)
                 || ($ip == $conf->getReadingroom()
+                && $rcontents['reader'] == true
                 && isset($remoteInfosEad['communicability_sallelecture'])
                 && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
             ) {
@@ -219,6 +221,7 @@ $app->get(
                     $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
                     if ($communicabilityGeneralMat <= $current_date
                         || ($ip == $conf->getReadingroom()
+                        && $rcontents['reader'] == true
                         && $communicabilitySallelectureMat <= $current_date)
                     ) {
                         $args['communicability'] = true;

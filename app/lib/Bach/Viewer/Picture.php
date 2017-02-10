@@ -644,15 +644,16 @@ class Picture
     {
         $uri = null;
 
-        if ( $ruri === null ) {
+        if ($ruri === null) {
             $uri = self::getRemoteInfosURI($rinfos, $path, $img);
         } else {
             $uri = $ruri;
         }
         $rcontents = null;
-        if ( $remoteContents = json_decode(@file_get_contents($uri)) ) {
-            if ( $rinfos['method'] === 'bach' ) {
-                if( isset($remoteContents->mat) ) {
+        if ($remoteContents = json_decode(@file_get_contents($uri))) {
+            $rcontents['cookie'] = $remoteContents->cookie;
+            if ($rinfos['method'] === 'bach') {
+                if (isset($remoteContents->mat)) {
                     $rcontents['mat']['link_mat'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -660,7 +661,7 @@ class Picture
                     );
                     $rcontents['mat']['record'] = $remoteContents->mat->record;
                 }
-                if ( isset($remoteContents->ead) ) {
+                if (isset($remoteContents->ead)) {
                     $rcontents['ead']['link'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -676,9 +677,9 @@ class Picture
                     $rcontents['ead']['communicability_general'] = $remoteContents->ead->communicability_general;
                     $rcontents['ead']['communicability_sallelecture'] = $remoteContents->ead->communicability_sallelecture;
                 }
-            } else if ( $rinfos['method'] === 'pleade' ) {
+            } else if ($rinfos['method'] === 'pleade') {
                 $rxml = @simplexml_load_string($remoteContents->link);
-                if ( $rxml->a ) {
+                if ($rxml->a) {
                     unset($rxml->a['onclick']);
                     unset($rxml->a['id']);
                     unset($rxml->a['attr']);
@@ -689,7 +690,12 @@ class Picture
                     $rcontents = null;
                 }
             }
-
+        }
+        $rcontents['reader'] = false;
+        if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
+            $rcontents['reader'] = json_decode(
+                $_COOKIE[$rcontents['cookie'].'_reader']
+            )->reader;
         }
         return $rcontents;
     }
