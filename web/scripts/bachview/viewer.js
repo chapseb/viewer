@@ -1020,7 +1020,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
         if (typeof image_database_name !== 'undefined') {
             _url = app_url + '/ajax/image/infos' + image_database_name;
-        alert(_url);
         }
         $.get(
             _url,

@@ -303,6 +303,11 @@ $app->post(
         // get image need to be prepared
         $jsonPost = $app->request()->getBody();
         $datas = json_decode($jsonPost, true);
+        $authorizedExtensions = array(
+            'png', 'jpg', 'jpeg', 'tiff',
+            'PNG', 'JPG', 'JPEG', 'TIFF'
+        );
+
         foreach ($datas as $data) {
             $imagesToTreat = stripslashes($data['href']);
             $imageEnd = stripslashes($data['end_dao']);
@@ -334,7 +339,13 @@ $app->post(
                         && strcmp($object['Key'], $root.$imageEnd) <= 0)
                     ) {
                         if (strcmp($object['Key'], $lastFile) >= 0) {
-                            array_push($results, $object['Key']);
+                            $testExtension = substr(
+                                $object['Key'],
+                                strrpos($object['Key'], '.') + 1
+                            );
+                            if (in_array($testExtension, $authorizedExtensions)) {
+                                array_push($results, $object['Key']);
+                            }
                         }
                     }
                 }
