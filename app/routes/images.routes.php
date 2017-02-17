@@ -183,6 +183,9 @@ $app->get(
                 }
 
             }
+            if (!isset($results[0])) {
+                $results[0] = 'main.jpg';
+            }
             $args = array(
                 'cloudfront'          => $conf->getCloudfront(),
                 'path'                => $results[0],
