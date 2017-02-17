@@ -308,7 +308,9 @@ $app->post(
             'PNG', 'JPG', 'JPEG', 'TIFF'
         );
 
-        foreach ($datas as $data) {
+        $newData = array();
+        $cpt = 0;
+        foreach ($datas as $keyData => $data) {
             $imagesToTreat = stripslashes($data['href']);
             $imageEnd = stripslashes($data['end_dao']);
             $lastFile = stripslashes($data['last_file']);
@@ -320,7 +322,9 @@ $app->post(
             }
             $results = array();
             $roots = $conf->getRoots();
-            if (strrpos($imagePrefix, '.') == '') {
+            if (strrpos($imagePrefix, '.') == ''
+                && substr($imagePrefix, -1, 1) != '/'
+            ) {
                 $imagePrefix .= '/';
             }
 
@@ -334,6 +338,7 @@ $app->post(
                     )
                 );
                 foreach ($objects as $object) {
+
                     if (empty($imageEnd)
                         || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
                         && strcmp($object['Key'], $root.$imageEnd) <= 0)
@@ -353,7 +358,6 @@ $app->post(
 
             // generate prepared images
             $fmts = $conf->getFormats();
-            $cpt = 0;
             foreach ($results as $result) {
                 $previousKey = '';
                 foreach ($fmts as $key => $fmt) {
@@ -363,6 +367,7 @@ $app->post(
                     $w = $fmt['width'];
                     $time_start = microtime(true);
 
+                    $cptBefore = $cpt;
                     if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
                         try {
                             $pathDisk = __DIR__.'/../cache/';
@@ -431,15 +436,21 @@ $app->post(
                     }
                     $previousKey = $key;
                 }
-                if ($cpt > 0) {
+                if ($cpt > $cptBefore) {
                     Analog::log(
                         ('Creation prepared image for '. $result)
                     );
                 }
                 if ($cpt >= ($conf->getNbImagesToPrepare() * 3)) {
-                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?flag=finish&lastfile='.$result;
+                    $data['lastfile'] = $result;
+                    array_push($newData, $data);
+                    for ($i = $keyData+1;$i<sizeOf($datas); $i++) {
+                        array_push($newData, $datas[$i]);
+                    }
+                    $jsonData = json_encode($newData);
+                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?flag=finish';
                     $cmd = "curl -X POST -H 'Content-Type: application/json'";
-                    $cmd.= " -d '" . $jsonPost . "' " . "'" . $url . "'";
+                    $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
                     $out = exec($cmd, $output);
                     Analog::log(
                         ($out)
@@ -447,10 +458,13 @@ $app->post(
                     exit();
                 }
             }
+            $data['action'] = 0;
+            array_push($newData, $data);
         }
+        $jsonData = json_encode($newData);
         $url = $conf->getRemoteInfos()['uri'] . 'deleteImage';
         $cmd = "curl -X POST -H 'Content-Type: application/json'";
-        $cmd.= " -d '" . $jsonPost . "' " . "'" . $url . "'";
+        $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
         $out = exec($cmd, $output);
         Analog::log(
             ($out)
