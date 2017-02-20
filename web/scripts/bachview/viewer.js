@@ -144,6 +144,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             });
 
             $('#progressbar').fadeOut('slow');
+            // add class to take care of negate and brightness
+            $('#viewer img').addClass('colorup');
 
         };
 
@@ -445,8 +447,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $("#zoomout").bind('click touchstart', function(){ me.zoom_by(-1); });
         $("#fitsize").bind('click touchstart', function(){ me.fit(); });
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
-        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
-        $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
+        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); rotateImage -= 90;});
+        $("#rrotate").bind('click touchstart', function(){ me.angle(90); rotateImage += 90;});
         $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow(); });
         $('#hidef').bind('click touchstart', function(){
             var _this = $(this);
@@ -503,9 +505,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me.loadImage(_src);
         }).val('default');
 
-
-
-
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
             if($("#lockparams").hasClass('off')) {
@@ -527,13 +526,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             }
 
-            /*me.display(me._imgNameFromLinkAws($(this)));
-            console.debug(me._imgNameFromLinkAws($(this)));*/
-            console.debug(viewer);
-
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
-
 
             // rebind of toolbarbtn navigation when change image
             $('.toolbarbtn').bind('click touchstart', function() {
@@ -692,10 +686,21 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 me.imageParamsWindow();
             });
 
+            $('#contrast_value').val(0);
+            $('#brightness_value').val(0);
             _win.submit(function(event){
                 event.preventDefault();
+                var $brightness_value = $('#brightness_value').val(),
+                $contrast_value = $('#contrast_value').val(),
+                $brightness_string = "brightness("+$brightness_value+"%)",
+                $contrast_string = "contrast("+$contrast_value+"%)";
+                $negate_string = '';
+                if ($('#negate').is(':checked')) {
+                    $negate_string = "invert(100%)";
+                }
+                $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
 
-                var _v = $('#contrast_value').val();
+                /*var _v = $('#contrast_value').val();
                 if ( _v != 0 ) {
                     me.display_options.transform.contrast = _v;
                 } else {
@@ -716,7 +721,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     me.display_options.transform.negate = false;
                 }
 
-                me.display(me.options.src.replace(/.*\/show\/default\//, ''));
+                me.display(me.options.src.replace(/.*\/show\/default\//, ''));*/
             });
 
             _win.draggable({
@@ -726,12 +731,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             if ( $('#change_contrast') ) {
                 $('#change_contrast').noUiSlider({
-                    start: 0,
+                    start: 100,
                     range: {
-                        'min': -10,
-                        'max': 10
+                        'min': 0,
+                        'max': 200
                     },
-                    step: 1,
+                    step: 10,
                     serialization: {
                         lower: [
                             $.Link ({
@@ -744,12 +749,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
             if ( $('#change_brightness') ) {
                 $('#change_brightness').noUiSlider({
-                    start: 0,
+                    start: 100,
                     range: {
-                        'min': -80,
-                        'max': 80
+                        'min': 0,
+                        'max': 300
                     },
-                    step: 1,
+                    step: 10,
                     serialization: {
                         lower: [
                             $.Link ({
@@ -761,16 +766,33 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
 
             $('#reset_parameters').on('click', function(event) {
-                var _t = me.display_options.transform;
-                _t.negate = false;
+                //var _t = me.display_options.transform;
+                //_t.negate = false;
                 $('#negate').attr('checked', false);
-                _t.contrast = false;
-                $('#change_contrast').val(0);
-                _t.brightness = false;
-                $('#change_brightness').val(0);
-                _t.rotate = 0;
-                me.display_options.format = 'default';
-                $('#formats > select').val('default');
+                //_t.contrast = false;
+                $('#change_contrast').val(100);
+                //_t.brightness = false;
+                $('#change_brightness').val(100);
+                //_t.rotate = 0;
+                //$("#viewer img").css("transform","");
+                //me.display_options.format = 'default';
+                rotateImage = rotateImage % 360;
+                switch(rotateImage) {
+                    case 90:
+                    case -270:
+                        me.angle(-90);
+                        break;
+                    case 180:
+                    case -180:
+                        me.angle(180);
+                        break;
+                    case 270:
+                    case -90:
+                        me.angle(90);
+                        break;
+                }
+                rotateImage = 0;
+                //$('#formats > select').val('default');
             });
         }
     },
