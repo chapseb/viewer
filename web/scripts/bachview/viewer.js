@@ -1336,6 +1336,19 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( _zone.is(':hidden') ) {
             _zone.show();
         }
+
+        // add filter for center image
+        // need to add here cause thumb can be override
+        var $brightness_value = $('#brightness_value').val(),
+        $contrast_value = $('#contrast_value').val(),
+        $brightness_string = "brightness("+$brightness_value+"%)",
+        $contrast_string = "contrast("+$contrast_value+"%)";
+        $negate_string = '';
+        if ($('#negate').is(':checked')) {
+            $negate_string = "invert(100%)";
+        }
+        $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
+
     },
 
     _imgNameFromLink: function(link) {
