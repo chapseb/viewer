@@ -454,18 +454,25 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             var _this = $(this);
             var _state = _this.data('state');
             var _format;
+            alert(_state);
             if ( _state == 'on' ) {
+                _state = 'off';
                 _format = 'default';
                 _this.data('state', 'off');
                 _this.attr('data-state', 'off');
                 _this.attr('title', hidef_off_title);
+                _this.removeClass();
+                _this.attr('class', 'off');
             } else {
+                _state = 'on';
                 _format = 'full';
                 _this.data('state', 'on');
                 _this.attr('data-state', 'on');
                 _this.attr('title', hidef_on_title);
+                _this.removeClass();
+                _this.attr('class', 'on');
             }
-            _this.toggleClass('on');
+            //_this.toggleClass('on');
             if ( $('#formats > select').length > 0 ) {
                 $('#formats > select').val(_format);
             }
@@ -507,25 +514,41 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
         //navbar
         $('#previmg,#nextimg').bind('click touchstart', function(){
-            if($("#lockparams").hasClass('off')) {
-                _this  = $(this);
-                var _t = me.display_options.transform;
-                _t.negate = false;
+            if($('#lockparams').hasClass('off')) {
                 $('#negate').attr('checked', false);
-                _t.contrast = false;
-                $('#change_contrast').val(0);
-                _t.brightness = false;
-                $('#change_brightness').val(0);
-                _t.rotate = 0;
+                //_t.contrast = false;
+                $('#change_contrast').val(100);
+                //_t.brightness = false;
+                $('#change_brightness').val(100);
+                //_t.rotate = 0;
+                //$("#viewer img").css("transform","");
+                //me.display_options.format = 'default';
+                rotateImage = rotateImage % 360;
+
                 me.display_options.format = 'default';
-                $('#formats > select').val('default');
-                _format = 'full';
-                _this.data('state', 'on');
-                _this.attr('data-state', 'on');
-                _this.attr('title', hidef_on_title);
+                $("#hidef").attr('data-state', 'off');
+                alert(me.display_options.format);
+                $("#hidef").attr('title', hidef_off_title);
+                $("#hidef").removeClass();
+                $('#hidef').attr('class', 'off');
+            } else {
+                var _state = $('#hidef').data('state');
+
+                alert(_state);
+                if ( _state == 'on' ) {
+                    _format = 'full';
+                    $("#hidef").data('state', 'on');
+                    $("#hidef").attr('data-state', 'on');
+                    $("#hidef").attr('title', hidef_on_title);
+                    $('#hidef').attr('class', 'on');
+                } else {
+                    _format = 'full';
+                    $("#hidef").data('state', 'on');
+                    $("#hidef").attr('data-state', 'on');
+                    $("#hidef").attr('title', hidef_on_title);
+                }
 
             }
-
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
 
@@ -549,12 +572,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             imageShow = image_position + 1;
             $("#number_image").val(imageShow);
 
-            me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+            if (me.display_options.format == 'full') {
+                alert(pathHD);
+                me.loadImage(pathHD + listImage[image_position]);
+            } else {
+                alert('toto');
+                me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+            }
             thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
 
             current_image = listImage[image_position];
-            $('#hidef').attr('data-state', 'off');
-            $('#hidef').attr('class', 'off');
+            //$('#hidef').attr('data-state', 'off');
+            //$('#hidef').attr('class', 'off');
 
             return false;
         });
@@ -971,45 +1000,42 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             alert('An error occured loading series informations, navigation may fail.');
         });*/
         var _prev = $('#previmg');
-                if (aws_flag != true) {
-                    _prev.attr('href', series_path + '?img=' + data.prev);
-                }
-                var _next = $('#nextimg');
-                if (aws_flag != true) {
-                    _next.attr('href', series_path + '?img=' + data.next);
-                }
-                imageShow = image_position + 1;
-                $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+imageShow+'"/></form>');
-                $("#search_img input").keypress(function(event) {
-                    if (event.which == 13) {
+        if (aws_flag != true) {
+            _prev.attr('href', series_path + '?img=' + data.prev);
+        }
+        var _next = $('#nextimg');
+        if (aws_flag != true) {
+            _next.attr('href', series_path + '?img=' + data.next);
+        }
+        imageShow = image_position + 1;
 
-                        event.preventDefault();
-                        var posnum = $('#number_image').val();
-                        var numtotal = $('#number_total').text();
-                        if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
-                            var app_series_url = app_url + '/series/' + series_path;
-                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                                //window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
-                            } else {
-                                //window.location.href = app_series_url + '?num=' + posnum;
-                            }
-
-                            image_position = parseInt(posnum) - 1;
-
-                            me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
-
-                            console.debug($("#hidef"));
-                            $('#hidef').attr('data-state', 'off');
-                            $('#hidef').attr('class', 'off');
-
-                            thumb_src = cloudfront +'prepared_images/thumb/'+ full_path +listImage[image_position];
-                            current_image = listImage[image_position];
-                        }
-                        else {
-                            alert(alert_bad_value);
-                        }
+        $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+imageShow+'"/></form>');
+        $("#search_img input").keypress(function(event) {
+            if (event.which == 13) {
+                event.preventDefault();
+                var posnum = $('#number_image').val();
+                var numtotal = $('#number_total').text();
+                if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
+                    var app_series_url = app_url + '/series/' + series_path;
+                    if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                        //window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                    } else {
+                        //window.location.href = app_series_url + '?num=' + posnum;
                     }
-                });
+
+                    image_position = parseInt(posnum) - 1;
+                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+
+                    /*$('#hidef').attr('data-state', 'off');
+                    $('#hidef').attr('class', 'off');*/
+
+                    thumb_src = cloudfront +'prepared_images/thumb/'+ full_path +listImage[image_position];
+                    current_image = listImage[image_position];
+                } else {
+                    alert(alert_bad_value);
+                }
+            }
+        });
 
         $('#allComments').empty();
         var _name = this.image_name;
