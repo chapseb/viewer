@@ -452,7 +452,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow(); });
         $('#hidef').bind('click touchstart', function(){
             var _this = $(this);
-            var _state = _this.data('state');
+            var _state = _this.attr('data-state');
             var _format;
             alert(_state);
             if ( _state == 'on' ) {
@@ -536,16 +536,19 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
                 alert(_state);
                 if ( _state == 'on' ) {
-                    _format = 'full';
+                    me.display_options.format = 'full';
                     $("#hidef").data('state', 'on');
                     $("#hidef").attr('data-state', 'on');
                     $("#hidef").attr('title', hidef_on_title);
+                    $("#hidef").removeClass();
                     $('#hidef').attr('class', 'on');
                 } else {
-                    _format = 'full';
-                    $("#hidef").data('state', 'on');
-                    $("#hidef").attr('data-state', 'on');
-                    $("#hidef").attr('title', hidef_on_title);
+                    me.display_options.format = 'default';
+                    $("#hidef").data('state', 'off');
+                    $("#hidef").attr('data-state', 'off');
+                    $("#hidef").attr('title', hidef_off_title);
+                    $("#hidef").removeClass();
+                    $('#hidef').attr('class', 'off');
                 }
 
             }
@@ -727,6 +730,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 if ($('#negate').is(':checked')) {
                     $negate_string = "invert(100%)";
                 }
+
                 $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
 
                 /*var _v = $('#contrast_value').val();
@@ -1024,7 +1028,50 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     }
 
                     image_position = parseInt(posnum) - 1;
-                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+
+                    if($('#lockparams').hasClass('off')) {
+                        $('#negate').attr('checked', false);
+                        //_t.contrast = false;
+                        $('#change_contrast').val(100);
+                        //_t.brightness = false;
+                        $('#change_brightness').val(100);
+                        //_t.rotate = 0;
+                        //$("#viewer img").css("transform","");
+                        //me.display_options.format = 'default';
+                        rotateImage = rotateImage % 360;
+
+                        me.display_options.format = 'default';
+                        $("#hidef").attr('data-state', 'off');
+                        $("#hidef").attr('title', hidef_off_title);
+                        $("#hidef").removeClass();
+                        $('#hidef').attr('class', 'off');
+                    } else {
+                        var _state = $('#hidef').data('state');
+
+                        if ( _state == 'on' ) {
+                            me.display_options.format = 'full';
+                            $("#hidef").data('state', 'on');
+                            $("#hidef").attr('data-state', 'on');
+                            $("#hidef").attr('title', hidef_on_title);
+                            $("#hidef").removeClass();
+                            $('#hidef').attr('class', 'on');
+                        } else {
+                            me.display_options.format = 'default';
+                            $("#hidef").data('state', 'off');
+                            $("#hidef").attr('data-state', 'off');
+                            $("#hidef").attr('title', hidef_off_title);
+                            $("#hidef").removeClass();
+                            $('#hidef').attr('class', 'off');
+                        }
+
+                    }
+                    if (me.display_options.format == 'full') {
+                        me.loadImage(pathHD + listImage[image_position]);
+                    } else {
+                        me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                    }
+
+                    //me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
 
                     /*$('#hidef').attr('data-state', 'off');
                     $('#hidef').attr('class', 'off');*/
@@ -1034,6 +1081,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 } else {
                     alert(alert_bad_value);
                 }
+
             }
         });
 

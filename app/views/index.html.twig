@@ -119,7 +119,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
-                        <li id="moreparams" title="{% trans "Adjust image parameters" %}">
+                        <!--[if !IE]>--><li id="moreparams" title="{% trans "Adjust image parameters" %}"><!--<![endif]-->
                             {% if series %}
                         <li id="lockparams" class="off" title="{% trans "Lock image parameters" %}">
                             {% endif %}
