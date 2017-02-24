@@ -454,7 +454,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             var _this = $(this);
             var _state = _this.attr('data-state');
             var _format;
-            alert(_state);
             if ( _state == 'on' ) {
                 _state = 'off';
                 _format = 'default';
@@ -527,14 +526,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
                 me.display_options.format = 'default';
                 $("#hidef").attr('data-state', 'off');
-                alert(me.display_options.format);
                 $("#hidef").attr('title', hidef_off_title);
                 $("#hidef").removeClass();
                 $('#hidef').attr('class', 'off');
             } else {
                 var _state = $('#hidef').data('state');
 
-                alert(_state);
                 if ( _state == 'on' ) {
                     me.display_options.format = 'full';
                     $("#hidef").data('state', 'on');
@@ -576,7 +573,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             $("#number_image").val(imageShow);
 
             if (me.display_options.format == 'full') {
-                alert(pathHD);
                 me.loadImage(pathHD + listImage[image_position]);
             } else {
                 me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
