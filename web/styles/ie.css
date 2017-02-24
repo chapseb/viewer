@@ -61,3 +61,7 @@ aside#progressbar > div {
 #hidef.on {
     background-position: 50% 7px!important;
 }
+
+#moreparams {
+    display: none;
+}

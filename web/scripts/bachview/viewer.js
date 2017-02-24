@@ -579,7 +579,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 alert(pathHD);
                 me.loadImage(pathHD + listImage[image_position]);
             } else {
-                alert('toto');
                 me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
             }
             thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
