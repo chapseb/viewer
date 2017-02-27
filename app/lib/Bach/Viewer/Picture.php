@@ -690,12 +690,12 @@ class Picture
                     $rcontents = null;
                 }
             }
-        }
-        $rcontents['reader'] = false;
-        if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
-            $rcontents['reader'] = json_decode(
-                $_COOKIE[$rcontents['cookie'].'_reader']
-            )->reader;
+            $rcontents['reader'] = false;
+            if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
+                $rcontents['reader'] = json_decode(
+                    $_COOKIE[$rcontents['cookie'].'_reader']
+                )->reader;
+            }
         }
         return $rcontents;
     }
