@@ -146,9 +146,6 @@ $app->get(
         $args['communicability'] = false;
         $current_date = new DateTime();
         $current_year = $current_date->format("Y");
-        if (!isset($rcontents)) {
-            $args['communicability'] = true;
-        }
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -170,7 +167,7 @@ $app->get(
             }
         }
 
-        if (!isset($rcontents)) {
+        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
             $args['communicability'] = true;
         } else {
             if (isset($rcontents['mat']['record'])) {

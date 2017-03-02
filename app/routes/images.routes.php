@@ -86,7 +86,7 @@ $app->get(
             }
         }
 
-        if (!isset($rcontents)) {
+        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
             $communicability = true;
         } else {
             if (isset($rcontents['mat']['record'])) {
@@ -211,7 +211,7 @@ $app->get(
             }
         }
 
-        if (!isset($rcontents)) {
+        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
             $args['communicability'] = true;
         } else {
             if (isset($rcontents['mat']['record'])) {

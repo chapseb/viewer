@@ -388,9 +388,6 @@ class Series
             $communicability = false;
             $current_date = new \DateTime();
             $current_year = $current_date->format("Y");
-            if (!isset($rcontents)) {
-                $communicability = true;
-            }
 
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -411,7 +408,7 @@ class Series
                 }
             }
 
-            if (!isset($rcontents)) {
+            if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
                 $communicability = true;
             } else {
                 if (isset($rcontents['mat']['record'])) {
