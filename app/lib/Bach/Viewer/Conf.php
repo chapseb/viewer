@@ -81,6 +81,10 @@ class Conf
     private $_cloudfront;
     private $_aws_bucket;
     private $_nb_images_to_prepare;
+    private $_redis_addr;
+    private $_redis_port;
+    private $_redis_session;
+    private $_debug_mode;
 
     private $_known_remote_methods = array(
         'bach',
@@ -191,6 +195,10 @@ class Conf
         $this->_cloudfront  = $this->_conf['cloudfront'];
         $this->_aws_bucket  = $this->_conf['aws_bucket'];
         $this->_nb_images_to_prepare  = $this->_conf['nb_images_to_prepare'];
+        $this->_redis_addr            = $this->_conf['redis_addr'];
+        $this->_redis_port            = $this->_conf['redis_port'];
+        $this->_redis_session         = $this->_conf['redis_session'];
+        $this->_debug_mode            = $this->_conf['debug_mode'];
     }
 
     /**
@@ -456,6 +464,46 @@ class Conf
     public function getNbImagesToPrepare()
     {
         return $this->_nb_images_to_prepare;
+    }
+
+    /**
+     * Retrieve redis address in config
+     *
+     * @return string
+     */
+    public function getRedisAddr()
+    {
+        return $this->_redis_addr;
+    }
+
+    /**
+     * Retrieve redis port in config
+     *
+     * @return string
+     */
+    public function getRedisPort()
+    {
+        return $this->_redis_port;
+    }
+
+    /**
+     * Retrieve redis session name in config
+     *
+     * @return string
+     */
+    public function getRedisSession()
+    {
+        return $this->_redis_session;
+    }
+
+    /**
+     * Retrieve debug mode in config
+     *
+     * @return boolean
+     */
+    public function getDebugMode()
+    {
+        return $this->_debug_mode;
     }
 
 

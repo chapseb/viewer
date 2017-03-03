@@ -4,9 +4,59 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3afc60cf3b6670156a8fca25b519c2fd",
-    "content-hash": "51de60f6cf957ed3a81bf3186a50f2a1",
+    "hash": "37d6709ea08e98df4b179f2fb67e9be0",
+    "content-hash": "6199e5683275550ab308924cd64f7789",
     "packages": [
+        {
+            "name": "abouvier/slim-redis-cache",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abouvier/slim-redis-cache.git",
+                "reference": "01fa762ed75c6d121c3f94a3642e0202eeba13b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abouvier/slim-redis-cache/zipball/01fa762ed75c6d121c3f94a3642e0202eeba13b5",
+                "reference": "01fa762ed75c6d121c3f94a3642e0202eeba13b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "predis/predis": "~1.0",
+                "slim/slim": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Slim\\Middleware\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "abouvier",
+                    "email": "abouvier@student.42.fr"
+                }
+            ],
+            "description": "Redis cache middleware for Slim framework",
+            "homepage": "https://github.com/abouvier/slim-redis-cache",
+            "keywords": [
+                "cache",
+                "middleware",
+                "redis",
+                "slim"
+            ],
+            "time": "2015-09-06 01:37:25"
+        },
         {
             "name": "analog/analog",
             "version": "1.0.6-stable",
@@ -440,6 +490,56 @@
                 "jsonpath"
             ],
             "time": "2016-01-05 18:25:05"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nrk/predis.git",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "ext-curl": "Allows access to Webdis when paired with phpiredis",
+                "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniele Alessandri",
+                    "email": "suppakilla@gmail.com",
+                    "homepage": "http://clorophilla.net"
+                }
+            ],
+            "description": "Flexible and feature-complete Redis client for PHP and HHVM",
+            "homepage": "http://github.com/nrk/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "time": "2016-06-16 16:22:20"
         },
         {
             "name": "psr/http-message",
