@@ -319,7 +319,7 @@ try {
         new \Slim\Middleware\RedisCache(
             $client,
             [
-                'timeout' => 28800
+                'timeout' => 60
             ]
         )
     );
