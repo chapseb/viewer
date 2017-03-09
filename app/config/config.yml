@@ -30,6 +30,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 comment: true
 readingroom: null
+redis_addr: null
+redis_port: null
+redis_session: null
+debug_mode: false
 
 formats:
     #default format *MUST* be present

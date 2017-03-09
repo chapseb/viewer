@@ -73,6 +73,10 @@ class Conf
     private $_prepared_path;
     private $_prepare_method;
     private $_known_methods;
+    private $_redis_addr;
+    private $_redis_port;
+    private $_redis_session;
+    private $_debug_mode;
 
     private $_known_remote_methods = array(
         'bach',
@@ -175,6 +179,10 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
+        $this->_redis_addr            = $this->_conf['redis_addr'];
+        $this->_redis_port            = $this->_conf['redis_port'];
+        $this->_redis_session         = $this->_conf['redis_session'];
+        $this->_debug_mode            = $this->_conf['debug_mode'];
     }
 
     /**
@@ -384,5 +392,45 @@ class Conf
         if ( defined('APP_TESTS') ) {
             $this->_setRoots($roots);
         }
+    }
+
+    /**
+     * Retrieve redis address in config
+     *
+     * @return string
+     */
+    public function getRedisAddr()
+    {
+        return $this->_redis_addr;
+    }
+
+    /**
+     * Retrieve redis port in config
+     *
+     * @return string
+     */
+    public function getRedisPort()
+    {
+        return $this->_redis_port;
+    }
+
+    /**
+     * Retrieve redis session name in config
+     *
+     * @return string
+     */
+    public function getRedisSession()
+    {
+        return $this->_redis_session;
+    }
+
+    /**
+     * Retrieve debug mode in config
+     *
+     * @return boolean
+     */
+    public function getDebugMode()
+    {
+        return $this->_debug_mode;
     }
 }
