@@ -121,13 +121,16 @@ class Picture
                         && is_file($root . $this->_full_path)
                     ) {
                         $this->_full_path = $root . $this->_full_path;
-                        Analog::log(
-                            str_replace(
-                                '%path',
-                                $this->_full_path,
-                                _('Image path set to "%path"')
-                            )
-                        );
+
+                        if ($this->_conf->getDebugMode()) {
+                            Analog::log(
+                                str_replace(
+                                    '%path',
+                                    $this->_full_path,
+                                    _('Image path set to "%path"')
+                                )
+                            );
+                        }
                         break;
                     }
                 }
@@ -252,10 +255,12 @@ class Picture
     public function getDisplay($format = 'full', $transform_params = null,
         $store = null
     ) {
-        Analog::log(
-            'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
-            Analog::DEBUG
-        );
+        if ($this->_conf->getDebugMode()) {
+            Analog::log(
+                'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
+                Analog::DEBUG
+            );
+        }
 
         $length = null;
         $file_path = null;
@@ -623,9 +628,12 @@ class Picture
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
         }
-        Analog::debug(
-            'Loading remote infos from ' . $uri
-        );
+
+        if ($this->_conf->getDebugMode()) {
+            Analog::debug(
+                'Loading remote infos from ' . $uri
+            );
+        }
         return $uri;
     }
 

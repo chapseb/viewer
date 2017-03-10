@@ -226,13 +226,15 @@ class Series
             $this->_current = $img;
             return true;
         } else {
-            Analog::log(
-                str_replace(
-                    '%image',
-                    $img,
-                    _('Image %image is not part of current series!')
-                )
-            );
+            if ($this->_conf->getDebugMode()) {
+                Analog::log(
+                    str_replace(
+                        '%image',
+                        $img,
+                        _('Image %image is not part of current series!')
+                    )
+                );
+            }
             return false;
         }
     }
