@@ -105,7 +105,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         {% endif %}
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
-                        {% if picture.hasFormat('full') and picture.hasFormat('default') %}
+                        {% if (picture.hasFormat('full') and picture.hasFormat('default')) or series%}
                         <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
                             <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
                         </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
