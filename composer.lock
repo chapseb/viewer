@@ -186,8 +186,6 @@
             "time": "2015-02-27 13:00:25"
         },
         {
-        },
-        {
             "name": "predis/predis",
             "version": "v1.1.1",
             "source": {
@@ -236,6 +234,8 @@
                 "redis"
             ],
             "time": "2016-06-16 16:22:20"
+        },
+        {
             "name": "psr/log",
             "version": "1.0.0",
             "source": {
