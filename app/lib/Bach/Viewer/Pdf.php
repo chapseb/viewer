@@ -165,8 +165,7 @@ class Pdf extends \TCPDF
         /** FIXME: parametize? */
         $tmp_name = '/tmp/';
         $tmp_name .= uniqid(
-            base64_encode($this->_picture->getFullPath()) .
-            '_' . $this->_image_format,
+            base64_encode($this->_picture->getName()),
             true
         );
 
@@ -183,7 +182,6 @@ class Pdf extends \TCPDF
 
         $html = '<img src="' .  $tmp_name . '"/>';
         $this->writeHTML($html, true, false, true, false, '');
-
         unlink($tmp_name);
     }
 

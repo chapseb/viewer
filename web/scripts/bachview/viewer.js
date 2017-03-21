@@ -314,7 +314,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _leftPosHD = Math.round(scale_width * _leftPos /_width);
 
         var _src = this.options.src.replace(/.*\/show\/default/, this.display_options.format);
-        var res = app_url.replace(/^\//, '') + '/print/'  +  _src ;
+        var res = app_url.replace(/^\//, '') + '/print/'+ this.display_options.format +  image_database_name ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
         if ( this.hasTransformations() ) {
@@ -338,8 +338,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         var _path_info = window.location.href.split('/');
-        res = _path_info[0] + '//' + _path_info[2] + '/' + res;
-
+        res = _path_info[0] + '//' + _path_info[2] + res;
         window.location.href = res;
     },
 
@@ -404,7 +403,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _thumbview.prependTo('body');
                 var posnum = $('#number_image').val();
                 location.hash = '#' + 'image' + posnum;
-
 
                 /*$.get(
                     _url,
@@ -571,7 +569,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             imageShow = image_position + 1;
             $("#number_image").val(imageShow);
-
+            image_database_name = '/' + series_path + listImage[image_position];
             if (me.display_options.format == 'full') {
                 me.loadImage(pathHD + listImage[image_position]);
             } else {

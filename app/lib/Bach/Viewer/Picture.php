@@ -266,12 +266,12 @@ class Picture
 
         $length = null;
         $file_path = null;
-        if ( $format == 'full' ) {
+        //if ( $format == 'full' ) {
             $file_path = $this->_full_path;
             $length = filesize($this->_full_path);
-        } else {
+        /*} else {
             list($file_path, $length) = $this->_checkImageFormat($format);
-        }
+            }*/
 
         $content = null;
         if ( $transform_params === null ) {

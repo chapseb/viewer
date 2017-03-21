@@ -119,10 +119,11 @@ $app->get(
         );*/
         $args = array(
             'cloudfront'          => $conf->getCloudfront(),
-            'pathHD'                 => $conf->getCloudfront().$series->getFullPath(),
-            'series'    => $series,
-            'default_src' => $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
-            'imageStrictName' => substr($series->getRepresentative(), strrpos($series->getRepresentative(), '/'))
+            'pathHD'              => $conf->getCloudfront().$series->getFullPath(),
+            'series'              => $series,
+            'default_src'         => $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+            'imageStrictName'     => substr($series->getRepresentative(), strrpos($series->getRepresentative(), '/')),
+            'image_database_name' => '/'.$series->getPath() . $img
         );
         /*if ( $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
