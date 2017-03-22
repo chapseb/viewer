@@ -570,6 +570,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             imageShow = image_position + 1;
             $("#number_image").val(imageShow);
             image_database_name = '/' + series_path + listImage[image_position];
+            image_strictname = listImage[image_position];
+            $("#titleImage").empty().append(image_strictname);;
             if (me.display_options.format == 'full') {
                 me.loadImage(pathHD + listImage[image_position]);
             } else {
@@ -1064,6 +1066,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
                     }
 
+                    image_strictname = listImage[image_position];
+                    $("#titleImage").empty().append(image_strictname);;
                     //me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
 
                     /*$('#hidef').attr('data-state', 'off');

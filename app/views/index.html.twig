@@ -51,9 +51,9 @@ POSSIBILITY OF SUCH DAMAGE.
             <header>
                 <h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined %}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
                 {% if imageStrictName is defined %}
-                <h2>{{ imageStrictName }}</h2>
+                <h2 id="titleImage">{{ imageStrictName }}</h2>
                 {% else %}
-                <h2>{{ img }}</h2>
+                <h2 id="titleImage">{{ img }}</h2>
                 {% endif %}
                 {% if series %}
                     {% set series_name = series.getPath() %}
