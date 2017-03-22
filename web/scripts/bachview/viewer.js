@@ -1066,6 +1066,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
                     }
 
+                    image_database_name = '/' + series_path + listImage[image_position];
                     image_strictname = listImage[image_position];
                     $("#titleImage").empty().append(image_strictname);;
                     //me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
