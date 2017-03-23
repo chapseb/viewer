@@ -183,18 +183,11 @@ $app->get(
                 }
 
             }
-            if (!isset($results[0])) {
-                $results[0] = 'main.jpg';
-            }
-            $args = array(
-                'cloudfront'          => $conf->getCloudfront(),
-                'path'                => $results[0],
-                'img'                 => $conf->getCloudfront().$results[0],
-                'default_src'         => $conf->getCloudfront()
-                                            .'prepared_images/default/'.$results[0],
-                'thumb_src'           => $conf->getCloudfront()
-                                            .'prepared_images/thumb/'.$results[0],
-                'image_database_name' => $path .'/'. $img
+            $rcontents = Picture::getRemoteInfos(
+                $conf->getRemoteInfos(),
+                $path,
+                $img,
+                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
             );
         } else {
             $picture = null;
@@ -283,13 +276,31 @@ $app->get(
                 }
             }
         }
+
         if ($args['communicability'] == false) {
-            $args['remote_infos_url'] = $picture->getPath()
-                . '/' . $picture->getName();
-            $args['picture'] = new Picture(
-                $conf,
-                DEFAULT_PICTURE,
-                $app_base_url
+            if ($conf->getAWSFlag()) {
+                $results[0] = 'main.jpg';
+            } else if ($conf->getAWSFlag() == false) {
+                $args['remote_infos_url'] = $picture->getPath()
+                    . '/' . $picture->getName();
+                $args['picture'] = new Picture(
+                    $conf,
+                    DEFAULT_PICTURE,
+                    $app_base_url
+                );
+            }
+        }
+
+        if ($conf->getAWSFlag()) {
+            $args = array(
+                'cloudfront'          => $conf->getCloudfront(),
+                'path'                => $results[0],
+                'img'                 => $conf->getCloudfront().$results[0],
+                'default_src'         => $conf->getCloudfront()
+                                         .'prepared_images/default/'.$results[0],
+                'thumb_src'           => $conf->getCloudfront()
+                                         .'prepared_images/thumb/'.$results[0],
+                'image_database_name' => $path .'/'. $img
             );
         }
 
