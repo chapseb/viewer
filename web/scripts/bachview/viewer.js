@@ -338,7 +338,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         var _path_info = window.location.href.split('/');
-        res = _path_info[0] + '//' + _path_info[2] + res;
+        res = _path_info[0] + '//' + _path_info[2] + res + "&"+new Date();
         window.location.href = res;
     },
 
