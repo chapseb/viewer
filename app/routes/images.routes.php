@@ -61,7 +61,7 @@ $app->get(
         );
 
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
         } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } else {
@@ -227,7 +227,7 @@ $app->get(
         }
 
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
         } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
         } else {
