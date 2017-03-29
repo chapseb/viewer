@@ -629,11 +629,9 @@ class Picture
                 $path  . '&name=' . $img;
         }
 
-        if ($this->_conf->getDebugMode()) {
-            Analog::debug(
-                'Loading remote infos from ' . $uri
-            );
-        }
+        Analog::debug(
+            'Loading remote infos from ' . $uri
+        );
         return $uri;
     }
 
