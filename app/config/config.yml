@@ -30,13 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 comment: true
 readingroom: null
-redis_addr: null
-redis_port: null
-redis_session: null
 debug_mode: false
-redis_addr: 'localhost'
-redis_port: '6379'
-redis_session: 'bach_session_'
 
 formats:
     #default format *MUST* be present

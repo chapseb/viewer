@@ -21,7 +21,6 @@
         "twig/extensions": "1.*",
         "symfony/yaml": "2.3.*",
         "tecnick.com/tcpdf": "6.0.*",
-        "atoum/atoum": "dev-master",
-        "abouvier/slim-redis-cache": "^0.1.0"
+        "atoum/atoum": "dev-master"
     }
 }
