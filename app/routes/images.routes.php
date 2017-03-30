@@ -77,7 +77,7 @@ $app->get(
             if ($remoteInfosEad['communicability_general'] == null
                 || (isset($remoteInfosEad['communicability_general'])
                 && $remoteInfosEad['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
+                || (strpos($conf->getReadingroom(), $ip) !== false
                 && $readerFlag == true
                 && isset($remoteInfosEad['communicability_sallelecture'])
                 && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
@@ -95,7 +95,7 @@ $app->get(
                     $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
                     $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
                     if ($communicabilityGeneralMat <= $current_date
-                        || ($ip == $conf->getReadingroom()
+                        || (strpos($conf->getReadingroom(), $ip) !== false
                         && $readerFlag == true
                         && $communicabilitySallelectureMat <= $current_date)
                     ) {
@@ -220,7 +220,7 @@ $app->get(
                     $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
                     $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
                     if ($communicabilityGeneralMat <= $current_date
-                        || ($ip == $conf->getReadingroom()
+                        || (strpos($conf->getReadingroom(), $ip) !== false
                         && $rcontents['reader'] == true
                         && $communicabilitySallelectureMat <= $current_date)
                     ) {
