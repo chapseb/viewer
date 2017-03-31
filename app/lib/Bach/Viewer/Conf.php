@@ -66,6 +66,7 @@ class Conf
     private $_print;
     private $_comment;
     private $_readingroom;
+    private $_ip_internal;
     private $_remote_infos;
 
     private $_path;
@@ -141,6 +142,7 @@ class Conf
 
         $this->_comment = $this->_conf['comment'];
         $this->_readingroom = $this->_conf['readingroom'];
+        $this->_ip_internal = $this->_conf['ip_internal'];
 
         $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
@@ -255,6 +257,16 @@ class Conf
     public function getReadingroom()
     {
         return $this->_readingroom;
+    }
+
+    /**
+     * Retrieve if internal ip for communicability
+     *
+     * @return string
+     */
+    public function getIpinternal()
+    {
+        return $this->_ip_internal;
     }
 
     /**
