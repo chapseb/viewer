@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 comment: true
 readingroom: null
+ip_internal: false
 debug_mode: false
 
 formats:

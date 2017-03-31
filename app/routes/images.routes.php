@@ -72,6 +72,9 @@ $app->get(
 
         $communicability = false;
         $readerFlag = $rcontents['reader'];
+        if ($conf->getIpInternal()) {
+            $readerFlag = true;
+        }
         if (isset($rcontents['ead'])) {
             $remoteInfosEad = $rcontents['ead'];
             if ($remoteInfosEad['communicability_general'] == null
@@ -196,6 +199,9 @@ $app->get(
         $args['communicability'] = false;
         $current_date = new DateTime();
         $current_year = $current_date->format("Y");
+        if ($conf->getIpInternal()) {
+            $rcontents['reader'] = true;
+        }
 
         if (isset($rcontents['ead'])) {
             $remoteInfosEad = $rcontents['ead'];
