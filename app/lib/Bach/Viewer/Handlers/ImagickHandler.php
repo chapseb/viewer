@@ -134,6 +134,14 @@ class ImagickHandler extends AbstractHandler
         try {
             $image->thumbnailImage($w, $h, true);
             $image->writeImage($dest);
+            $infos = pathinfo($dest);
+            if ($infos['extension'] == 'tif'
+                || $infos['extension'] == 'tiff'
+            ) {
+                $exec = "convert ".$dest . " " . $infos['dirname']."/". $infos['filename'].".jpg";
+                exec($exec, $outpout);
+                unlink($dest);
+            }
         } catch ( \ImagickException $e ) {
             $image->destroy();
             throw new \RuntimeException($e->getMessage());

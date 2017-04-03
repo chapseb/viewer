@@ -297,7 +297,6 @@ class Picture
 
             $content = $this->_handler->transform($file_path, $params, $store);
         }
-
         $headers = array();
 
         if ( $length !== null ) {
@@ -308,11 +307,19 @@ class Picture
             $headers['Content-Type'] = $this->_mime;
         }
 
+        $infos = pathinfo($this->_full_path);
+        if ($format == 'thumb'
+            && ($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff')
+        ) {
+            $headers['Content-Type'] = 'image/jpeg';
+        }
 
         $ret = array(
             'headers'   => $headers,
             'content'   => $content
         );
+
         return $ret;
     }
 
@@ -364,7 +371,7 @@ class Picture
 
         $image_path = $prepared_path . $image_name;
         $flagChangeImage = false;
-        if (file_exists($image_path) ) {
+        if (file_exists($image_path)) {
             $dateImage = new \DateTime();
             $datePreparedImage = new \DateTime();
             $dateImage->setTimestamp(filectime($this->_full_path));
@@ -374,7 +381,12 @@ class Picture
             }
         }
 
-        if (!file_exists($image_path)
+        $infos = pathinfo($image_path);
+        if (($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff')
+            && file_exists($infos['dirname']."/". $infos['filename'].".jpg")
+        ) {
+        } else if (!file_exists($image_path)
             || $flagChangeImage
         ) {
             //prepared image does not exists yet
@@ -400,6 +412,11 @@ class Picture
                     filesize($this->_full_path)
                 );
             }
+        }
+        if ($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff'
+        ) {
+            $image_path = $infos['dirname']."/". $infos['filename'].".jpg";
         }
         return array(
             $image_path,
