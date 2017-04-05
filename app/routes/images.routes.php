@@ -297,6 +297,12 @@ $app->get(
             }
         }
 
+        $flagResult = false;
+        if (!isset($results[0])) {
+            $results[0] = 'main.jpg';
+            $flagResult = true;
+        }
+
         if ($conf->getAWSFlag()) {
             $args = array(
                 'cloudfront'          => $conf->getCloudfront(),
@@ -310,6 +316,27 @@ $app->get(
             );
         }
 
+        $resultsSD = array();
+        $objects = $s3->getIterator(
+            'ListObjects',
+            array(
+                "Bucket" => $conf->getAWSBucket(),
+                "Prefix" => 'prepared_images/default/'.$results[0],
+                "Delimiter" => "/",
+            )
+        );
+        foreach ($objects as $object) {
+            array_push($resultsSD, $object['Key']);
+        }
+
+        if (!isset($resultsSD[0])) {
+            $results[0] = 'main.jpg';
+            $args['default_src'] = $conf->getCloudfront()
+                .'prepared_images/default/'.$results[0];
+            $flagResult = true;
+        }
+
+        $args['notGenerateImage'] = $flagResult;
         $args['awsFlag'] = $conf->getAWSFlag();
         $app->render(
             'index.html.twig',

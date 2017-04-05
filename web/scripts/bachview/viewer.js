@@ -140,13 +140,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     .width(me.nav_img_object.display_width());
                 me._setOverviewMaskSize();
             }, function() {
-                me._trigger("onErrorLoad", 0, src);
+                me._trigger("onErrorLoad", 0);
             });
 
             $('#progressbar').fadeOut('slow');
             // add class to take care of negate and brightness
             $('#viewer img').addClass('colorup');
-
+            if (notGenerateImage && me.display_options.format !== 'full' ) {
+                alert(alertNotGenerateImage);
+            }
         };
 
         this.options.onAfterZoom = function(ev, new_zoom) {
@@ -575,9 +577,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if (me.display_options.format == 'full') {
                 me.loadImage(pathHD + listImage[image_position]);
             } else {
-                me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                if (notGenerateImage == false) {
+                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                }
             }
-            thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
+
+            if (notGenerateImage == false) {
+                thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
+            }
 
             current_image = listImage[image_position];
             //$('#hidef').attr('data-state', 'off');

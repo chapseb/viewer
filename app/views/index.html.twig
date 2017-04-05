@@ -257,6 +257,8 @@ POSSIBILITY OF SUCH DAMAGE.
             {% if image_database_name is defined %}
             var image_database_name = '{{ image_database_name}}';
             {% endif %}
+            var notGenerateImage = '{{ notGenerateImage }}';
+            var alertNotGenerateImage = '{{ "The image has not SD version, click HD button to have the image"|trans|escape('js')}}';
             var image_strictname = '{{ imageStrictName}}';
             var cloudfront = '{{ cloudfront}}';
             var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
