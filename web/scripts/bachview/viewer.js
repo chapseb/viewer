@@ -1140,7 +1140,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             else{
                                 label = key;
                             }
-                            if (key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement') {
+                            if (key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement'
+                               || key == 'communicability_general' || key == 'communicability_sallelecture') {
                                 var date = new Date(value);
                                 $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">'+ label + "</span> : " + date.getFullYear() + "</li>");
                             } else {
