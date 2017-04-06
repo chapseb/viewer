@@ -117,11 +117,42 @@ $app->get(
             $app_base_url,
             $series->getFullPath()
         );*/
+
+        $s3 = new \Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+
+        $results = array();
+        $objects = $s3->getIterator(
+            'ListObjects',
+            array(
+                "Bucket" => $conf->getAWSBucket(),
+                "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                "Delimiter" => "/",
+            )
+        );
+        foreach ($objects as $object) {
+            array_push($results, $object['Key']);
+        }
+
+        if (!empty($results)) {
+            $default_src = $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative();
+        } else {
+            $default_src = $conf->getCloudfront().'prepared_images/default/main.jpg';
+        }
+
         $args = array(
             'cloudfront'          => $conf->getCloudfront(),
             'pathHD'              => $conf->getCloudfront().$series->getFullPath(),
             'series'              => $series,
-            'default_src'         => $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+            'default_src'         => $default_src,
             'imageStrictName'     => substr($series->getRepresentative(), strrpos($series->getRepresentative(), '/')),
             'image_database_name' => '/'.$series->getPath() . $img
         );
@@ -191,6 +222,28 @@ $app->get(
             }
         }
 
+        $resultsSD = array();
+        $objects = $s3->getIterator(
+            'ListObjects',
+            array(
+                "Bucket" => $conf->getAWSBucket(),
+                "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                "Delimiter" => "/",
+            )
+        );
+        foreach ($objects as $object) {
+            array_push($resultsSD, $object['Key']);
+        }
+
+        $flagResult = false;
+        if (!isset($resultsSD[0])) {
+            $results[0] = 'main.jpg';
+            $args['default_src'] = $conf->getCloudfront()
+                .'prepared_images/default/'.$results[0];
+            $flagResult = true;
+        }
+
+        $args['notGenerateImage'] = $flagResult;
         $args['awsFlag'] = $conf->getAWSFlag();
         $app->render(
             'index.html.twig',

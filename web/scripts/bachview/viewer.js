@@ -579,6 +579,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             } else {
                 if (notGenerateImage == false) {
                     me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                } else {
+                    me.loadImage(cloudfront + 'prepared_images/default/main.jpg');
                 }
             }
 
