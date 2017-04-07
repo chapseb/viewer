@@ -448,7 +448,7 @@ $app->post(
                         array_push($newData, $datas[$i]);
                     }
                     $jsonData = json_encode($newData);
-                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?flag=finish&cachebreak='.uniqid();
+                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?'.uniqid();
                     $cmd = "curl -X POST -H 'Content-Type: application/json'";
                     $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
                     $out = exec($cmd, $output);
