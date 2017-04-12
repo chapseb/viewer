@@ -936,13 +936,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         $('#allInfosRemote').append('<h3 class="header_infos">' + header_ead + '</h3>');
                         $('#allInfosRemote').append('<ul id="ead_list_infos"></ul>');
                         if (data.remote.ead.cUnittitle != null) {
-                            $('#ead_list_infos').append('<li>' + intitule_ead + data.remote.ead.cUnittitle + '</li>');
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + intitule_ead + '</span>' + data.remote.ead.cUnittitle + '</li>');
                         }
                         if (data.remote.ead.unitid != null) {
-                            $('#ead_list_infos').append('<li>' + unitid_ead + data.remote.ead.unitid + '</li>');
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + unitid_ead + '</span>' + data.remote.ead.unitid + '</li>');
                         }
                         if (data.remote.ead.doclink != null) {
-                            $('#ead_list_infos').append('<li>' + link_document + data.remote.ead.doclink + '</li>');
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + link_document + '</span>' + data.remote.ead.doclink + '</li>');
                         }
                     }
                 }
