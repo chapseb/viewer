@@ -935,9 +935,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         $('header > h2').html(data.remote.ead.link);
                         $('#allInfosRemote').append('<h3 class="header_infos">' + header_ead + '</h3>');
                         $('#allInfosRemote').append('<ul id="ead_list_infos"></ul>');
-                        $('#ead_list_infos').append('<li>' + data.remote.ead.cUnittitle + '</li>');
-                        $('#ead_list_infos').append('<li>' + data.remote.ead.unitid + '</li>');
-                        $('#ead_list_infos').append('<li>' + link_ead + data.remote.ead.doclink + '</li>');
+                        if (data.remote.ead.cUnittitle != null) {
+                            $('#ead_list_infos').append('<li>' + intitule_ead + data.remote.ead.cUnittitle + '</li>');
+                        }
+                        if (data.remote.ead.unitid != null) {
+                            $('#ead_list_infos').append('<li>' + unitid_ead + data.remote.ead.unitid + '</li>');
+                        }
+                        if (data.remote.ead.doclink != null) {
+                            $('#ead_list_infos').append('<li>' + link_document + data.remote.ead.doclink + '</li>');
+                        }
                     }
                 }
             },
