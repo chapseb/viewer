@@ -850,7 +850,7 @@ aside#progressbar > div > progress {
    padding: 4px 0;
 }
 
-.mat_record_head {
+.mat_record_head, .ead_description_head {
     font-weight: bold;
     padding: 1px;
 }
