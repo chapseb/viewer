@@ -186,7 +186,7 @@ msgid "Information images"
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:497
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:769
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:781
 msgid "No information for this picture."
 msgstr ""
 
@@ -218,40 +218,52 @@ msgstr ""
 msgid "Link to the record: "
 msgstr ""
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:735
-msgid "record date"
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:734
+msgid "Reach to complete description: "
 msgstr ""
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:739
-msgid "record place"
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:738
+msgid "Title description: "
 msgstr ""
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:743
-msgid "birth year"
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:742
+msgid "Unitid description: "
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:747
-msgid "place of birth"
+msgid "record date"
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:751
-msgid "additional informations"
+msgid "record place"
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:755
-msgid "place of residence"
+msgid "birth year"
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:759
-msgid "general communicability"
+msgid "place of birth"
 msgstr ""
 
 #: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:763
+msgid "additional informations"
+msgstr ""
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:767
+msgid "place of residence"
+msgstr ""
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:771
+msgid "general communicability"
+msgstr ""
+
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:775
 msgid "reading room communicability"
 msgstr ""
 
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:865
-#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:867
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:877
+#: /tmp/viewer_cache_temp/2c/72/62cb9f573dd60177f0566d913817dffce446d35b301e98eb13a9c0a46e3b.php:879
 msgid "Enter/exit fullscreen"
 msgstr ""
 
