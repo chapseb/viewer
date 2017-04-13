@@ -90,7 +90,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 || _io.orig_width() < _io.display_width()
             ) {
                 //set intial zoom to 100% max
-                    me.set_zoom(100);
+                    me.set_zoom(zoomGlobal);
             }
 
             if ( series_path != '' ) {
@@ -465,6 +465,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _this.attr('data-state', 'on');
                 _this.attr('title', hidef_on_title);
 
+            } else {
+                zoomGlobal = me.current_zoom;
             }
 
             me.display(me._imgNameFromLink($(this)));
