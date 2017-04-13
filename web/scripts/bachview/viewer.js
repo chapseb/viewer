@@ -96,6 +96,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
                 me.updateImageInfos();
+                if ( $('#lockparams').hasClass('off') == false && $('#hidef').data('state')=='on' ){
+                    me.set_zoom(zoomGlobal);
+                }
             } else {
                 me.updateImageInfos();
             }
