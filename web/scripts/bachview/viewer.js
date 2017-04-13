@@ -90,12 +90,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 || _io.orig_width() < _io.display_width()
             ) {
                 //set intial zoom to 100% max
-                    me.set_zoom(100);
+                    me.set_zoom(zoomGlobal);
             }
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
                 me.updateImageInfos();
+                if ( $('#lockparams').hasClass('off') == false /*&& $('#hidef').data('state')=='on'*/ ){
+                    me.set_zoom(zoomGlobal);
+                }
             } else {
                 me.updateImageInfos();
             }
@@ -531,7 +534,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 $('#hidef').attr('class', 'off');
             } else {
                 var _state = $('#hidef').data('state');
-
+                zoomGlobal = me.current_zoom;
                 if ( _state == 'on' ) {
                     me.display_options.format = 'full';
                     $("#hidef").data('state', 'on');
@@ -547,7 +550,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     $("#hidef").removeClass();
                     $('#hidef').attr('class', 'off');
                 }
-
             }
             $('#formats > select').val(me.display_options.format);
             me.drawNavigation();
@@ -587,7 +589,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if (notGenerateImage == false) {
                 thumb_src = cloudfront +'prepared_images/thumb/'+full_path+listImage[image_position];
             }
-
+            me.current_zoom = zoomGlobal;
             current_image = listImage[image_position];
             //$('#hidef').attr('data-state', 'off');
             //$('#hidef').attr('class', 'off');

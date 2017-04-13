@@ -234,6 +234,7 @@ POSSIBILITY OF SUCH DAMAGE.
         {% endif %}
         <script>
             //global variables
+            var zoomGlobal = 100;
             var series_path = '{{ series.getPath() }}';
             {% if not series %}
             var image_path = '{{ cloudfront ~ path }}';
