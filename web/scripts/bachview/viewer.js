@@ -485,6 +485,37 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             return false;
         });
 
+        $('#nextdoubleimg').bind('click touchstart', function(event){
+            event.preventDefault();
+            var posnum = $('#number_image').val();
+            var numtotal = $('#number_total').text();
+            var new_pos = (parseInt(posnum) + 10)%parseInt(numtotal);
+            var app_series_url = app_url + '/series/' + series_path;
+            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + new_pos;
+            } else {
+                window.location.href = app_series_url + '?num=' + new_pos;
+            }
+        });
+
+        $('#prevdoubleimg').bind('click touchstart', function(event){
+            event.preventDefault();
+            var posnum = $('#number_image').val();
+            var numtotal = $('#number_total').text();
+            var new_pos;
+            if (posnum - 10 > 0) {
+                new_pos = parseInt(posnum) - 10;
+            } else {
+                new_pos = parseInt(numtotal) + (parseInt(posnum) - 10);
+            }
+            var app_series_url = app_url + '/series/' + series_path;
+            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
+                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + new_pos;
+            } else {
+                window.location.href = app_series_url + '?num=' + new_pos;
+            }
+        });
+
         //adapted from mouse wheel event
         this.container.dblclick(function(ev){
             //this event is there instead of containing div, because

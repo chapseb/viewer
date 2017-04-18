@@ -153,11 +153,12 @@ header a:hover, #comm_header a:hover, #infos_header a:hover {
 /** === Series navigation */
 nav {
     top: 50%;
-    margin-top: -18px;
+    margin-top: -40px;
     width: 100%;
     position:absolute;
 }
-nav a {
+
+.navsimple {
     display: inline-block;
     position: absolute;
     z-index: 5;
@@ -179,13 +180,45 @@ nav a {
     outline: none;
 }
 
-nav a:hover {
+.navsimple:hover {
     background: #1b1a1a url(../images/buttons/spr-nav-arrows.png);
     background: url(../images/buttons/spr-nav-arrows.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: url(../images/buttons/spr-nav-arrows.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: url(../images/buttons/spr-nav-arrows.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: url(../images/buttons/spr-nav-arrows.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
     background: url(../images/buttons/spr-nav-arrows.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+}
+
+.navdouble {
+    margin-top: 40px;
+    display: inline-block;
+    position: absolute;
+    z-index: 5;
+    background: url(../images/buttons/spr-nav-doublearrow.png);
+    background: url(../images/buttons/spr-nav-doublearrow.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background: url(../images/buttons/spr-nav-doublearrow.png), linear-gradient(to bottom, rgba(27, 26, 26, 0.6), rgba(20, 19, 19, .6));
+    background-repeat: no-repeat;
+    background-position:top left;
+    width: 25px;
+    height: 27px;
+    overflow: hidden;
+    text-indent: 40px;
+    border-style: solid;
+    border-color: #646464;
+    box-shadow: 0 0 .5em #646464;
+    outline: none;
+}
+
+.navdouble:hover {
+    background: #1b1a1a url(../images/buttons/spr-nav-doublearrow.png);
+    background: url(../images/buttons/spr-nav-doublearrow.png), -webkit-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -moz-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -ms-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-doublearrow.png), -o-linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
+    background: url(../images/buttons/spr-nav-doublearrow.png), linear-gradient(to bottom, rgba(27, 26, 26, .8), rgba(20, 19, 19, .8));
 }
 
 #previmg {
@@ -207,6 +240,28 @@ nav a:hover {
 }
 
 #nextimg:hover {
+    background-position:top right;
+}
+
+#prevdoubleimg {
+    border-radius: 0 6px 6px 0;
+    border-width: 1px 1px 1px 0;
+    left: 0;
+    background-position: bottom left;
+}
+
+#prevdoubleimg:hover {
+    background-position: top left;
+}
+
+#nextdoubleimg {
+    border-width: 1px 0px 1px 1px;
+    border-radius: 6px 0 0 6px;
+    right: 0;
+    background-position:bottom right;
+}
+
+#nextdoubleimg:hover {
     background-position:top right;
 }
 
