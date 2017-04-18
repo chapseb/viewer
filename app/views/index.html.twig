@@ -89,9 +89,9 @@ POSSIBILITY OF SUCH DAMAGE.
                         {%- endif -%}
                     {%- endset -%}
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" class="navsimple" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="" class="navdouble" id="prevdoubleimg" title="{% trans "Go to 10 previous images" %}">{% trans "Previous" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getTenPreviousImage() }}{{ img_series }}" class="navdouble" id="prevdoubleimg" title="{% trans "Go to 10 previous images" %}">{% trans "Previous" %}</a>
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" class="navsimple" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
-                    <a href="" class="navdouble" id="nextdoubleimg" title="{% trans "Go to 10 next images" %}">{% trans "Next" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getTenNextImage() }}{{ img_series }}" class="navdouble" id="nextdoubleimg" title="{% trans "Go to 10 next images" %}">{% trans "Next" %}</a>
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->

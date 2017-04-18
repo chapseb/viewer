@@ -290,6 +290,23 @@ class Series
     }
 
     /**
+     * Get 10 previous image
+     *
+     * @return string
+     */
+    public function getTenPreviousImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ($_index - 10 >= 0) {
+            $_index = ($_index - 10);
+        } else {
+            $_index = (count($this->_content) + ($_index - 10));
+        }
+
+        return $this->_content[$_index];
+    }
+
+    /**
      * Get next image
      *
      * @return string
@@ -301,6 +318,22 @@ class Series
             $_index = 0;
         } else {
             $_index += 1;
+        }
+        return $this->_content[$_index];
+    }
+
+    /**
+     * Get 10 next image
+     *
+     * @return string
+     */
+    public function getTenNextImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ($_index === count($this->_content) - 1) {
+            $_index = 0;
+        } else {
+            $_index = ($_index + 10)%count($this->_content);
         }
         return $this->_content[$_index];
     }
@@ -341,7 +374,9 @@ class Series
                 'path'      => $this->_path,
                 'current'   => $this->_current,
                 'next'      => $this->getNextImage(),
+                'tennext'   => $this->getTenNextImage(),
                 'prev'      => $this->getPreviousImage(),
+                'tenprev'   => $this->getTenPreviousImage(),
                 'count'     => $this->getCount(),
                 'position'  => $this->getCurrentPosition()
             );

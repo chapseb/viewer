@@ -450,7 +450,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }).val('default');
 
         //navbar
-        $('#previmg,#nextimg').bind('click touchstart', function(){
+        $('#previmg,#nextimg,#prevdoubleimg,#nextdoubleimg').bind('click touchstart', function(){
             if($("#lockparams").hasClass('off')) {
                 _this  = $(this);
                 var _t = me.display_options.transform;
@@ -483,37 +483,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             });
 
             return false;
-        });
-
-        $('#nextdoubleimg').bind('click touchstart', function(event){
-            event.preventDefault();
-            var posnum = $('#number_image').val();
-            var numtotal = $('#number_total').text();
-            var new_pos = (parseInt(posnum) + 10)%parseInt(numtotal);
-            var app_series_url = app_url + '/series/' + series_path;
-            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + new_pos;
-            } else {
-                window.location.href = app_series_url + '?num=' + new_pos;
-            }
-        });
-
-        $('#prevdoubleimg').bind('click touchstart', function(event){
-            event.preventDefault();
-            var posnum = $('#number_image').val();
-            var numtotal = $('#number_total').text();
-            var new_pos;
-            if (posnum - 10 > 0) {
-                new_pos = parseInt(posnum) - 10;
-            } else {
-                new_pos = parseInt(numtotal) + (parseInt(posnum) - 10);
-            }
-            var app_series_url = app_url + '/series/' + series_path;
-            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + new_pos;
-            } else {
-                window.location.href = app_series_url + '?num=' + new_pos;
-            }
         });
 
         //adapted from mouse wheel event
@@ -872,7 +841,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             function(data){
                 var _prev = $('#previmg');
                 _prev.attr('href', series_path + '?img=' + data.prev);
+                var _tenprev = $('#prevdoubleimg');
+                _tenprev.attr('href', series_path + '?img=' + data.tenprev);
                 var _next = $('#nextimg');
+                var _tennext = $('#nextdoubleimg');
+                _tennext.attr('href', series_path + '?img=' + data.tennext);
                 _next.attr('href', series_path + '?img=' + data.next);
                 $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
                 $("#search_img input").keypress(function(event) {
