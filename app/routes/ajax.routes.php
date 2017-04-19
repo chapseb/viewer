@@ -303,6 +303,12 @@ $app->post(
         // get image need to be prepared
         $jsonPost = $app->request()->getBody();
         $datas = json_decode($jsonPost, true);
+        if (isset($datas['urlSender'])) {
+            $urlSender = $datas['urlSender'] . '/';
+        } else {
+            $urlSender = $conf->getRemoteInfos()['uri'];
+        }
+        unset($datas['urlSender']);
         $authorizedExtensions = array(
             'png', 'jpg', 'jpeg', 'tiff',
             'PNG', 'JPG', 'JPEG', 'TIFF'
@@ -448,7 +454,7 @@ $app->post(
                         array_push($newData, $datas[$i]);
                     }
                     $jsonData = json_encode($newData);
-                    $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?'.uniqid();
+                    $url = $urlSender . 'deleteImage?'.uniqid();
                     $cmd = "curl -X POST -H 'Content-Type: application/json'";
                     $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
                     $out = exec($cmd, $output);
@@ -462,7 +468,7 @@ $app->post(
             array_push($newData, $data);
         }
         $jsonData = json_encode($newData);
-        $url = $conf->getRemoteInfos()['uri'] . 'deleteImage?'.uniqid();
+        $url = $urlSender . 'deleteImage?'.uniqid();
         $cmd = "curl -X POST -H 'Content-Type: application/json'";
         $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
         $out = exec($cmd, $output);
