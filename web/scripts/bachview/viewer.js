@@ -468,6 +468,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _this.attr('data-state', 'on');
                 _this.attr('title', hidef_on_title);
 
+                zoomGlobal = 100;
             } else {
                 zoomGlobal = me.current_zoom;
             }
@@ -871,6 +872,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                                 _this.attr('data-state', 'on');
                                 _this.attr('title', hidef_on_title);
 
+                                zoomGlobal = 100;
                             } else {
                                 zoomGlobal = me.current_zoom;
                             }
