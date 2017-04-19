@@ -225,6 +225,7 @@ POSSIBILITY OF SUCH DAMAGE.
             //global variables
             var zoomGlobal = 100;
             var series_path = '{{ series.getPath() }}';
+            var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
             var image_path = '{{ picture.getPath() }}';
             {% endif %}

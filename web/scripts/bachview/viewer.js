@@ -824,6 +824,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
+        var me = this;
         var _url = app_url + '/ajax/series/infos/';
         if (series_path.substr(-1) != '/') {
             _url += series_path + '/' + this.image_name;
@@ -850,20 +851,43 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
                 $("#search_img input").keypress(function(event) {
                     if (event.which == 13) {
-                        event.preventDefault();
                         var posnum = $('#number_image').val();
                         var numtotal = $('#number_total').text();
                         if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
-                            var app_series_url = app_url + '/series/' + series_path;
-                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                            if($("#lockparams").hasClass('off')) {
+                                _this  = $(this);
+                                var _t = me.display_options.transform;
+                                _t.negate = false;
+                                $('#negate').attr('checked', false);
+                                _t.contrast = false;
+                                $('#change_contrast').val(0);
+                                _t.brightness = false;
+                                $('#change_brightness').val(0);
+                                _t.rotate = 0;
+                                me.display_options.format = 'default';
+                                $('#formats > select').val('default');
+                                _format = 'full';
+                                _this.data('state', 'on');
+                                _this.attr('data-state', 'on');
+                                _this.attr('title', hidef_on_title);
+
                             } else {
-                                window.location.href = app_series_url + '?num=' + posnum;
+                                zoomGlobal = me.current_zoom;
                             }
-                        }
-                        else {
+                            me.display(series_path + series_content[parseInt(posnum)-1]);
+                            $('#formats > select').val(me.display_options.format);
+                            me.drawNavigation();
+
+                            // rebind of toolbarbtn navigation when change image
+                            $('.toolbarbtn').bind('click touchstart', function() {
+                                $('.navwin').toggle();
+                                $(this).toggleClass('off');
+                            });
+                        } else {
                             alert(alert_bad_value);
                         }
+
+                        return false;
                     }
                 });
                 if ( data.remote ) {

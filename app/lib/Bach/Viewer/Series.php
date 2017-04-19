@@ -359,6 +359,16 @@ class Series
     }
 
     /**
+     * Get array image
+     *
+     * @return array
+     */
+    public function getContent()
+    {
+        return $this->_content;
+    }
+
+    /**
      * Retrieve informations about current series
      *
      * @return array
