@@ -876,7 +876,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             } else {
                                 zoomGlobal = me.current_zoom;
                             }
-                            me.display(series_path + series_content[parseInt(posnum)-1]);
+                            if (series_path.substr(series_path.length-1) == '/') {
+                                me.display(series_path + series_content[parseInt(posnum)-1]);
+                            } else {
+                                me.display(series_path + '/' + series_content[parseInt(posnum)-1]);
+                            }
                             $('#formats > select').val(me.display_options.format);
                             me.drawNavigation();
 
