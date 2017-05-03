@@ -75,6 +75,7 @@ class Conf
     private $_prepare_method;
     private $_known_methods;
     private $_debug_mode;
+    private $_notdownloadprint;
 
     private $_known_remote_methods = array(
         'bach',
@@ -179,6 +180,7 @@ class Conf
             );
         }
         $this->_debug_mode            = $this->_conf['debug_mode'];
+        $this->_notdownloadprint      = $this->_conf['notdownloadprint'];
     }
 
     /**
@@ -408,5 +410,15 @@ class Conf
     public function getDebugMode()
     {
         return $this->_debug_mode;
+    }
+
+    /**
+     * Retrieve download print param
+     *
+     * @return boolean
+     */
+    public function getNotDownloadPrint()
+    {
+        return $this->_notdownloadprint;
     }
 }

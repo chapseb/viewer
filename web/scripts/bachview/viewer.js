@@ -333,7 +333,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + '/' + res;
 
-        window.location.href = res;
+        if (!notdownloadprint) {
+            window.location.href = res;
+        } else {
+            window.open(res, '_blank');
+        }
     },
 
     /**

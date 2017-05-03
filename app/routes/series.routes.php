@@ -190,6 +190,7 @@ $app->get(
                 }
             }
         }
+        $args['notdownloadprint'] = $conf->getNotDownloadPrint();
 
         $app->render(
             'index.html.twig',

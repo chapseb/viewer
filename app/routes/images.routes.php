@@ -250,6 +250,7 @@ $app->get(
                 $app_base_url
             );
         }
+        $args['notdownloadprint'] = $conf->getNotDownloadPrint();
 
         $app->render(
             'index.html.twig',
@@ -270,7 +271,7 @@ $app->get(
 
         $app->response->headers->set('Content-Type', 'application/pdf');
 
-        if ( $display === 'true' ) {
+        if ( $display === 'true'  || $conf->getNotDownloadPrint()) {
             $content = $pdf->getContent();
             $app->response->body($content);
         } else {
