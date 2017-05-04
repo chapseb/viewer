@@ -265,9 +265,23 @@ $app->get(
         $conf, $viewer
     ) {
         $picture = $viewer->getImage($series_path, $image);
+        if (substr($series_path, -1) == '/') {
+            $series_path = substr($series_path, 0, -1);
+        }
+        $rcontents = Picture::getRemoteInfos(
+            $conf->getRemoteInfos(),
+            $series_path,
+            '',
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+        );
+        $unitid = null;
+        if (isset($rcontents['ead']['unitid'])) {
+            $unitid = $rcontents['ead']['unitid'];
+        }
+
         $params = $viewer->bind($app->request);
 
-        $pdf = new Pdf($conf, $picture, $params, $format);
+        $pdf = new Pdf($conf, $picture, $params, $format, $unitid);
 
         $app->response->headers->set('Content-Type', 'application/pdf');
 

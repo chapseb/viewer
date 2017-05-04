@@ -354,7 +354,7 @@ class Conf
      *
      * @return string
      */
-    public function getPrintFooter($orientation = null)
+    public function getPrintFooterImage($orientation = null)
     {
 
         $image = $this->_print['footer']['image'];
@@ -372,6 +372,26 @@ class Conf
         }
 
         return $image;
+    }
+
+    /**
+     * Retrieve print header
+     *
+     * @return string
+     */
+    public function getPrintHeaderContent()
+    {
+        return $this->_print['header']['content'];
+    }
+
+    /**
+     * Retrieve print footer
+     *
+     * @return string
+     */
+    public function getPrintFooterContent()
+    {
+        return $this->_print['footer']['content'];
     }
 
     /**

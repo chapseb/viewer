@@ -68,7 +68,9 @@ print:
         #image_landscape: ~
         #image_portrait: ~
         content: ~
-    footer: ~
+    footer:
+        image: ~
+        content: ~
 
 remote_infos: ~
 #    method: bach #either 'bach' or 'pleade'
