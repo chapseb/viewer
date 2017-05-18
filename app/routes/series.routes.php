@@ -171,58 +171,12 @@ $app->get(
             $conf->getRemoteInfos(),
             $path[0],
             $img,
-            $conf->getRemoteInfos()['uri']."infosimage/". $path[0] . '/' . $img
+            $conf->getRemoteInfos()['uri']."infosimage/". implode('/', $path) . $img,
+            $conf->getReadingroom()
         );
-
-        $args['communicability'] = false;
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-        } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        if (isset($rcontents['ead'])) {
-            if ($rcontents['ead']['communicability_general'] == null
-                || (isset($rcontents['ead']['communicability_general'])
-                && $rcontents['ead']['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
-                && isset($rcontents['ead']['communicability_sallelecture'])
-                && $rcontents['ead']['communicability_sallelecture'] <= $current_year)
-            ) {
-                $args['communicability'] = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-            $args['communicability'] = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || ($ip == $conf->getReadingroom()
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $args['communicability'] = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $args['communicability'] = true;
-                }
-            }
-        }
-
+        $args['communicability'] = $rcontents['communicability'];
         $resultsSD = array();
+
         $objects = $s3->getIterator(
             'ListObjects',
             array(
@@ -234,13 +188,14 @@ $app->get(
         foreach ($objects as $object) {
             array_push($resultsSD, $object['Key']);
         }
-
         $flagResult = false;
-        if (!isset($resultsSD[0])) {
+        if (!isset($resultsSD[0]) || $args['communicability'] == false) {
             $results[0] = 'main.jpg';
             $args['default_src'] = $conf->getCloudfront()
                 .'prepared_images/default/'.$results[0];
-            $flagResult = true;
+            if (!isset($resultsSD[0])) {
+                $flagResult = true;
+            }
         }
 
         $args['notGenerateImage'] = $flagResult;

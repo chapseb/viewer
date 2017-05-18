@@ -57,61 +57,14 @@ $app->get(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image,
+            $conf->getReadingroom()
         );
 
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-        } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
+        $communicability = $rcontents['communicability'];
 
-        $communicability = false;
-        $readerFlag = $rcontents['reader'];
-        if ($conf->getIpInternal()) {
-            $readerFlag = true;
-        }
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
-                && $readerFlag == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $communicability = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
+        if ($communicability == false && $rcontents['archivist']) {
             $communicability = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || ($ip == $conf->getReadingroom()
-                        && $readerFlag == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $communicability = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $communicability = true;
-                }
-            }
         }
 
         if ($communicability == true) {
@@ -190,7 +143,8 @@ $app->get(
                 $conf->getRemoteInfos(),
                 $path,
                 $img,
-                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img,
+                $conf->getReadingroom()
             );
         } else {
             $picture = null;
@@ -225,63 +179,15 @@ $app->get(
                 $conf->getRemoteInfos(),
                 $path,
                 $img,
-                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+                $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img,
+                $conf->getReadingroom()
             );
         }
 
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-        } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        $args['communicability'] = false;
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-        if ($conf->getIpInternal()) {
-            $rcontents['reader'] = true;
-        }
-
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
-                && $rcontents['reader'] == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $args['communicability'] = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
+        $args['communicability'] = $rcontents['communicability'];
+        /*if ($args['communicability'] == false && $rcontents['archivist']) {
             $args['communicability'] = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || ($ip == $conf->getReadingroom()
-                        && $rcontents['reader'] == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $args['communicability'] = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $args['communicability'] = true;
-                }
-            }
-        }
+        }*/
 
         if ($args['communicability'] == false) {
             if ($conf->getAWSFlag()) {
