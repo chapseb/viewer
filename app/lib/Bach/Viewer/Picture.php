@@ -778,13 +778,13 @@ class Picture
             if (isset($rcontents['mat']['record'])) {
                 $remoteInfosMat = $rcontents['mat']['record'];
                 if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
+                    $communicabilityGeneralMat = new \DateTime($remoteInfosMat->communicability_general);
                     if ($communicabilityGeneralMat <= $current_date) {
                         $communicabilityMat = true;
                     }
                 }
                 if (isset($remoteInfosMat->communicability_sallelecture)) {
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
+                    $communicabilitySallelectureMat = new \DateTime($remoteInfosMat->communicability_sallelecture);
                     if (strpos($readingRoomIp, $ip) !== false
                         && $readerFlag == true
                         && $communicabilitySallelectureMat <= $current_date

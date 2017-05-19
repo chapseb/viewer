@@ -193,9 +193,18 @@ $app->get(
             $results[0] = 'main.jpg';
             $args['default_src'] = $conf->getCloudfront()
                 .'prepared_images/default/'.$results[0];
+            $args['series']->setFullPath('');
             if (!isset($resultsSD[0])) {
                 $flagResult = true;
             }
+            $contentSize = count($args['series']->getContent());
+            $arrayTmp = array();
+            for ($i=0; $i < $contentSize; $i++ ) {
+                array_push($arrayTmp, 'main.jpg');
+            }
+            $args['series']->setContent($arrayTmp);
+            $args['series']->setImage('main.jpg');
+            $args['pathHD'] = $conf->getCloudfront().$args['series']->getFullPath();
         }
 
         $args['notGenerateImage'] = $flagResult;

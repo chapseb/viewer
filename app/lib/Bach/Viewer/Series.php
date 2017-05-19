@@ -258,6 +258,18 @@ class Series
     }
 
     /**
+     * Change series full path
+     *
+     * @param string $fullpath new serie's full path
+     *
+     * @return void
+     */
+    public function setFullPath($fullpath)
+    {
+        $this->_full_path = $fullpath;
+    }
+
+    /**
      * Retrieve representative image
      *
      * @return string
@@ -525,7 +537,5 @@ class Series
     {
         $this->_content = $content;
     }
-
-
 
 }
