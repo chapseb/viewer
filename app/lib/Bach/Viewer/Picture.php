@@ -680,7 +680,8 @@ class Picture
                         $remoteContents->ead->link
                     );
                     $rcontents['ead']['unitid'] = $remoteContents->ead->unitid;
-                    $rcontents['ead']['cUnittitle'] = $remoteContents->ead->cUnittitle;
+                    $rcontents['ead']['cUnittitle']
+                        = $remoteContents->ead->cUnittitle;
                     $rcontents['ead']['doclink'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -690,6 +691,8 @@ class Picture
                         = $remoteContents->ead->communicability_general;
                     $rcontents['ead']['communicability_sallelecture']
                         = $remoteContents->ead->communicability_sallelecture;
+                    $rcontents['ead']['cAudience'] = $remoteContents->ead->cAudience;
+                    $rcontents['ead']['audience'] = $remoteContents->ead->audience;
                 }
             } else if ($rinfos['method'] === 'pleade') {
                 $rxml = @simplexml_load_string($remoteContents->link);
@@ -704,11 +707,10 @@ class Picture
                     $rcontents = null;
                 }
             }
-            $rcontents['communicability'] = self::isCommunicable(
+            $rcontents = self::isCommunicable(
                 $rcontents,
                 $readingRoomIp
             );
-
         }
         return $rcontents;
     }
@@ -725,14 +727,14 @@ class Picture
     {
         // get client ip
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+            $ipClient = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
         } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
+            $ipClient = $_SERVER['HTTP_CLIENT_IP'];
         } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
+            $ipClient = $_SERVER['REMOTE_ADDR'];
         }
 
-        $rcontents['reader'] = false;
+        $rcontents['reader'] = $rcontents['archivist'] = false;
         if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
             $jsonCookie = json_decode(
                 $_COOKIE[$rcontents['cookie'].'_reader']
@@ -745,7 +747,12 @@ class Picture
             }
         }
         $readerFlag = $rcontents['reader'];
-        //$archivistFlag = $rcontents['archivist'];
+        $archivistFlag = $rcontents['archivist'];
+
+        if ($archivistFlag) {
+            $rcontents['communicability'] = true;
+            return $rcontents;
+        }
 
         $communicability = $communicabilityEad = $communicabilityMat = false;
         $current_date = new \DateTime();
@@ -753,6 +760,22 @@ class Picture
 
         if (isset($rcontents['ead'])) {
             $remoteInfosEad = $rcontents['ead'];
+
+            if (isset($remoteInfosEad['cAudience'])
+                && $remoteInfosEad['cAudience'] == 'internal'
+            ) {
+                $rcontents['cAudience'] = $remoteInfosEad['cAudience'];
+                $rcontents['communicability'] = false;
+                unset($rcontents['ead']);
+                return $rcontents;
+            }
+
+            if (isset($remoteInfosEad['audience'])
+                && $remoteInfosEad['audience'] == 'internal'
+            ) {
+                $rcontents['communicability'] = false;
+                return $rcontents;
+            }
 
             // test communicability_general
             if ($remoteInfosEad['communicability_general'] == null) {
@@ -765,7 +788,7 @@ class Picture
             }
 
             // test communicability_sallelecture
-            if (strpos($readingRoomIp, $ip) !== false
+            if (strpos($readingRoomIp, $ipClient) !== false
                 && $readerFlag == true
                 && isset($remoteInfosEad['communicability_sallelecture'])
                 && $remoteInfosEad['communicability_sallelecture'] <= $current_year
@@ -778,16 +801,20 @@ class Picture
             if (isset($rcontents['mat']['record'])) {
                 $remoteInfosMat = $rcontents['mat']['record'];
                 if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new \DateTime($remoteInfosMat->communicability_general);
-                    if ($communicabilityGeneralMat <= $current_date) {
+                    $commGeneralMat
+                        = new \DateTime($remoteInfosMat->communicability_general);
+                    if ($commGeneralMat <= $current_date) {
                         $communicabilityMat = true;
                     }
                 }
                 if (isset($remoteInfosMat->communicability_sallelecture)) {
-                    $communicabilitySallelectureMat = new \DateTime($remoteInfosMat->communicability_sallelecture);
-                    if (strpos($readingRoomIp, $ip) !== false
+                    $commSallelectureMat
+                        = new \DateTime(
+                            $remoteInfosMat->communicability_sallelecture
+                        );
+                    if (strpos($readingRoomIp, $ipClient) !== false
                         && $readerFlag == true
-                        && $communicabilitySallelectureMat <= $current_date
+                        && $commSallelectureMat <= $current_date
                     ) {
                         $communicabilityMat = true;
                     }
@@ -805,7 +832,8 @@ class Picture
             $communicability = true;
         }
 
-        return $communicability;
+        $rcontents['communicability'] = $communicability;
+        return $rcontents;
     }
 
     /**
@@ -820,7 +848,7 @@ class Picture
     public static function getRemoteComments($rinfos, $path, $img)
     {
         $uri = $rinfos['uri'];
-        if ( $rinfos['method'] === 'bach' ) {
+        if ($rinfos['method'] === 'bach') {
             $uri .= 'comment/images/' . $path . $img . '/get';
         } else {
             return;
