@@ -289,7 +289,9 @@ $app->get(
 
 $app->post(
     '/ajax/generateimages',
-    function () use ($app, $conf) {
+    function () use ($app, $conf, $viewer) {
+
+        // get s3 client
         $s3 = new Aws\S3\S3Client(
             [
                 'version' => $conf->getAWSVersion(),
@@ -300,153 +302,56 @@ $app->post(
                 )
             ]
         );
-        // get image need to be prepared
+
+        // get image need to be prepared in json request
         $jsonPost = $app->request()->getBody();
         $datas = json_decode($jsonPost, true);
+
+        // get url sender to send response after treatment
         if (isset($datas['urlSender'])) {
             $urlSender = $datas['urlSender'] . '/';
         } else {
             $urlSender = $conf->getRemoteInfos()['uri'];
         }
+        // unset urlSender to have proper datas
         unset($datas['urlSender']);
-        $authorizedExtensions = array(
+        $authExt = array(
             'png', 'jpg', 'jpeg', 'tiff',
             'PNG', 'JPG', 'JPEG', 'TIFF'
         );
 
         $newData = array();
         $cpt = 0;
+        // foreach in daos_prepared row in database
         foreach ($datas as $keyData => $data) {
-            $imagesToTreat = stripslashes($data['href']);
-            $imageEnd = stripslashes($data['end_dao']);
-            $lastFile = stripslashes($data['last_file']);
-            // get end image if it exists
-            if (!empty($imageEnd)) {
-                $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
-            } else {
-                $imagePrefix = $imagesToTreat;
-            }
-            $results = array();
-            $roots = $conf->getRoots();
-            if (strrpos($imagePrefix, '.') == ''
-                && substr($imagePrefix, -1, 1) != '/'
-            ) {
-                $imagePrefix .= '/';
-            }
+            // get aws file image path to generate
+            $results = $viewer->getPathAwsImage(
+                $data,
+                $s3,
+                $conf->getRoots(),
+                $authExt
+            );
 
-            foreach ($roots as $root) {
-                $objects = $s3->getIterator(
-                    'ListObjects',
-                    array(
-                        "Bucket" => $conf->getAWSBucket(),
-                        "Prefix" => $root . $imagePrefix,
-                        "Delimiter" => "/",
-                    )
-                );
-                foreach ($objects as $object) {
-
-                    if (empty($imageEnd)
-                        || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
-                        && strcmp($object['Key'], $root.$imageEnd) <= 0)
-                    ) {
-                        if (strcmp($object['Key'], $lastFile) >= 0) {
-                            $testExtension = substr(
-                                $object['Key'],
-                                strrpos($object['Key'], '.') + 1
-                            );
-                            if (in_array($testExtension, $authorizedExtensions)) {
-                                array_push($results, $object['Key']);
-                            }
-                        }
-                    }
-                }
-            }
-
+            //////////////////////////////////////////////////////////
             // generate prepared images
+            //////////////////////////////////////////////////////////
             $fmts = $conf->getFormats();
             foreach ($results as $result) {
                 $previousKey = '';
-                foreach ($fmts as $key => $fmt) {
-                    $ext = substr(strrchr($result, '.'), 1);
+                $cptBefore = $cpt;
+                $cpt += $viewer->generateOneRowImage(
+                    $result,
+                    $s3,
+                    $fmts,
+                    $cpt
+                );
 
-                    $h = $fmt['height'];
-                    $w = $fmt['width'];
-                    $time_start = microtime(true);
-
-                    $cptBefore = $cpt;
-                    if (!file_exists('s3://'.$conf->getAWSBucket().'/'.'prepared_images/'.$key.'/'.$result)) {
-                        try {
-                            $pathDisk = __DIR__.'/../cache/';
-                            $ext = substr(strrchr($result, '.'), 1);
-                            if ($key == 'default') {
-                                $s3->getObject(
-                                    array(
-                                        'Bucket' => $conf->getAWSBucket(),
-                                        'Key'    => $result,
-                                        'SaveAs' =>  $pathDisk . 'tmp.'.$ext,
-                                    )
-                                );
-                                $handle = fopen(
-                                    $pathDisk. 'tmp.'.$ext,
-                                    'rb'
-                                );
-                            } else {
-                                $handle = fopen(
-                                    $pathDisk . 'tmp_' . $previousKey . '.'.$ext,
-                                    'rb'
-                                );
-                            }
-                            $image = new Imagick();
-                            $image->readImageFile($handle);
-
-                            $extContentType = 'jpeg';
-                            if ($ext == 'jpg' || $ext == 'jpeg'
-                                || $ext == 'JPG' || $ext == 'JPEG'
-                            ) {
-                                $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
-                            }
-                            $image->setImageCompressionQuality(70);
-
-                            $image->thumbnailImage($w, $h, true);
-                            $image->writeImage($pathDisk . 'tmp_' . $key . '.'.$ext);
-                            $image->clear();
-
-                            if ($ext == 'png' || $ext == 'PNG') {
-                                $extContentType = 'png';
-                            }
-                            $s3->putObject(
-                                array(
-                                    'Bucket'    => $conf->getAWSBucket(),
-                                    'Key'       => 'prepared_images/' . $key . '/' . $result,
-                                    'SourceFile'=> $pathDisk . 'tmp_' . $key . '.'.$ext,
-                                    'ACL'       => 'public-read',
-                                    'Metadata'  => array(
-                                        "Content-Type"=>'image/'.$extContentType
-                                    )
-                                )
-                            );
-                            fclose($handle);
-                        } catch ( \ImagickException $e ) {
-                            $image->destroy();
-                            Analog::log(
-                                'Error image generation : '.
-                                $key. ' ::::: '. $result
-                            );
-                            throw new \RuntimeException(
-                                $key . ' :::: ' .
-                                $result . ' ==== ' .
-                                $e->getMessage()
-                            );
-                        }
-                        $cpt += 1;
-                    }
-                    $previousKey = $key;
-                }
                 if ($cpt > $cptBefore) {
                     Analog::log(
                         ('Creation prepared image for '. $result)
                     );
                 }
+                // * 3 because 3 different formats
                 if ($cpt >= ($conf->getNbImagesToPrepare() * 3)) {
                     $data['lastfile'] = $result;
                     array_push($newData, $data);

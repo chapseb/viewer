@@ -137,4 +137,160 @@ class Viewer
 
         return $params;
     }
+
+    /*
+     *
+     *Add generic function like get link by aws call
+     * */
+
+    /**
+     * Get prepared_images path
+     *
+     * @param Array  $data    Data with one database prepared_daos row
+     * @param Object $s3      S3 client
+     * @param Array  $roots   Contain all images directory path
+     * @param Array  $authExt Array with all authorized images extension
+     *
+     * @return array
+     */
+    public function getPathAwsImage($data, $s3, $roots, $authExt)
+    {
+        $imagesToTreat = stripslashes($data['href']);
+        $imageEnd = stripslashes($data['end_dao']);
+        $lastFile = stripslashes($data['last_file']);
+        // get end image if exist
+        if (!empty($imageEnd)) {
+            $imagePrefix = substr($imageEnd, 0, strrpos($imageEnd, '/')). '/';
+        } else {
+             $imagePrefix = $imagesToTreat;
+        }
+        $results = array();
+        if (strrpos($imagePrefix, '.') == ''
+            && substr($imagePrefix, -1, 1) != '/'
+        ) {
+            $imagePrefix .= '/';
+        }
+
+        $roots = $this->_conf->getRoots();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $this->_conf->getAWSBucket(),
+                    "Prefix" => $root . $imagePrefix,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                if (empty($imageEnd)
+                    || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
+                    && strcmp($object['Key'], $root.$imageEnd) <= 0)
+                ) {
+                    if (strcmp($object['Key'], $lastFile) >= 0) {
+                        $testExtension = substr(
+                            $object['Key'],
+                            strrpos($object['Key'], '.') + 1
+                        );
+                        if (in_array($testExtension, $authExt)) {
+                            array_push($results, $object['Key']);
+                        }
+                    }
+                }
+            }
+        }
+        return $results;
+    }
+
+
+    /**
+     * Get prepared_images path
+     *
+     * @param Array  $result Image relative path
+     * @param Object $s3     S3 client
+     * @param Array  $fmts   Array with formats image type properties
+     * @param Int    $cpt    How many pictures are already treated
+     *
+     * @return int
+     */
+    public function generateOneRowImage($result, $s3, $fmts, $cpt)
+    {
+        foreach ($fmts as $key => $fmt) {
+            $ext = substr(strrchr($result, '.'), 1);
+            $h = $fmt['height'];
+            $w = $fmt['width'];
+
+            /*if (!file_exists(
+                's3://'.$this->_conf->getAWSBucket()
+                .'/'.'prepared_images/'.$key.'/'.$result
+            )
+            ) {*/
+                try {
+                    $pathDisk = __DIR__.'/../../../cache/';
+                    $ext = substr(strrchr($result, '.'), 1);
+                    if ($key == 'default') {
+                        $s3->getObject(
+                            array(
+                                'Bucket' => $this->_conf->getAWSBucket(),
+                                'Key'    => $result,
+                                'SaveAs' => $pathDisk . 'tmp.'.$ext,
+                            )
+                        );
+                        $handle = fopen(
+                            $pathDisk. 'tmp.'.$ext,
+                            'rb'
+                        );
+                    } else {
+                        $handle = fopen(
+                            $pathDisk . 'tmp_' . $previousKey . '.'.$ext,
+                            'rb'
+                        );
+                    }
+                    $image = new \Imagick();
+                    $image->readImageFile($handle);
+
+                    $extContentType = 'jpeg';
+                    if ($ext == 'jpg' || $ext == 'jpeg'
+                        || $ext == 'JPG' || $ext == 'JPEG'
+                    ) {
+                        $image->setImageCompression(\Imagick::COMPRESSION_JPEG);
+                    }
+                    $image->setImageCompressionQuality(70);
+
+                    $image->thumbnailImage($w, $h, true);
+                    $image->writeImage($pathDisk . 'tmp_' . $key . '.'.$ext);
+                    $image->clear();
+
+                    if ($ext == 'png' || $ext == 'PNG') {
+                        $extContentType = 'png';
+                    }
+                    $s3->putObject(
+                        array(
+                            'Bucket'     => $this->_conf->getAWSBucket(),
+                            'Key'        => 'prepared_images/' . $key . '/' . $result,
+                            'SourceFile' => $pathDisk . 'tmp_' . $key . '.'.$ext,
+                            'ACL'        => 'public-read',
+                            'Metadata'   => array(
+                                'Content-Type' => 'image/'.$extContentType
+                            )
+                        )
+                    );
+                    fclose($handle);
+                } catch ( \ImagickException $e ) {
+                    $image->destroy();
+                    Analog::log(
+                        'Error image generation : '.
+                        $key. ' ::::: '. $result
+                    );
+                    throw new \RuntimeException(
+                        $key . ' :::: ' .
+                        $result . ' ==== ' .
+                        $e->getMessage()
+                    );
+                }
+                $cpt += 1;
+            //}
+            $previousKey = $key;
+        }
+        return $cpt;
+    }
 }
