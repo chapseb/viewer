@@ -186,7 +186,7 @@ class Viewer
                     || (strcmp($object['Key'], $root.$imagesToTreat) >= 0
                     && strcmp($object['Key'], $root.$imageEnd) <= 0)
                 ) {
-                    if (strcmp($object['Key'], $lastFile) >= 0) {
+                    if (strcmp($object['Key'], $lastFile) > 0) {
                         $testExtension = substr(
                             $object['Key'],
                             strrpos($object['Key'], '.') + 1
@@ -219,11 +219,11 @@ class Viewer
             $h = $fmt['height'];
             $w = $fmt['width'];
 
-            /*if (!file_exists(
+            if (!file_exists(
                 's3://'.$this->_conf->getAWSBucket()
                 .'/'.'prepared_images/'.$key.'/'.$result
             )
-            ) {*/
+            ) {
                 try {
                     $pathDisk = __DIR__.'/../../../cache/';
                     $ext = substr(strrchr($result, '.'), 1);
@@ -275,6 +275,7 @@ class Viewer
                         )
                     );
                     fclose($handle);
+                    $cpt += 1;
                 } catch ( \ImagickException $e ) {
                     $image->destroy();
                     Analog::log(
@@ -287,8 +288,7 @@ class Viewer
                         $e->getMessage()
                     );
                 }
-                $cpt += 1;
-            //}
+            }
             $previousKey = $key;
         }
         return $cpt;

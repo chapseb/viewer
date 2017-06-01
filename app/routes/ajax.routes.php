@@ -321,7 +321,7 @@ $app->post(
         );
 
         $newData = array();
-        $cpt = 0;
+        $cpt = $cptBefore = 0;
         // foreach in daos_prepared row in database
         foreach ($datas as $keyData => $data) {
             // get aws file image path to generate
@@ -332,14 +332,14 @@ $app->post(
                 $authExt
             );
 
-            //////////////////////////////////////////////////////////
-            // generate prepared images
-            //////////////////////////////////////////////////////////
+            //////////////////////////////
+            // generate prepared images //
+            //////////////////////////////
             $fmts = $conf->getFormats();
             foreach ($results as $result) {
                 $previousKey = '';
                 $cptBefore = $cpt;
-                $cpt += $viewer->generateOneRowImage(
+                $cpt = $viewer->generateOneRowImage(
                     $result,
                     $s3,
                     $fmts,
@@ -355,7 +355,7 @@ $app->post(
                 if ($cpt >= ($conf->getNbImagesToPrepare() * 3)) {
                     $data['lastfile'] = $result;
                     array_push($newData, $data);
-                    for ($i = $keyData+1;$i<sizeOf($datas); $i++) {
+                    for ($i=$keyData+1; $i<sizeOf($datas); $i++) {
                         array_push($newData, $datas[$i]);
                     }
                     $jsonData = json_encode($newData);
