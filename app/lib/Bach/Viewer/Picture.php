@@ -754,6 +754,15 @@ class Picture
             return $rcontents;
         }
 
+        // FIXME find a better to take care of communicability
+        // in series with a start and an end image
+        if (!isset($rcontents['ead'])
+            && !isset($rcontents['mat'])
+        ) {
+            $rcontents['communicability'] = true;
+            return $rcontents;
+        }
+
         $communicability = $communicabilityEad = $communicabilityMat = false;
         $current_date = new \DateTime();
         $current_year = $current_date->format("Y");
