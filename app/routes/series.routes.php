@@ -156,6 +156,10 @@ $app->get(
             'imageStrictName'     => substr($series->getRepresentative(), strrpos($series->getRepresentative(), '/')),
             'image_database_name' => '/'.$series->getPath() . $img
         );
+
+        if (substr($series->getPath(), -1) != '/') {
+            $args['image_database_name'] = '/'.$series->getPath().'/'.$img;
+        }
         /*if ( $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
             $args['iipserver'] = $iip['server'];
