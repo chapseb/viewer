@@ -579,6 +579,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 image_database_name = '/' + series_path + '/' + listImage[image_position];
             }
 
+            if (listImage[image_position] == 'main.jpg') {
+                    alert(alertNotCommunicableImage);
+            }
+
             image_strictname = listImage[image_position];
             $("#titleImage").empty().append(image_strictname);;
             if (me.display_options.format == 'full') {

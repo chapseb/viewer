@@ -260,6 +260,7 @@ POSSIBILITY OF SUCH DAMAGE.
             {% endif %}
             var notGenerateImage = '{{ notGenerateImage }}';
             var alertNotGenerateImage = '{{ "The image has not SD version, click HD button to have the image"|trans|escape('js')}}';
+            var alertNotCommunicableImage = '{{ "Image is not communicable."|trans|escape('js')}}';
             var image_strictname = '{{ imageStrictName}}';
             var cloudfront = '{{ cloudfront}}';
             var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
@@ -312,6 +313,10 @@ POSSIBILITY OF SUCH DAMAGE.
             jQuery.noConflict();
             //jquery stuff
             (function($) {
+
+                {% if communicability is defined and communicability == false %}
+                    alert(alertNotCommunicableImage);
+                {% endif %}
                 $('#progressbar').fadeIn();
 
                 {% if not(enable_right_click) %}
