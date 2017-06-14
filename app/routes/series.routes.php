@@ -203,12 +203,15 @@ $app->get(
             }
             $contentSize = count($args['series']->getContent());
             $arrayTmp = array();
-            for ($i=0; $i < $contentSize; $i++ ) {
-                array_push($arrayTmp, 'main.jpg');
+            if ($args['communicability'] == false) {
+                for ($i=0; $i < $contentSize; $i++ ) {
+                    array_push($arrayTmp, 'main.jpg');
+                }
+                $args['series']->setContent($arrayTmp);
+                $args['series']->setImage('main.jpg');
+                $args['pathHD'] = $conf->getCloudfront()
+                    . $args['series']->getFullPath();
             }
-            $args['series']->setContent($arrayTmp);
-            $args['series']->setImage('main.jpg');
-            $args['pathHD'] = $conf->getCloudfront().$args['series']->getFullPath();
         }
 
         $args['notGenerateImage'] = $flagResult;
