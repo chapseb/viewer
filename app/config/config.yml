@@ -33,6 +33,7 @@ readingroom: null
 ip_internal: false
 debug_mode: false
 notdownloadprint: false
+displayHD: false
 
 formats:
     #default format *MUST* be present

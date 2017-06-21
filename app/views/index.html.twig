@@ -62,7 +62,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div id="formats">
                     <select name="formats">
                         {% for key, fmt in picture.getVisibleFormats() %}
+                        {% if displayHD == false or (displayHD and key == 'full')%}
                         <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                        {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -112,9 +114,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
                         {% if ((picture.hasFormat('full') and picture.hasFormat('default')) or series) and not(iip)%}
-                        <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
-                            <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
-                        </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
+                        {% if displayHD == false %}<li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}"><span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span></li>{% else %}<li id="hidef" data-state="on" class="on" style="display:none;"><span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span></li>{%endif%}{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
                         {% if not iip %}
@@ -230,6 +230,7 @@ POSSIBILITY OF SUCH DAMAGE.
             var zoomGlobal = 100;
             var communicability = '{{ communicability }}';
             var series_path = '{{ series.getPath() }}';
+            var displayHD = '{{ displayHD }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
             var image_path = '{{ picture.getPath() }}';
@@ -301,7 +302,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 {%- if not(iip) -%}
                 var comm;
+                {% if displayHD == true %}
+                comm = '{{ picture.getUrl(series, "full")}}';
+                {% else %}
                 comm = '{{ picture.getUrl(series)}}';
+                {% endif %}
                 var viewer = $("#viewer").bviewer({
                     {% if remote_method -%}
                     remote: {

@@ -147,6 +147,7 @@ $app->get(
 
         $args['communicability']  = $rcontents['communicability'];
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
+        $args['displayHD'] = $conf->getDisplayHD();
 
         $app->render(
             'index.html.twig',

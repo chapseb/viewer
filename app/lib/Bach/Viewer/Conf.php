@@ -76,6 +76,7 @@ class Conf
     private $_known_methods;
     private $_debug_mode;
     private $_notdownloadprint;
+    private $_displayHD;
 
     private $_known_remote_methods = array(
         'bach',
@@ -179,8 +180,9 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
-        $this->_debug_mode            = $this->_conf['debug_mode'];
-        $this->_notdownloadprint      = $this->_conf['notdownloadprint'];
+        $this->_debug_mode       = $this->_conf['debug_mode'];
+        $this->_notdownloadprint = $this->_conf['notdownloadprint'];
+        $this->_displayHD        = $this->_conf['displayHD'];
     }
 
     /**
@@ -440,5 +442,15 @@ class Conf
     public function getNotDownloadPrint()
     {
         return $this->_notdownloadprint;
+    }
+
+    /**
+     * Retrieve display direct HD image param
+     *
+     * @return boolean
+     */
+    public function getDisplayHD()
+    {
+        return $this->_displayHD;
     }
 }

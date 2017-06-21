@@ -307,6 +307,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _leftPosHD = Math.round(scale_width * _leftPos /_width);
 
         var _src = this.options.src.replace(/.*\/show\/default/, this.display_options.format);
+        if (displayHD == true) {
+            _src = this.options.src.replace(/.*\/show\/full/, 'full');
+        }
         var res = app_url.replace(/^\//, '') + '/print/'  +  _src ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
@@ -568,7 +571,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         this.image_name = (img.split('/')).pop();
 
         //store default format as source
-        this.options.src = app_url + '/show/default/' + img;
+        if (displayHD == false) {
+            this.options.src = app_url + '/show/default/' + img;
+        } else if (displayHD && img.indexOf('show/full') == -1) {
+            this.options.src = app_url + '/show/full/' + img;
+        }
         var _img_path = this.options.src.replace(
             'default',
             this.display_options.format

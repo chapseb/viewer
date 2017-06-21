@@ -126,6 +126,9 @@ $app->get(
             $args['iipserver'] = $iip['server'];
         } else {
             $args['image_format'] = 'default';
+            if ($conf->getDisplayHD()) {
+                $args['image_format'] = 'full';
+            }
         }
 
         if (file_exists('../web/themes/styles/themes.css') ) {
@@ -152,6 +155,7 @@ $app->get(
             );
         }
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
+        $args['displayHD'] = $conf->getDisplayHD();
 
         $app->render(
             'index.html.twig',
