@@ -303,6 +303,10 @@ class Series
             $_index = (count($this->_content) + ($_index - 10));
         }
 
+        if ($_index < 0) {
+            $_index = 0;
+            return null;
+        }
         return $this->_content[$_index];
     }
 
