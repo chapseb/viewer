@@ -89,7 +89,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         {%- endif -%}
                     {%- endset -%}
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" class="navsimple" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    {% if series.getTenPreviousImage() is defined and series.getTenPreviousImage != null%}
+                    {% if series.getTenPreviousImage() is defined and series.getTenPreviousImage != null and series.getCount() > 10%}
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getTenPreviousImage() }}{{ img_series }}" class="navdouble" id="prevdoubleimg" title="{% trans "Go to 10 previous images" %}">{% trans "Previous" %}</a>
                     {% endif %}
                     <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" class="navsimple" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
