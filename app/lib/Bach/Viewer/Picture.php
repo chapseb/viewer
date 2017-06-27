@@ -715,9 +715,14 @@ class Picture
             }
             $rcontents['reader'] = false;
             if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
-                $rcontents['reader'] = json_decode(
+                $cookieContent = json_decode(
                     $_COOKIE[$rcontents['cookie'].'_reader']
-                )->reader;
+                );
+                if (isset($cookieContent->reader)
+                    || isset($cookieContent->archivist)
+                ) {
+                    $rcontents['reader'] = true;
+                }
             }
         }
         return $rcontents;
