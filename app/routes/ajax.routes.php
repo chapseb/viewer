@@ -183,7 +183,7 @@ $app->get(
         $formats = $conf->getFormats();
         $fmt = $formats['thumb'];
 
-        $thumbs = $series->getThumbs($fmt);
+        $thumbs = $series->getThumbs($fmt, $series_path);
 
         echo json_encode($thumbs);
     }

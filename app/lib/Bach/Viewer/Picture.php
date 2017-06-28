@@ -121,13 +121,16 @@ class Picture
                         && is_file($root . $this->_full_path)
                     ) {
                         $this->_full_path = $root . $this->_full_path;
-                        Analog::log(
-                            str_replace(
-                                '%path',
-                                $this->_full_path,
-                                _('Image path set to "%path"')
-                            )
-                        );
+
+                        if ($this->_conf->getDebugMode()) {
+                            Analog::log(
+                                str_replace(
+                                    '%path',
+                                    $this->_full_path,
+                                    _('Image path set to "%path"')
+                                )
+                            );
+                        }
                         break;
                     }
                 }
@@ -252,10 +255,12 @@ class Picture
     public function getDisplay($format = 'full', $transform_params = null,
         $store = null
     ) {
-        Analog::log(
-            'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
-            Analog::DEBUG
-        );
+        if ($this->_conf->getDebugMode()) {
+            Analog::log(
+                'Displaying ' . $this->_full_path . ' (format: ' . $format . ')',
+                Analog::DEBUG
+            );
+        }
 
         $length = null;
         $file_path = null;
@@ -292,7 +297,6 @@ class Picture
 
             $content = $this->_handler->transform($file_path, $params, $store);
         }
-
         $headers = array();
 
         if ( $length !== null ) {
@@ -303,11 +307,19 @@ class Picture
             $headers['Content-Type'] = $this->_mime;
         }
 
+        $infos = pathinfo($this->_full_path);
+        if ($format == 'thumb'
+            && ($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff')
+        ) {
+            $headers['Content-Type'] = 'image/jpeg';
+        }
 
         $ret = array(
             'headers'   => $headers,
             'content'   => $content
         );
+
         return $ret;
     }
 
@@ -359,7 +371,7 @@ class Picture
 
         $image_path = $prepared_path . $image_name;
         $flagChangeImage = false;
-        if (file_exists($image_path) ) {
+        if (file_exists($image_path)) {
             $dateImage = new \DateTime();
             $datePreparedImage = new \DateTime();
             $dateImage->setTimestamp(filectime($this->_full_path));
@@ -369,7 +381,12 @@ class Picture
             }
         }
 
-        if (!file_exists($image_path)
+        $infos = pathinfo($image_path);
+        if (($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff')
+            && file_exists($infos['dirname']."/". $infos['filename'].".jpg")
+        ) {
+        } else if (!file_exists($image_path)
             || $flagChangeImage
         ) {
             //prepared image does not exists yet
@@ -395,6 +412,11 @@ class Picture
                     filesize($this->_full_path)
                 );
             }
+        }
+        if ($infos['extension'] == 'tif'
+            || $infos['extension'] == 'tiff'
+        ) {
+            $image_path = $infos['dirname']."/". $infos['filename'].".jpg";
         }
         return array(
             $image_path,
@@ -623,6 +645,7 @@ class Picture
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
         }
+
         Analog::debug(
             'Loading remote infos from ' . $uri
         );
@@ -644,15 +667,16 @@ class Picture
     {
         $uri = null;
 
-        if ( $ruri === null ) {
+        if ($ruri === null) {
             $uri = self::getRemoteInfosURI($rinfos, $path, $img);
         } else {
             $uri = $ruri;
         }
         $rcontents = null;
-        if ( $remoteContents = json_decode(@file_get_contents($uri)) ) {
-            if ( $rinfos['method'] === 'bach' ) {
-                if( isset($remoteContents->mat) ) {
+        if ($remoteContents = json_decode(@file_get_contents($uri))) {
+            $rcontents['cookie'] = $remoteContents->cookie;
+            if ($rinfos['method'] === 'bach') {
+                if (isset($remoteContents->mat)) {
                     $rcontents['mat']['link_mat'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -660,7 +684,7 @@ class Picture
                     );
                     $rcontents['mat']['record'] = $remoteContents->mat->record;
                 }
-                if ( isset($remoteContents->ead) ) {
+                if (isset($remoteContents->ead)) {
                     $rcontents['ead']['link'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -673,10 +697,12 @@ class Picture
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
                         $remoteContents->ead->doclink
                     );
+                    $rcontents['ead']['communicability_general'] = $remoteContents->ead->communicability_general;
+                    $rcontents['ead']['communicability_sallelecture'] = $remoteContents->ead->communicability_sallelecture;
                 }
-            } else if ( $rinfos['method'] === 'pleade' ) {
+            } else if ($rinfos['method'] === 'pleade') {
                 $rxml = @simplexml_load_string($remoteContents->link);
-                if ( $rxml->a ) {
+                if ($rxml->a) {
                     unset($rxml->a['onclick']);
                     unset($rxml->a['id']);
                     unset($rxml->a['attr']);
@@ -687,7 +713,17 @@ class Picture
                     $rcontents = null;
                 }
             }
-
+            $rcontents['reader'] = false;
+            if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
+                $cookieContent = json_decode(
+                    $_COOKIE[$rcontents['cookie'].'_reader']
+                );
+                if (isset($cookieContent->reader)
+                    || isset($cookieContent->archivist)
+                ) {
+                    $rcontents['reader'] = true;
+                }
+            }
         }
         return $rcontents;
     }

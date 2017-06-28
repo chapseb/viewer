@@ -65,6 +65,8 @@ class Conf
     private $_iip;
     private $_print;
     private $_comment;
+    private $_readingroom;
+    private $_ip_internal;
     private $_remote_infos;
 
     private $_path;
@@ -72,6 +74,8 @@ class Conf
     private $_prepared_path;
     private $_prepare_method;
     private $_known_methods;
+    private $_debug_mode;
+    private $_notdownloadprint;
 
     private $_known_remote_methods = array(
         'bach',
@@ -127,6 +131,8 @@ class Conf
         $this->_formats = $this->_conf['formats'];
 
         $this->_comment = $this->_conf['comment'];
+        $this->_readingroom = $this->_conf['readingroom'];
+        $this->_ip_internal = $this->_conf['ip_internal'];
 
         $this->_prepared_path = $this->_conf['prepared_images']['path'];
         if ( substr($this->_prepared_path, - 1) != '/' ) {
@@ -173,6 +179,8 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
+        $this->_debug_mode            = $this->_conf['debug_mode'];
+        $this->_notdownloadprint      = $this->_conf['notdownloadprint'];
     }
 
     /**
@@ -243,6 +251,26 @@ class Conf
     public function getComment()
     {
         return $this->_comment;
+    }
+
+    /**
+     * Retrieve readingroom ip
+     *
+     * @return string
+     */
+    public function getReadingroom()
+    {
+        return $this->_readingroom;
+    }
+
+    /**
+     * Retrieve if internal ip for communicability
+     *
+     * @return string
+     */
+    public function getIpinternal()
+    {
+        return $this->_ip_internal;
     }
 
     /**
@@ -326,7 +354,7 @@ class Conf
      *
      * @return string
      */
-    public function getPrintFooter($orientation = null)
+    public function getPrintFooterImage($orientation = null)
     {
 
         $image = $this->_print['footer']['image'];
@@ -344,6 +372,26 @@ class Conf
         }
 
         return $image;
+    }
+
+    /**
+     * Retrieve print header
+     *
+     * @return string
+     */
+    public function getPrintHeaderContent()
+    {
+        return $this->_print['header']['content'];
+    }
+
+    /**
+     * Retrieve print footer
+     *
+     * @return string
+     */
+    public function getPrintFooterContent()
+    {
+        return $this->_print['footer']['content'];
     }
 
     /**
@@ -372,5 +420,25 @@ class Conf
         if ( defined('APP_TESTS') ) {
             $this->_setRoots($roots);
         }
+    }
+
+    /**
+     * Retrieve debug mode in config
+     *
+     * @return boolean
+     */
+    public function getDebugMode()
+    {
+        return $this->_debug_mode;
+    }
+
+    /**
+     * Retrieve download print param
+     *
+     * @return boolean
+     */
+    public function getNotDownloadPrint()
+    {
+        return $this->_notdownloadprint;
     }
 }

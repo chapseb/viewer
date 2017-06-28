@@ -69,9 +69,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
             </header>
             <figure id="viewer">
+                {% if communicability is defined and communicability == false %}
+                <noscript>
+                    <div id="nocommunicability">{% trans %}Image is not communicable.{% endtrans %}</div>
+                </noscript>
+                <div id="nocommunicabilityJS"></div>
+                {% else %}
                 <noscript>
                     <img src="{{ picture.getUrl(series) }}" alt=""/>
                 </noscript>
+                {% endif %}
                 {% if iip %}<div id="pviewer"> </div>{% endif %}
                 <!-- Browse series, if series there is -->
                 {% if series %}
@@ -81,8 +88,14 @@ POSSIBILITY OF SUCH DAMAGE.
                             ?s={{ series.getStart }}&e={{ series.getEnd }}&
                         {%- endif -%}
                     {%- endset -%}
-                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
-                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getPreviousImage() }}{{ img_series }}" class="navsimple" id="previmg" title="{% trans "Go to previous image" %}">{% trans "Previous" %}</a>
+                    {% if series.getTenPreviousImage() is defined and series.getTenPreviousImage != null and series.getCount() > 10%}
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getTenPreviousImage() }}{{ img_series }}" class="navdouble" id="prevdoubleimg" title="{% trans "Go to 10 previous images" %}">{% trans "Previous" %}</a>
+                    {% endif %}
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getNextImage() }}{{ img_series }}" class="navsimple" id="nextimg" title="{% trans "Go to next image" %}">{% trans "Next" %}</a>
+                    {% if series.getTenNextImage() is defined and series.getCount() > 10%}
+                    <a href="{{ app_web_url }}/series/{{ series.getPath() }}?img={{ series.getTenNextImage() }}{{ img_series }}" class="navdouble" id="nextdoubleimg" title="{% trans "Go to 10 next images" %}">{% trans "Next" %}</a>
+                    {% endif %}
                 </nav>
                 {% endif %}
                 <!-- Toolbar -->
@@ -98,17 +111,17 @@ POSSIBILITY OF SUCH DAMAGE.
                         {% endif %}
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
-                        {% if picture.hasFormat('full') and picture.hasFormat('default') %}
+                        {% if ((picture.hasFormat('full') and picture.hasFormat('default')) or series) and not(iip)%}
                         <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
                             <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
                         </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
-                        {% if comment %}
-                        <li id="comments" title="{% trans "Show related comments" %}">
-                        {% endif %}
-                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                         {% if not iip %}
+                            {% if comment %}
+                        <li id="comments" title="{% trans "Show related comments" %}">
+                            {% endif %}
+                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
                             {% endif %}
@@ -214,15 +227,21 @@ POSSIBILITY OF SUCH DAMAGE.
         {% endif %}
         <script>
             //global variables
+            var zoomGlobal = 100;
             var series_path = '{{ series.getPath() }}';
+            var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
             var image_path = '{{ picture.getPath() }}';
             {% endif %}
+            {% if remote_infos_url is defined %}
+            var remote_infos_url = '{{ remote_infos_url }}';
+            {% endif%}
             {% if not series.getStart is null and not series.getEnd is null -%}
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
             var app_url = '{{ app_base_url }}';
+            var notdownloadprint = '{{ notdownloadprint }}';
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
             var hidef_on_title = '{{ "Switch to low resolution image"|trans|escape('js') }}';
             var alert_bad_value = '{{ "Warning, this is a bad value!"|trans|escape('js') }}';
@@ -230,13 +249,18 @@ POSSIBILITY OF SUCH DAMAGE.
             var header_ead = '{{ "Ead informations"|trans|escape('js') }}';
             var link_ead = '{{ "Link to an ead document: "|trans|escape('js') }}';
             var link_record = '{{ "Link to the record: "|trans|escape('js') }}';
+            var link_document = '{{ "Reach to complete description: "|trans|escape('js') }}';
+            var intitule_ead = '{{ "Title description: "|trans|escape('js') }}';
+            var unitid_ead = '{{ "Unitid description: "|trans|escape('js') }}';
             var remote_infos_key = {
                 'date_enregistrement':'{{ "record date"|trans|escape('js') }}',
                 "lieu_enregistrement":'{{ "record place"|trans|escape('js') }}',
                 "annee_naissance": '{{ "birth year"|trans|escape('js') }}',
                 "lieu_naissance":'{{ "place of birth"|trans|escape('js') }}',
                 "additional_informations":'{{ "additional informations"|trans|escape('js') }}',
-                "lieu_residence": '{{ "place of residence"|trans|escape('js') }}'
+                "lieu_residence": '{{ "place of residence"|trans|escape('js') }}',
+                "communicability_general": '{{ "general communicability"|trans|escape('js') }}',
+                "communicability_sallelecture": '{{ "reading room communicability"|trans|escape('js') }}'
                 }
 
             var contentRemoteDefault = '{{ "No information for this picture."|trans|escape('js') }}';
@@ -275,6 +299,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
 
                 {%- if not(iip) -%}
+                var comm;
+                comm = '{{ picture.getUrl(series)}}';
                 var viewer = $("#viewer").bviewer({
                     {% if remote_method -%}
                     remote: {
@@ -282,7 +308,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         uri: '{{ remote_uri }}'
                     },
                     {% endif -%}
-                    src: "{{ picture.getUrl(series) }}",
+                    src: comm,
                     update_on_resize: true,
                     zoom_animation: false,
                     mousewheel: true,

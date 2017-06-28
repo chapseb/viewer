@@ -90,12 +90,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 || _io.orig_width() < _io.display_width()
             ) {
                 //set intial zoom to 100% max
-                    me.set_zoom(100);
+                    me.set_zoom(zoomGlobal);
             }
 
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
                 me.updateImageInfos();
+                if ( $('#lockparams').hasClass('off') == false && $('#hidef').data('state')=='on' ){
+                    me.set_zoom(zoomGlobal);
+                }
             } else {
                 me.updateImageInfos();
             }
@@ -330,7 +333,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + '/' + res;
 
-        window.location.href = res;
+        if (!notdownloadprint) {
+            window.location.href = res;
+        } else {
+            window.open(res, '_blank');
+        }
     },
 
     /**
@@ -367,7 +374,11 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         var _thumbs = data['thumbs'];
                         var _meta = data['meta'];
                         for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
-                            var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
+                            if (typeof _thumbs[i].path_image == 'undefined') {
+                                var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
+                            } else {
+                                var _src = app_url + '/ajax/img/' + _thumbs[i].path_image + '/format/thumb';
+                            }
                             var _img = $('<img src="' + _src  + '" alt=""/>');
                             var index = i + 1;
                             var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
@@ -443,7 +454,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }).val('default');
 
         //navbar
-        $('#previmg,#nextimg').bind('click touchstart', function(){
+        $('#previmg,#nextimg,#prevdoubleimg,#nextdoubleimg').bind('click touchstart', function(){
             if($("#lockparams").hasClass('off')) {
                 _this  = $(this);
                 var _t = me.display_options.transform;
@@ -461,6 +472,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _this.attr('data-state', 'on');
                 _this.attr('title', hidef_on_title);
 
+                zoomGlobal = 100;
+            } else {
+                zoomGlobal = me.current_zoom;
             }
 
             me.display(me._imgNameFromLink($(this)));
@@ -815,6 +829,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
      */
     updateSeriesInfos: function()
     {
+        var me = this;
         var _url = app_url + '/ajax/series/infos/';
         if (series_path.substr(-1) != '/') {
             _url += series_path + '/' + this.image_name;
@@ -832,25 +847,57 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             function(data){
                 var _prev = $('#previmg');
                 _prev.attr('href', series_path + '?img=' + data.prev);
+                var _tenprev = $('#prevdoubleimg');
+                _tenprev.attr('href', series_path + '?img=' + data.tenprev);
                 var _next = $('#nextimg');
+                var _tennext = $('#nextdoubleimg');
+                _tennext.attr('href', series_path + '?img=' + data.tennext);
                 _next.attr('href', series_path + '?img=' + data.next);
                 $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+data.position+'"/></form>');
                 $("#search_img input").keypress(function(event) {
                     if (event.which == 13) {
-                        event.preventDefault();
                         var posnum = $('#number_image').val();
                         var numtotal = $('#number_total').text();
                         if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
-                            var app_series_url = app_url + '/series/' + series_path;
-                            if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                                window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
+                            if($("#lockparams").hasClass('off')) {
+                                _this  = $(this);
+                                var _t = me.display_options.transform;
+                                _t.negate = false;
+                                $('#negate').attr('checked', false);
+                                _t.contrast = false;
+                                $('#change_contrast').val(0);
+                                _t.brightness = false;
+                                $('#change_brightness').val(0);
+                                _t.rotate = 0;
+                                me.display_options.format = 'default';
+                                $('#formats > select').val('default');
+                                _format = 'full';
+                                _this.data('state', 'on');
+                                _this.attr('data-state', 'on');
+                                _this.attr('title', hidef_on_title);
+
+                                zoomGlobal = 100;
                             } else {
-                                window.location.href = app_series_url + '?num=' + posnum;
+                                zoomGlobal = me.current_zoom;
                             }
-                        }
-                        else {
+                            if (series_path.substr(series_path.length-1) == '/') {
+                                me.display(series_path + series_content[parseInt(posnum)-1]);
+                            } else {
+                                me.display(series_path + '/' + series_content[parseInt(posnum)-1]);
+                            }
+                            $('#formats > select').val(me.display_options.format);
+                            me.drawNavigation();
+
+                            // rebind of toolbarbtn navigation when change image
+                            $('.toolbarbtn').bind('click touchstart', function() {
+                                $('.navwin').toggle();
+                                $(this).toggleClass('off');
+                            });
+                        } else {
                             alert(alert_bad_value);
                         }
+
+                        return false;
                     }
                 });
                 if ( data.remote ) {
@@ -896,7 +943,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
 
         _url += this.image_name;
-
+        if (typeof remote_infos_url !== 'undefined') {
+            _url = app_url + '/ajax/image/infos/' + remote_infos_url;
+        }
         $.get(
             _url,
             function(data){
@@ -913,7 +962,8 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                             else{
                                 label = key;
                             }
-                            if (key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement') {
+                            if (key == 'classe' || key == 'annee_naissance' || key == 'date_enregistrement'
+                               || key == 'communicability_general' || key == 'communicability_sallelecture') {
                                 var date = new Date(value);
                                 $('#mat_list_record').append('<li class="mat_record"><span class="mat_record_head">'+ label + "</span> : " + date.getFullYear() + "</li>");
                             } else {
@@ -928,9 +978,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         $('header > h2').html(data.remote.ead.link);
                         $('#allInfosRemote').append('<h3 class="header_infos">' + header_ead + '</h3>');
                         $('#allInfosRemote').append('<ul id="ead_list_infos"></ul>');
-                        $('#ead_list_infos').append('<li>' + data.remote.ead.cUnittitle + '</li>');
-                        $('#ead_list_infos').append('<li>' + data.remote.ead.unitid + '</li>');
-                        $('#ead_list_infos').append('<li>' + link_ead + data.remote.ead.doclink + '</li>');
+                        if (data.remote.ead.cUnittitle != null) {
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + intitule_ead + '</span>' + data.remote.ead.cUnittitle + '</li>');
+                        }
+                        if (data.remote.ead.unitid != null) {
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + unitid_ead + '</span>' + data.remote.ead.unitid + '</li>');
+                        }
+                        if (data.remote.ead.doclink != null) {
+                            $('#ead_list_infos').append('<li><span class="ead_description_head">' + link_document + '</span>' + data.remote.ead.doclink + '</li>');
+                        }
                     }
                 }
             },

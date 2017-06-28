@@ -226,13 +226,15 @@ class Series
             $this->_current = $img;
             return true;
         } else {
-            Analog::log(
-                str_replace(
-                    '%image',
-                    $img,
-                    _('Image %image is not part of current series!')
-                )
-            );
+            if ($this->_conf->getDebugMode()) {
+                Analog::log(
+                    str_replace(
+                        '%image',
+                        $img,
+                        _('Image %image is not part of current series!')
+                    )
+                );
+            }
             return false;
         }
     }
@@ -288,6 +290,27 @@ class Series
     }
 
     /**
+     * Get 10 previous image
+     *
+     * @return string
+     */
+    public function getTenPreviousImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ($_index - 10 >= 0) {
+            $_index = ($_index - 10);
+        } else {
+            $_index = (count($this->_content) + ($_index - 10));
+        }
+
+        if ($_index < 0) {
+            $_index = 0;
+            return null;
+        }
+        return $this->_content[$_index];
+    }
+
+    /**
      * Get next image
      *
      * @return string
@@ -299,6 +322,22 @@ class Series
             $_index = 0;
         } else {
             $_index += 1;
+        }
+        return $this->_content[$_index];
+    }
+
+    /**
+     * Get 10 next image
+     *
+     * @return string
+     */
+    public function getTenNextImage()
+    {
+        $_index = array_search($this->_current, $this->_content);
+        if ($_index === count($this->_content) - 1) {
+            $_index = 0;
+        } else {
+            $_index = ($_index + 10)%count($this->_content);
         }
         return $this->_content[$_index];
     }
@@ -324,6 +363,16 @@ class Series
     }
 
     /**
+     * Get array image
+     *
+     * @return array
+     */
+    public function getContent()
+    {
+        return $this->_content;
+    }
+
+    /**
      * Retrieve informations about current series
      *
      * @return array
@@ -339,7 +388,9 @@ class Series
                 'path'      => $this->_path,
                 'current'   => $this->_current,
                 'next'      => $this->getNextImage(),
+                'tennext'   => $this->getTenNextImage(),
                 'prev'      => $this->getPreviousImage(),
+                'tenprev'   => $this->getTenPreviousImage(),
                 'count'     => $this->getCount(),
                 'position'  => $this->getCurrentPosition()
             );
@@ -365,11 +416,12 @@ class Series
     /**
      * Get list of cseries thumbnails
      *
-     * @param array $fmt Thumbnail format form configuration
+     * @param array  $fmt         Thumbnail format form configuration
+     * @param string $series_path Path      Serie image path
      *
      * @return array
      */
-    public function getThumbs($fmt)
+    public function getThumbs($fmt, $series_path)
     {
         $ret = array();
         $thumbs = array();
@@ -377,18 +429,93 @@ class Series
         $ret['meta'] = $fmt;
 
         foreach ( $this->_content as $c ) {
-            $p = new Picture($this->_conf, $c, null, $this->_full_path);
-            $path = null;
-            if ( $p->isPyramidal() ) {
-                $path = $p->getFullPath();
+            $rcontents = Picture::getRemoteInfos(
+                $this->_conf->getRemoteInfos(),
+                null,
+                null,
+                $this->_conf->getRemoteInfos()['uri']. 'infosimage/' .$series_path . '/' . $c
+            );
+
+            $communicability = false;
+            $current_date = new \DateTime();
+            $current_year = $current_date->format("Y");
+
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } else {
-                $path = $c;
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+            if (isset($rcontents['ead'])) {
+                if ($rcontents['ead']['communicability_general'] == null
+                    || (isset($rcontents['ead']['communicability_general'])
+                    && $rcontents['ead']['communicability_general'] <= $current_year)
+                    || (strpos($conf->getReadingroom(), $ip) !== false
+                    && isset($rcontents['ead']['communicability_sallelecture'])
+                    && $rcontents['ead']['communicability_sallelecture'] <= $current_year)
+                ) {
+                    $communicability = true;
+                }
             }
 
-            $thumbs[] = array(
-                'name'  => $c,
-                'path'  => $path
-            );
+            if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
+                $communicability = true;
+            } else {
+                if (isset($rcontents['mat']['record'])) {
+                    $remoteInfosMat = $rcontents['mat']['record'];
+                    if (isset($remoteInfosMat->communicability_general)) {
+                        $communicabilityGeneralMat = new \DateTime($remoteInfosMat->communicability_general);
+                        $communicabilitySallelectureMat = new \DateTime($remoteInfosMat->communicability_sallelecture);
+                        if ($communicabilityGeneralMat <= $current_date
+                            || (strpos($conf->getReadingroom(), $ip) !== false
+                            && $communicabilitySallelectureMat <= $current_date)
+                        ) {
+                            $communicability = true;
+                        }
+                    }
+
+                    if (!isset($remoteInfosMat->communicability_general)
+                        && !isset($remoteInfosMat->communicability_sallelecture)
+                    ) {
+                        $communicability = true;
+                    }
+                }
+            }
+
+            if ($communicability == true) {
+                $p = new Picture($this->_conf, $c, null, $this->_full_path);
+                $path = null;
+                if ($p->isPyramidal()) {
+                    $path = $p->getFullPath();
+                } else {
+                    $path = $c;
+                }
+
+                $thumbs[] = array(
+                    'name'       => $c,
+                    'path'       => $path
+                );
+            } else {
+                $p = new Picture(
+                    $this->_conf,
+                    DEFAULT_PICTURE,
+                    $this->_conf->getRemoteInfos()['uri']
+                );
+                $path = null;
+                if ($p->isPyramidal()) {
+                    $path = $p->getFullPath();
+                } else {
+                    $path = $c;
+                }
+
+                $thumbs[] = array(
+                    'name'       => $c,
+                    'path'       => $path,
+                    'path_image' => DEFAULT_PICTURE
+                );
+            }
+
         }
         $ret['thumbs'] = $thumbs;
 
