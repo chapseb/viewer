@@ -57,63 +57,12 @@ $app->get(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-
-        $communicability = false;
-        $readerFlag = $rcontents['reader'];
-        if ($conf->getIpInternal()) {
-            $readerFlag = true;
-        }
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || (strpos($conf->getReadingroom(), $ip) !== false
-                && $readerFlag == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $communicability = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-            $communicability = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || (strpos($conf->getReadingroom(), $ip) !== false
-                        && $readerFlag == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $communicability = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $communicability = true;
-                }
-            }
-        }
-
+        $communicability = $rcontents['communicability'];
         if ($communicability == true) {
             $picture = $viewer->getImage($series_path, $image);
         } else {
@@ -185,62 +134,12 @@ $app->get(
             $conf->getRemoteInfos(),
             $path,
             $img,
-            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        $args['communicability'] = false;
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-        if ($conf->getIpInternal()) {
-            $rcontents['reader'] = true;
-        }
-
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
-                && $rcontents['reader'] == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $args['communicability'] = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-            $args['communicability'] = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || (strpos($conf->getReadingroom(), $ip) !== false
-                        && $rcontents['reader'] == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $args['communicability'] = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $args['communicability'] = true;
-                }
-            }
-        }
+        $args['communicability'] = $rcontents['communicability'];
         if ($args['communicability'] == false) {
             $args['remote_infos_url'] = $picture->getPath()
                 . '/' . $picture->getName();
@@ -272,7 +171,9 @@ $app->get(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
         $unitid = null;
         if (isset($rcontents['ead']['unitid'])) {

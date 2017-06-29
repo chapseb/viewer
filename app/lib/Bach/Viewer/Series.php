@@ -437,51 +437,17 @@ class Series
             );
 
             $communicability = false;
-            $current_date = new \DateTime();
-            $current_year = $current_date->format("Y");
 
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
-            if (isset($rcontents['ead'])) {
-                if ($rcontents['ead']['communicability_general'] == null
-                    || (isset($rcontents['ead']['communicability_general'])
-                    && $rcontents['ead']['communicability_general'] <= $current_year)
-                    || (strpos($conf->getReadingroom(), $ip) !== false
-                    && isset($rcontents['ead']['communicability_sallelecture'])
-                    && $rcontents['ead']['communicability_sallelecture'] <= $current_year)
-                ) {
-                    $communicability = true;
-                }
-            }
+            $rcontents = Picture::getRemoteInfos(
+                $this->_conf->getRemoteInfos(),
+                null,
+                null,
+                $this->_conf->getRemoteInfos()['uri']. 'infosimage/' .$series_path . '/' . $c,
+                $this->_conf->getReadingroom(),
+                $this->_conf->getIpInternal()
+            );
 
-            if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-                $communicability = true;
-            } else {
-                if (isset($rcontents['mat']['record'])) {
-                    $remoteInfosMat = $rcontents['mat']['record'];
-                    if (isset($remoteInfosMat->communicability_general)) {
-                        $communicabilityGeneralMat = new \DateTime($remoteInfosMat->communicability_general);
-                        $communicabilitySallelectureMat = new \DateTime($remoteInfosMat->communicability_sallelecture);
-                        if ($communicabilityGeneralMat <= $current_date
-                            || (strpos($conf->getReadingroom(), $ip) !== false
-                            && $communicabilitySallelectureMat <= $current_date)
-                        ) {
-                            $communicability = true;
-                        }
-                    }
-
-                    if (!isset($remoteInfosMat->communicability_general)
-                        && !isset($remoteInfosMat->communicability_sallelecture)
-                    ) {
-                        $communicability = true;
-                    }
-                }
-            }
+            $communicability = $rcontents['communicability'];
 
             if ($communicability == true) {
                 $p = new Picture($this->_conf, $c, null, $this->_full_path);

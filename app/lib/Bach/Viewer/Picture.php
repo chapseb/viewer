@@ -655,16 +655,18 @@ class Picture
     /**
      * Retrieve remote informations about image
      *
-     * @param array  $rinfos Remote informations configuration
-     * @param string $path   Image path
-     * @param string $img    Image name
-     * @param string $ruri   Remote URI (will be build with
-     *                       getRemoteInfosURI if null)
+     * @param array  $rinfos        Remote informations configuration
+     * @param string $path          Image path
+     * @param string $img           Image name
+     * @param string $ruri          Remote URI (will be build with
+     *                              getRemoteInfosURI if null)
+     * @param string $readingRoomIp Ip test for reading room
      *
      * @return string
      */
-    public static function getRemoteInfos($rinfos, $path, $img, $ruri = null)
-    {
+    public static function getRemoteInfos($rinfos, $path, $img,
+        $ruri = null, $readingRoomIp = null, $ipInternal = false
+    ) {
         $uri = null;
 
         if ($ruri === null) {
@@ -697,8 +699,10 @@ class Picture
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
                         $remoteContents->ead->doclink
                     );
-                    $rcontents['ead']['communicability_general'] = $remoteContents->ead->communicability_general;
-                    $rcontents['ead']['communicability_sallelecture'] = $remoteContents->ead->communicability_sallelecture;
+                    $rcontents['ead']['communicability_general']
+                        = $remoteContents->ead->communicability_general;
+                    $rcontents['ead']['communicability_sallelecture']
+                        = $remoteContents->ead->communicability_sallelecture;
                 }
             } else if ($rinfos['method'] === 'pleade') {
                 $rxml = @simplexml_load_string($remoteContents->link);
@@ -713,18 +717,135 @@ class Picture
                     $rcontents = null;
                 }
             }
-            $rcontents['reader'] = false;
-            if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
-                $cookieContent = json_decode(
-                    $_COOKIE[$rcontents['cookie'].'_reader']
-                );
-                if (isset($cookieContent->reader)
-                    || isset($cookieContent->archivist)
+
+            $rcontents = self::isCommunicable(
+                $rcontents,
+                $readingRoomIp,
+                $ipInternal
+            );
+        }
+
+        return $rcontents;
+    }
+
+    /**
+     * Treat remote infos communicability
+     *
+     * @param array  $rcontents     Remote informations with communicability
+     * @param string $readingRoomIp Ip of reading room client
+     * @param string $ipInternal    To know if ip is enougth to show uncomm img
+     *
+     * @return boolean
+     */
+    public static function isCommunicable($rcontents, $readingRoomIp, $ipInternal)
+    {
+        // get client ip
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipClient = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+        } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipClient = $_SERVER['HTTP_CLIENT_IP'];
+        } else {
+            $ipClient = $_SERVER['REMOTE_ADDR'];
+        }
+        $rcontents['reader'] = $rcontents['archivist'] = false;
+        if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
+            $jsonCookie = json_decode(
+                $_COOKIE[$rcontents['cookie'].'_reader']
+            );
+            if (isset($jsonCookie->reader)) {
+                $rcontents['reader'] = $jsonCookie->reader;
+            }
+            if (isset($jsonCookie->archivist)) {
+                $rcontents['archivist'] = $jsonCookie->archivist;
+            }
+        }
+        if ($ipInternal) {
+            $rcontents['reader'] = true;
+        }
+        $readerFlag = $rcontents['reader'];
+        $archivistFlag = $rcontents['archivist'];
+        if ($archivistFlag) {
+            $rcontents['communicability'] = true;
+            return $rcontents;
+        }
+        // FIXME find a better to take care of communicability
+        // in series with a start and an end image
+        if (!isset($rcontents['ead'])
+            && !isset($rcontents['mat'])
+        ) {
+            $rcontents['communicability'] = true;
+            return $rcontents;
+        }
+        $communicability = $communicabilityEad = $communicabilityMat = false;
+        $current_date = new \DateTime();
+        $current_year = $current_date->format("Y");
+        if (isset($rcontents['ead'])) {
+            $remoteInfosEad = $rcontents['ead'];
+            if (isset($remoteInfosEad['cAudience'])
+                && $remoteInfosEad['cAudience'] == 'internal'
+            ) {
+                $rcontents['cAudience'] = $remoteInfosEad['cAudience'];
+                $rcontents['communicability'] = false;
+                unset($rcontents['ead']);
+                return $rcontents;
+            }
+            if (isset($remoteInfosEad['audience'])
+                && $remoteInfosEad['audience'] == 'internal'
+            ) {
+                $rcontents['communicability'] = false;
+                return $rcontents;
+            }
+            // test communicability_general
+            if ($remoteInfosEad['communicability_general'] == null) {
+                $communicabilityEad = true;
+            }
+            if (isset($remoteInfosEad['communicability_general'])
+                && $remoteInfosEad['communicability_general'] <= $current_year
+            ) {
+                    $communicabilityEad = true;
+            }
+            // test communicability_sallelecture
+            if (strpos($readingRoomIp, $ipClient) !== false
+                && $readerFlag == true
+                && isset($remoteInfosEad['communicability_sallelecture'])
+                && $remoteInfosEad['communicability_sallelecture'] <= $current_year
+            ) {
+                $communicabilityEad = true;
+            }
+        }
+        if (isset($rcontents['mat'])) {
+            if (isset($rcontents['mat']['record'])) {
+                $remoteInfosMat = $rcontents['mat']['record'];
+                if (isset($remoteInfosMat->communicability_general)) {
+                    $commGeneralMat
+                        = new \DateTime($remoteInfosMat->communicability_general);
+                    if ($commGeneralMat <= $current_date) {
+                        $communicabilityMat = true;
+                    }
+                }
+                if (isset($remoteInfosMat->communicability_sallelecture)) {
+                    $commSallelectureMat
+                        = new \DateTime(
+                            $remoteInfosMat->communicability_sallelecture
+                        );
+                    if (strpos($readingRoomIp, $ipClient) !== false
+                        && $readerFlag == true
+                        && $commSallelectureMat <= $current_date
+                    ) {
+                        $communicabilityMat = true;
+                    }
+                }
+                if (!isset($remoteInfosMat->communicability_general)
+                    && !isset($remoteInfosMat->communicability_sallelecture)
                 ) {
-                    $rcontents['reader'] = true;
+                        $communicabilityMat = true;
                 }
             }
         }
+        if ($communicabilityEad  || $communicabilityMat) {
+            $communicability = true;
+        }
+        $rcontents['communicability'] = $communicability;
         return $rcontents;
     }
 
