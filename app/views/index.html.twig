@@ -228,6 +228,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <script>
             //global variables
             var zoomGlobal = 100;
+            var communicability = '{{ communicability }}';
             var series_path = '{{ series.getPath() }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}

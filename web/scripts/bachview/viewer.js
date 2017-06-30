@@ -365,7 +365,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
                 var _url = app_url + '/ajax/series/' + series_path  + '/thumbs';
                 if ( typeof series_start != 'undefined' && typeof series_end != 'undefined' ) {
-                    _url += '?s=' + series_start + '&e=' + series_end;
+                    _url += '?s=' + series_start + '&e=' + series_end + '&comm=' + communicability;
+                } else {
+                    _url += '?comm=' + communicability;
                 }
 
                 $.get(

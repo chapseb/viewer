@@ -416,12 +416,13 @@ class Series
     /**
      * Get list of cseries thumbnails
      *
-     * @param array  $fmt         Thumbnail format form configuration
-     * @param string $series_path Path      Serie image path
+     * @param array   $fmt             Thumbnail format form configuration
+     * @param string  $series_path     Path Serie image path
+     * @param boolean $communicability Flag to know if serie communicable
      *
      * @return array
      */
-    public function getThumbs($fmt, $series_path)
+    public function getThumbs($fmt, $series_path, $communicability = false)
     {
         $ret = array();
         $thumbs = array();
@@ -429,26 +430,6 @@ class Series
         $ret['meta'] = $fmt;
 
         foreach ( $this->_content as $c ) {
-            $rcontents = Picture::getRemoteInfos(
-                $this->_conf->getRemoteInfos(),
-                null,
-                null,
-                $this->_conf->getRemoteInfos()['uri']. 'infosimage/' .$series_path . '/' . $c
-            );
-
-            $communicability = false;
-
-            $rcontents = Picture::getRemoteInfos(
-                $this->_conf->getRemoteInfos(),
-                null,
-                null,
-                $this->_conf->getRemoteInfos()['uri']. 'infosimage/' .$series_path . '/' . $c,
-                $this->_conf->getReadingroom(),
-                $this->_conf->getIpInternal()
-            );
-
-            $communicability = $rcontents['communicability'];
-
             if ($communicability == true) {
                 $p = new Picture($this->_conf, $c, null, $this->_full_path);
                 $path = null;

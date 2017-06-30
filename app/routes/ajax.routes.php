@@ -171,7 +171,7 @@ $app->get(
         $request = $app->request;
         $start = $request->params('s');
         $end = $request->params('e');
-
+        $communicability = $request->params('comm');
         $series = new Series(
             $conf,
             $series_path,
@@ -183,7 +183,7 @@ $app->get(
         $formats = $conf->getFormats();
         $fmt = $formats['thumb'];
 
-        $thumbs = $series->getThumbs($fmt, $series_path);
+        $thumbs = $series->getThumbs($fmt, $series_path, $communicability);
 
         echo json_encode($thumbs);
     }
