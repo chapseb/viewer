@@ -149,6 +149,14 @@ $app->get(
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
         $args['displayHD'] = $conf->getDisplayHD();
 
+        $args['zoomify']          = false;
+        foreach ($conf->getPatternZoomify() as $pattern) {
+            if (strstr($picture->getPath(), $pattern) == true) {
+                $args['zoomify'] = true;
+                break;
+            }
+        }
+
         $app->render(
             'index.html.twig',
             $args

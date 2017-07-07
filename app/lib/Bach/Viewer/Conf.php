@@ -78,6 +78,7 @@ class Conf
     private $_notdownloadprint;
     private $_namefileprint;
     private $_displayHD;
+    private $_patternzoomify;
 
     private $_known_remote_methods = array(
         'bach',
@@ -185,6 +186,7 @@ class Conf
         $this->_notdownloadprint = $this->_conf['notdownloadprint'];
         $this->_namefileprint    = $this->_conf['namefileprint'];
         $this->_displayHD        = $this->_conf['displayHD'];
+        $this->_patternzoomify   = $this->_conf['patternzoomify'];
     }
 
     /**
@@ -464,5 +466,15 @@ class Conf
     public function getDisplayHD()
     {
         return $this->_displayHD;
+    }
+    
+    /**
+    * Retrieve pattern zoomify param
+    *
+    * @return boolean
+    */
+    public function getPatternZoomify()
+    {
+        return $this->_patternzoomify;
     }
 }

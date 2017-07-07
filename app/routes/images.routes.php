@@ -105,6 +105,18 @@ $app->get(
             $path = '/' . implode('/', $img_params);
         }
         $picture = null;
+
+        $zoomify      = false;
+        $zoomify_path = null;
+        foreach ($conf->getPatternZoomify() as $pattern) {
+            if (strstr($path, $pattern) == true) {
+                $zoomify      = true;
+                $zoomify_path = $path.'/'.$img;
+                $img = DEFAULT_PICTURE;
+                break;
+            }
+        }
+
         if ( $img === DEFAULT_PICTURE ) {
             $picture = new Picture(
                 $conf,
@@ -116,10 +128,15 @@ $app->get(
         }
 
         $args = array(
-            'img'       => $img,
-            'picture'   => $picture,
-            'iip'       => $picture->isPyramidal(),
+            'img'          => $img,
+            'picture'      => $picture,
+            'iip'          => $picture->isPyramidal(),
+            'zoomify'      => $zoomify,
+            'zoomify_path' => $zoomify_path
         );
+        if ($args['zoomify']) {
+            $args['iip'] = true;
+        }
 
         if ( $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
@@ -145,7 +162,7 @@ $app->get(
         );
 
         $args['communicability'] = $rcontents['communicability'];
-        if ($args['communicability'] == false) {
+        if ($args['communicability'] == false && !$args['zoomify']) {
             $args['remote_infos_url'] = $picture->getPath()
                 . '/' . $picture->getName();
             $args['picture'] = new Picture(

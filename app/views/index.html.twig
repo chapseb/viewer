@@ -215,6 +215,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipviewer.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/zoomify.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/touch.js"></script>
         {% if lang == 'fr_FR.utf8' %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.fr.js"></script>
@@ -343,7 +344,20 @@ POSSIBILITY OF SUCH DAMAGE.
             })(jQuery);
             //mootools stuff, if any
             {% if iip %}
+                {% if zoomify %}
                 // Create our iipmooviewer object
+                var _iipviewer = new BIIPMooViewer( "pviewer", {
+                    {% if enable_right_click %}
+                    disableContextMenu: false,
+                    {% endif %}
+                    server: '/images_serveur/',
+                    image: '{{ zoomify_path }}',
+                    protocol: 'zoomify',
+                    navWinSize: {{ thumb_format.width }},
+                    showNavButtons: false,
+                    prefix: '/images/'
+                });
+                {% else %}
                 var _iipviewer = new BIIPMooViewer( "pviewer", {
                     {% if enable_right_click %}
                     disableContextMenu: false,
@@ -355,6 +369,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     showNavButtons: false,
                     prefix: '/images/'
                 });
+
+                {% endif %}
             {% endif %}
         </script>
 {% endblock %}
