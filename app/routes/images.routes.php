@@ -53,11 +53,13 @@ $app->get(
             $series_path = substr($series_path, 0, -1);
         }
 
+        $ruri = "infosimage/". $series_path . "/" . $image;
+        $ruri = preg_replace('/(\/+)/', '/', $ruri);
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image,
+            $conf->getRemoteInfos()['uri'].$ruri,
             $conf->getReadingroom(),
             $conf->getIpInternal()
         );
