@@ -171,11 +171,16 @@ $app->get(
             $args['themes'] = 'themes';
         }
 
+        if ($start != null && $end != null) {
+            $ruri = $conf->getRemoteInfos()['uri']."infosimage/". implode('/', $path) . '/' . $img;
+        } else {
+            $ruri = $conf->getRemoteInfos()['uri']."infosimage/". implode('/', $path) . $img;
+        }
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $path[0],
             $img,
-            $conf->getRemoteInfos()['uri']."infosimage/". implode('/', $path) . $img,
+            $ruri,
             $conf->getReadingroom()
         );
         $args['communicability'] = $rcontents['communicability'];
