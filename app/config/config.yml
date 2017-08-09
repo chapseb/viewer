@@ -65,12 +65,14 @@ roots:
 
 print:
     header:
-        image: ~
+        image: 'images/logo.png'
         #image_landscape: ~
         #image_portrait: ~
         content: ~
     footer:
         image: ~
+        #image_landscape: ~
+        #image_portrait: ~
         content: ~
 
 remote_infos: ~
