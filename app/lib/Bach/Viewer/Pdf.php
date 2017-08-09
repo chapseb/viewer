@@ -214,7 +214,7 @@ class Pdf extends \TCPDF
     public function getContent()
     {
         $this->_prepareImage();
-        return $this->Output('bach_print.pdf', 'S');
+        return $this->Output($this->_conf->getNameFilePrint(), 'S');
     }
 
     /**
@@ -225,7 +225,7 @@ class Pdf extends \TCPDF
     public function download()
     {
         $this->_prepareImage();
-        $this->output('bach_print.pdf', 'D');
+        $this->output($this->_conf->getNameFilePrint(), 'D');
     }
 
 }

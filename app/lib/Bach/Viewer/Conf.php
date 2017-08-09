@@ -76,6 +76,7 @@ class Conf
     private $_known_methods;
     private $_debug_mode;
     private $_notdownloadprint;
+    private $_namefileprint;
     private $_displayHD;
 
     private $_known_remote_methods = array(
@@ -182,6 +183,7 @@ class Conf
         }
         $this->_debug_mode       = $this->_conf['debug_mode'];
         $this->_notdownloadprint = $this->_conf['notdownloadprint'];
+        $this->_namefileprint    = $this->_conf['namefileprint'];
         $this->_displayHD        = $this->_conf['displayHD'];
     }
 
@@ -442,6 +444,16 @@ class Conf
     public function getNotDownloadPrint()
     {
         return $this->_notdownloadprint;
+    }
+
+    /**
+     * Change pdf print name
+     *
+     * @return boolean
+     */
+    public function getNameFilePrint()
+    {
+        return $this->_namefileprint;
     }
 
     /**

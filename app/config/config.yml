@@ -33,6 +33,7 @@ readingroom: null
 ip_internal: false
 debug_mode: false
 notdownloadprint: false
+namefileprint: 'bach-print.pdf'
 displayHD: false
 
 formats:
