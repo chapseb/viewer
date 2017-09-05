@@ -68,7 +68,7 @@ $app->get(
         if ($communicability == true) {
             $picture = $viewer->getImage($series_path, $image);
         } else {
-            $picture = $viewer->getImage(null, 'main.jpg');
+            $picture = $viewer->getImage(null, DEFAULT_PICTURE);
         }
         $display = $picture->getDisplay($format);
         $response = $app->response();
