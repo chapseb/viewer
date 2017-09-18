@@ -136,6 +136,7 @@ $app->get(
         );
         if ($args['zoomify']) {
             $args['iip'] = true;
+            $args['img'] = $zoomify_path;
         }
 
         if ( $picture->isPyramidal() ) {

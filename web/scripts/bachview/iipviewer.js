@@ -212,9 +212,61 @@ var BIIPMooViewer = new Class({
                 $$('header > h2').set('text', data.current);
             },
             onFailure: function(){
-            alert('An error occured loading series informations, navigation may fail.');
+                alert('An error occured loading series informations, navigation may fail.');
             }
         }).get();
+    },
+
+    /**
+     * Update images informations:
+     * - navigation on previous/next images
+     * - position in current series
+     * - title
+     */
+    updateImageInfos: function(image)
+    {
+        var _url = image + '/ajax/image/infos';
+        if ( this.fpath != undefined ) {
+            _url += '/' + this.fpath;
+        }
+
+        var _req = new Request.JSON({
+            url: _url,
+            onSuccess: function(data){
+                if(data.remote.ead ) {
+                    $$('header > h2').set('html', data.remote.ead.link);
+                    $$('#allInfosRemote').set('html', '<h3 class="header_infos">' + header_ead + '</h3><ul id="ead_list_infos"><li id="intitule_ead"></li><li id="unitid_ead"></li><li id="link_document"></li></ul>');
+                    if (data.remote.ead.cUnittitle != null) {
+                        $$('#intitule_ead').set('html', '<li><span class="ead_description_head">' + intitule_ead + '</span> ' + data.remote.ead.cUnittitle + '</li>');
+                    }
+                    if (data.remote.ead.unitid != null) {
+                        $$('#unitid_ead').set('html', '<li><span class="ead_description_head">' + unitid_ead + '</span> ' + data.remote.ead.unitid + '</li>');
+                    }
+                    if (data.remote.ead.doclink != null) {
+                        $$('#link_document').set('html', '<li><span class="ead_description_head">' + link_document + '</span> ' + data.remote.ead.doclink + '</li>');
+                    }
+                }
+            },
+            onFailure: function(){
+                alert('An error occured loading series informations, navigation may fail.');
+            }
+        }).get();
+    },
+
+    /**
+     * Display remote infos window
+     */
+    displayRemoteInfosWindow: function()
+    {
+        var _win = $$('#remoteInfos_content');
+
+        this.remoteInfos_win_init = true;
+        _win.set('style', 'display: block');
+
+        $$('#remoteInfos_content .close').addEvent('click', function(){
+            _win.set('style', 'display: none');
+            this.remoteInfos_win_init = false;
+        });
     },
 
     /**

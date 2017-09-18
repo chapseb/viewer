@@ -58,7 +58,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </span>
                 {% endif %}
 
-                {% if not picture.isPyramidal %}
+                {% if not picture.isPyramidal and not zoomify %}
                 <div id="formats">
                     <select name="formats">
                         {% for key, fmt in picture.getVisibleFormats() %}
@@ -121,7 +121,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             {% if comment %}
                         <li id="comments" title="{% trans "Show related comments" %}">
                             {% endif %}
-                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
                             {% endif %}
@@ -132,6 +131,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="lockparams" class="off" title="{% trans "Lock image parameters" %}">
                             {% endif %}
                         {% endif %}
+                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                     </ul>
                 </aside>
                 {% if not(iip) %}
