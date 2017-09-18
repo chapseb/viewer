@@ -20,7 +20,7 @@
         "twig/twig": "1.*",
         "twig/extensions": "1.*",
         "symfony/yaml": "2.3.*",
-        "tecnick.com/tcpdf": "6.0.*",
+        "tecnickcom/tcpdf": "6.0.*",
         "atoum/atoum": "dev-master"
     }
 }
