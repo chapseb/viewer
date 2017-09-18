@@ -65,6 +65,28 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/img/:series(/format/:format)',
+    function ($series_path, $format = 'default') use ($app, $conf, $app_base_url) {
+        $series = new Series(
+            $conf,
+            $series_path,
+            $app_base_url,
+            $start,
+            $end
+        );
+
+        $picture = new Picture(
+            $conf,
+            $series->getRepresentative(),
+            $app_base_url,
+            $series->getFullPath()
+        );
+        $app->redirect($picture->getUrl($series, $format));
+
+    }
+);
+
+$app->get(
     '/ajax/representative/:series/format/:format',
     function ($series_path = null, $format) use ($app, $conf, $app_base_url) {
         $request = $app->request;
