@@ -227,7 +227,7 @@ var BIIPMooViewer = new Class({
     {
         var _url = image + '/ajax/image/infos';
         if ( this.fpath != undefined ) {
-            _url += '/' + this.fpath;
+            _url += this.fpath;
         }
 
         var _req = new Request.JSON({
