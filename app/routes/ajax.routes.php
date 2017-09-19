@@ -65,24 +65,17 @@ $app->get(
 );
 
 $app->get(
-    '/ajax/img/:series(/format/:format)',
-    function ($series_path, $format = 'default') use ($app, $conf, $app_base_url) {
-        $series = new Series(
-            $conf,
-            $series_path,
-            $app_base_url,
-            $start,
-            $end
-        );
-
+    '/ajax/img/:series/format/:format',
+    function ($series_path, $format = 'default') use ($app, $conf, $app_base_url, $viewer) {
+        // thumb image is in TileGroup0/0-0-0.jpg in zoomify
+        // with it you can show thumb and medium format in Bach
         $picture = new Picture(
             $conf,
-            $series->getRepresentative(),
+            '0-0-0.jpg',
             $app_base_url,
-            $series->getFullPath()
+            $series_path . '/TileGroup0'
         );
-        $app->redirect($picture->getUrl($series, $format));
-
+        $app->redirect($picture->getUrl(null, $format));
     }
 );
 
