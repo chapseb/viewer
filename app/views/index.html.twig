@@ -114,7 +114,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/jquery.ui.draggable.min.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/jquery.mousewheel.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/ui/iviewer/jquery.iviewer.min.js"></script>
+        {% if awsFlag %}
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/vieweraws.js"></script>
+        {% else %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/viewer.js"></script>
+        {% endif %}
             {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/slider/jquery.nouislider.min.js"></script>
             {% endif %}

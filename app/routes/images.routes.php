@@ -98,57 +98,85 @@ $app->get(
 
 $app->get(
     '/viewer/:image_params+',
-    function ($img_params) use ($app, $conf, $app_base_url) {
+    function ($img_params) use ($app, $conf, $app_base_url, $s3) {
         $img = array_pop($img_params);
         $path = null;
         if ( count($img_params) > 0 ) {
             $path = '/' . implode('/', $img_params);
         }
-        $picture = null;
 
-        $zoomify      = false;
-        $zoomify_path = null;
-        foreach ($conf->getPatternZoomify() as $pattern) {
-            if (strstr($path, $pattern) == true) {
-                $zoomify      = true;
-                $zoomify_path = $path.'/'.$img;
-                $img = DEFAULT_PICTURE;
-                break;
+        ///////////////////////////////////////////////////////////////////////////////////
+        if ($conf->getAWSFlag() == true) {
+            $results = array();
+
+            $roots = $conf->getRoots();
+
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => $root.$path.'/'.$img,
+                        "Delimiter" => "/",
+                    )
+                );
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+
             }
-        }
 
-        if ( $img === DEFAULT_PICTURE ) {
-            $picture = new Picture(
-                $conf,
-                DEFAULT_PICTURE,
-                $app_base_url
+        } else {
+            $picture = null;
+
+            $zoomify      = false;
+            $zoomify_path = null;
+            foreach ($conf->getPatternZoomify() as $pattern) {
+                if (strstr($path, $pattern) == true) {
+                    $zoomify      = true;
+                    $zoomify_path = $path.'/'.$img;
+                    $img = DEFAULT_PICTURE;
+                    break;
+                }
+            }
+
+            if ($img === DEFAULT_PICTURE) {
+                $picture = new Picture(
+                    $conf,
+                    DEFAULT_PICTURE,
+                    $app_base_url
+                );
+            } else {
+                $picture = new Picture($conf, $img, $app_base_url, $path);
+            }
+
+            $args = array(
+                'img'          => $img,
+                'picture'      => $picture,
+                'iip'          => $picture->isPyramidal(),
+                'zoomify'      => $zoomify,
+                'zoomify_path' => $zoomify_path
             );
-        } else {
-            $picture = new Picture($conf, $img, $app_base_url, $path);
-        }
+            if ($args['zoomify']) {
+                $args['iip'] = true;
+                $args['img'] = $zoomify_path;
+            }
 
-        $args = array(
-            'img'          => $img,
-            'picture'      => $picture,
-            'iip'          => $picture->isPyramidal(),
-            'zoomify'      => $zoomify,
-            'zoomify_path' => $zoomify_path
-        );
-        if ($args['zoomify']) {
-            $args['iip'] = true;
-            $args['img'] = $zoomify_path;
-        }
-
-        if ( $picture->isPyramidal() ) {
-            $iip = $conf->getIIP();
-            $args['iipserver'] = $iip['server'];
-        } else {
-            $args['image_format'] = 'default';
-            if ($conf->getDisplayHD()) {
-                $args['image_format'] = 'full';
+            if ($picture->isPyramidal()) {
+                $iip = $conf->getIIP();
+                $args['iipserver'] = $iip['server'];
+            } else {
+                $args['image_format'] = 'default';
+                if ($conf->getDisplayHD()) {
+                    $args['image_format'] = 'full';
+                }
             }
         }
 
+        /////////////////////////////////////////////////////////////////////////////////////
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
         }
@@ -163,14 +191,58 @@ $app->get(
         );
 
         $args['communicability'] = $rcontents['communicability'];
+
         if ($args['communicability'] == false && !$args['zoomify']) {
-            $args['remote_infos_url'] = $picture->getPath()
-                . '/' . $picture->getName();
-            $args['picture'] = new Picture(
-                $conf,
-                DEFAULT_PICTURE,
-                $app_base_url
+            if ($conf->getAWSFlag()) {
+                $results[0] = DEFAULT_PICTURE;
+            } else {
+                $args['remote_infos_url'] = $picture->getPath()
+                    . '/' . $picture->getName();
+                $args['picture'] = new Picture(
+                    $conf,
+                    DEFAULT_PICTURE,
+                    $app_base_url
+                );
+            }
+        }
+
+        $flagResult = false;
+        if (!isset($results[0])) {
+            $results[0] = 'main.jpg';
+            $flagResult = true;
+        }
+        if ($conf->getAWSFlag()) {
+            $args = array(
+                'cloudfront'          => $conf->getCloudfront(),
+                'path'                => $results[0],
+                'img'                 => $conf->getCloudfront().$results[0],
+                'default_src'         => $conf->getCloudfront()
+                                         .'prepared_images/default/'.$results[0],
+                'thumb_src'           => $conf->getCloudfront()
+                                         .'prepared_images/thumb/'.$results[0],
+                'image_database_name' => $path .'/'. $img
             );
+
+            $resultsSD = array();
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => 'prepared_images/default/'.$results[0],
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($resultsSD, $object['Key']);
+            }
+            if (!isset($resultsSD[0])) {
+                $results[0] = 'main.jpg';
+                $args['default_src'] = $conf->getCloudfront()
+                    .'prepared_images/default/'.$results[0];
+                $flagResult = true;
+            }
+            $args['notGenerateImage'] = $flagResult;
+            $args['awsFlag'] = $conf->getAWSFlag();
         }
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
         $args['displayHD'] = $conf->getDisplayHD();
