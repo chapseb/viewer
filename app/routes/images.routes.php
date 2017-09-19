@@ -53,71 +53,22 @@ $app->get(
             $series_path = substr($series_path, 0, -1);
         }
 
+        $ruri = "infosimage/". $series_path . "/" . $image;
+        $ruri = preg_replace('/(\/+)/', '/', $ruri);
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+            $conf->getRemoteInfos()['uri'].$ruri,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-
-        $communicability = false;
-        $readerFlag = $rcontents['reader'];
-        if ($conf->getIpInternal()) {
-            $readerFlag = true;
-        }
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || (strpos($conf->getReadingroom(), $ip) !== false
-                && $readerFlag == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $communicability = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-            $communicability = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || (strpos($conf->getReadingroom(), $ip) !== false
-                        && $readerFlag == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $communicability = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $communicability = true;
-                }
-            }
-        }
-
+        $communicability = $rcontents['communicability'];
         if ($communicability == true) {
             $picture = $viewer->getImage($series_path, $image);
         } else {
-            $picture = $viewer->getImage(null, 'main.jpg');
+            $picture = $viewer->getImage(null, DEFAULT_PICTURE);
         }
         $display = $picture->getDisplay($format);
         $response = $app->response();
@@ -154,6 +105,18 @@ $app->get(
             $path = '/' . implode('/', $img_params);
         }
         $picture = null;
+
+        $zoomify      = false;
+        $zoomify_path = null;
+        foreach ($conf->getPatternZoomify() as $pattern) {
+            if (strstr($path, $pattern) == true) {
+                $zoomify      = true;
+                $zoomify_path = $path.'/'.$img;
+                $img = DEFAULT_PICTURE;
+                break;
+            }
+        }
+
         if ( $img === DEFAULT_PICTURE ) {
             $picture = new Picture(
                 $conf,
@@ -165,16 +128,25 @@ $app->get(
         }
 
         $args = array(
-            'img'       => $img,
-            'picture'   => $picture,
-            'iip'       => $picture->isPyramidal(),
+            'img'          => $img,
+            'picture'      => $picture,
+            'iip'          => $picture->isPyramidal(),
+            'zoomify'      => $zoomify,
+            'zoomify_path' => $zoomify_path
         );
+        if ($args['zoomify']) {
+            $args['iip'] = true;
+            $args['img'] = $zoomify_path;
+        }
 
         if ( $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
             $args['iipserver'] = $iip['server'];
         } else {
             $args['image_format'] = 'default';
+            if ($conf->getDisplayHD()) {
+                $args['image_format'] = 'full';
+            }
         }
 
         if (file_exists('../web/themes/styles/themes.css') ) {
@@ -185,63 +157,13 @@ $app->get(
             $conf->getRemoteInfos(),
             $path,
             $img,
-            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img
+            $conf->getRemoteInfos()['uri']."infosimage". $path . '/' . $img,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        $args['communicability'] = false;
-        $current_date = new DateTime();
-        $current_year = $current_date->format("Y");
-        if ($conf->getIpInternal()) {
-            $rcontents['reader'] = true;
-        }
-
-        if (isset($rcontents['ead'])) {
-            $remoteInfosEad = $rcontents['ead'];
-            if ($remoteInfosEad['communicability_general'] == null
-                || (isset($remoteInfosEad['communicability_general'])
-                && $remoteInfosEad['communicability_general'] <= $current_year)
-                || ($ip == $conf->getReadingroom()
-                && $rcontents['reader'] == true
-                && isset($remoteInfosEad['communicability_sallelecture'])
-                && $remoteInfosEad['communicability_sallelecture'] <= $current_year)
-            ) {
-                $args['communicability'] = true;
-            }
-        }
-
-        if (!isset($rcontents['ead']) && !isset($rcontents['mat'])) {
-            $args['communicability'] = true;
-        } else {
-            if (isset($rcontents['mat']['record'])) {
-                $remoteInfosMat = $rcontents['mat']['record'];
-                if (isset($remoteInfosMat->communicability_general)) {
-                    $communicabilityGeneralMat = new DateTime($remoteInfosMat->communicability_general);
-                    $communicabilitySallelectureMat = new DateTime($remoteInfosMat->communicability_sallelecture);
-                    if ($communicabilityGeneralMat <= $current_date
-                        || (strpos($conf->getReadingroom(), $ip) !== false
-                        && $rcontents['reader'] == true
-                        && $communicabilitySallelectureMat <= $current_date)
-                    ) {
-                        $args['communicability'] = true;
-                    }
-                }
-
-                if (!isset($remoteInfosMat->communicability_general)
-                    && !isset($remoteInfosMat->communicability_sallelecture)
-                ) {
-                        $args['communicability'] = true;
-                }
-            }
-        }
-        if ($args['communicability'] == false) {
+        $args['communicability'] = $rcontents['communicability'];
+        if ($args['communicability'] == false && !$args['zoomify']) {
             $args['remote_infos_url'] = $picture->getPath()
                 . '/' . $picture->getName();
             $args['picture'] = new Picture(
@@ -251,6 +173,7 @@ $app->get(
             );
         }
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
+        $args['displayHD'] = $conf->getDisplayHD();
 
         $app->render(
             'index.html.twig',
@@ -272,7 +195,9 @@ $app->get(
             $conf->getRemoteInfos(),
             $series_path,
             '',
-            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image
+            $conf->getRemoteInfos()['uri']."infosimage/". $series_path . "/" . $image,
+            $conf->getReadingroom(),
+            $conf->getIpInternal()
         );
         $unitid = null;
         if (isset($rcontents['ead']['unitid'])) {

@@ -1,3 +1,13 @@
+1.5.1 (2017-09-19)
+- Update third party libs
+- Zoomify integration
+- Remove main.jpg reference
+- Pdf file name in config
+- Display all images in HD, manage in config
+- Fix some issues
+- Delete communicability check for every thumb
+- Factorize communicability feature
+
 1.5 (2017-06-28)
 - Add thumb for tiff images
 - Update translations

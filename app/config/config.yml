@@ -33,6 +33,9 @@ readingroom: null
 ip_internal: false
 debug_mode: false
 notdownloadprint: false
+namefileprint: 'bach-print.pdf'
+displayHD: false
+patternzoomify: null
 
 formats:
     #default format *MUST* be present
@@ -64,12 +67,14 @@ roots:
 
 print:
     header:
-        image: ~
+        image: 'images/logo.png'
         #image_landscape: ~
         #image_portrait: ~
         content: ~
     footer:
         image: ~
+        #image_landscape: ~
+        #image_portrait: ~
         content: ~
 
 remote_infos: ~

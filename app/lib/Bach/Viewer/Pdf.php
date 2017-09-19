@@ -118,7 +118,7 @@ class Pdf extends \TCPDF
         $this->SetY(5);
         $html = '';
         if (file_exists($image)) {
-            $html = '<img style="width:100px;" src="' . $image . '"/>';
+            $html = '<img style="width:40px;" src="' . $image . '"/>';
         } else {
             Analog::error(
                 str_replace(
@@ -128,10 +128,12 @@ class Pdf extends \TCPDF
                 )
             );
         }
-        if ($this->_unitid != null) {
-            $html .= $this->_conf->getPrintHeaderContent().'&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_unitid;
+        if ($this->_conf->getPrintHeaderContent()) {
+            $html .= $this->_conf->getPrintHeaderContent();
         }
-
+        if ($this->_unitid != null) {
+            $html .= '&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_unitid;
+        }
         if ($html != '') {
             $this->writeHTML($html);
             $this->_header_height = ceil($this->getY());
@@ -146,12 +148,14 @@ class Pdf extends \TCPDF
     public function Footer()
     {
         $image = $this->_conf->getPrintFooterImage($this->CurOrientation);
-        if (file_exists($image)) {
+        if ($this->CurOrientation === 'L') {
+            $this->SetY(195);
+        } else {
             $this->SetY(280);
-            $this->writeHTML(
-                $this->_conf->getPrintFooterContent()
-            );
-            $this->_footer_height = ceil($this->getY());
+        }
+        $html = '';
+        if (file_exists($image)) {
+            $html = '<img style="width:40px;" src="' . $image . '"/>';
         } else {
             Analog::error(
                 str_replace(
@@ -160,6 +164,13 @@ class Pdf extends \TCPDF
                     'File %file does not exists!'
                 )
             );
+        }
+        if ($this->_conf->getPrintFooterContent()) {
+            $html .= $this->_conf->getPrintFooterContent();
+        }
+        if ($html != '') {
+            $this->writeHTML($html);
+            $this->_footer_height = ceil($this->getY());
         }
     }
 
@@ -203,7 +214,7 @@ class Pdf extends \TCPDF
     public function getContent()
     {
         $this->_prepareImage();
-        return $this->Output('bach_print.pdf', 'S');
+        return $this->Output($this->_conf->getNameFilePrint(), 'S');
     }
 
     /**
@@ -214,7 +225,7 @@ class Pdf extends \TCPDF
     public function download()
     {
         $this->_prepareImage();
-        $this->output('bach_print.pdf', 'D');
+        $this->output($this->_conf->getNameFilePrint(), 'D');
     }
 
 }

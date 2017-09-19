@@ -1,24 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "37d6709ea08e98df4b179f2fb67e9be0",
-    "content-hash": "6199e5683275550ab308924cd64f7789",
+    "content-hash": "2fb8b3de786206d33b3e053df2ab7074",
     "packages": [
         {
             "name": "analog/analog",
-            "version": "1.0.6-stable",
+            "version": "1.0.10-stable",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jbroadway/analog.git",
-                "reference": "1fcc97fd842f37013587d64aba5f3f1fa6b0d911"
+                "reference": "65dce6b5aff8c77307c783e607c04a35df8259d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jbroadway/analog/zipball/1fcc97fd842f37013587d64aba5f3f1fa6b0d911",
-                "reference": "1fcc97fd842f37013587d64aba5f3f1fa6b0d911",
+                "url": "https://api.github.com/repos/jbroadway/analog/zipball/65dce6b5aff8c77307c783e607c04a35df8259d6",
+                "reference": "65dce6b5aff8c77307c783e607c04a35df8259d6",
                 "shasum": ""
             },
             "require": {
@@ -42,7 +41,7 @@
                     "homepage": "http://www.johnnybroadway.com/"
                 }
             ],
-            "description": "PHP 5.3+ micro logging class that can be extended via closures. Includes several pre-built handlers including file, mail, syslog, HTTP post, and MongoDB.",
+            "description": "PHP logging class that can be extended via closures. Includes several pre-built handlers including file, mail, syslog, HTTP post, and MongoDB.",
             "homepage": "https://github.com/jbroadway/analog",
             "keywords": [
                 "alerts",
@@ -54,7 +53,7 @@
                 "logging",
                 "syslog"
             ],
-            "time": "2015-02-13 20:34:48"
+            "time": "2017-09-17T02:30:30+00:00"
         },
         {
             "name": "atoum/atoum",
@@ -62,27 +61,31 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "77778c968871b605f73289c72adb907fa5e601f0"
+                "reference": "f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/77778c968871b605f73289c72adb907fa5e601f0",
-                "reference": "77778c968871b605f73289c72adb907fa5e601f0",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd",
+                "reference": "f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd",
                 "shasum": ""
             },
             "require": {
                 "ext-hash": "*",
                 "ext-json": "*",
-                "ext-session": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": ">=5.3.3"
+                "php": "^5.6.0 || ^7.0.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
             },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~1.12"
+            },
             "suggest": {
-                "ext-mbstring": "Provides support for UTF-8 strings"
+                "atoum/stubs": "Provides IDE support (like autocompletion) for atoum",
+                "ext-mbstring": "Provides support for UTF-8 strings",
+                "ext-xdebug": "Provides code coverage report (>= 2.3)"
             },
             "bin": [
                 "bin/atoum"
@@ -90,7 +93,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -100,7 +103,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -133,26 +136,34 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2015-02-27 13:00:25"
+            "time": "2017-09-07 08:27:16"
         },
         {
             "name": "psr/log",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-fig/log",
-                "reference": "1.0.0"
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/php-fig/log/archive/1.0.0.zip",
-                "reference": "1.0.0",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
                 "shasum": ""
             },
+            "require": {
+                "php": ">=5.3.0"
+            },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
-                "psr-0": {
-                    "Psr\\Log\\": ""
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -166,24 +177,25 @@
                 }
             ],
             "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
                 "log",
                 "psr",
                 "psr-3"
             ],
-            "time": "2012-12-21 11:40:51"
+            "time": "2016-10-10T12:19:37+00:00"
         },
         {
             "name": "slim/slim",
             "version": "2.4.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim.git",
+                "url": "https://github.com/slimphp/Slim.git",
                 "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim/zipball/4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
                 "reference": "4906b77a07c7bd6ff1a99aea903e940a2d4fa106",
                 "shasum": ""
             },
@@ -217,7 +229,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2014-04-05 18:33:59"
+            "time": "2014-04-05T18:33:59+00:00"
         },
         {
             "name": "slim/views",
@@ -270,21 +282,21 @@
                 "slimphp",
                 "templating"
             ],
-            "time": "2014-12-09 23:48:51"
+            "time": "2014-12-09T23:48:51+00:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.25",
+            "version": "v2.3.42",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Yaml.git",
-                "reference": "11a44f3c52686517c12c9737126890dc232640a3"
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "2cb5f366f9e0df014fc93de46cc416ba0a3055f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/11a44f3c52686517c12c9737126890dc232640a3",
-                "reference": "11a44f3c52686517c12c9737126890dc232640a3",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/2cb5f366f9e0df014fc93de46cc416ba0a3055f8",
+                "reference": "2cb5f366f9e0df014fc93de46cc416ba0a3055f8",
                 "shasum": ""
             },
             "require": {
@@ -299,7 +311,10 @@
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Yaml\\": ""
-                }
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -307,20 +322,20 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
                     "name": "Fabien Potencier",
                     "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com",
-            "time": "2015-01-25 03:54:01"
+            "homepage": "https://symfony.com",
+            "time": "2016-05-30T08:10:17+00:00"
         },
         {
-            "name": "tecnick.com/tcpdf",
+            "name": "tecnickcom/tcpdf",
             "version": "6.0.099",
             "source": {
                 "type": "git",
@@ -380,27 +395,28 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2014-11-15 12:35:49"
+            "time": "2014-11-15T12:35:49+00:00"
         },
         {
             "name": "twig/extensions",
-            "version": "v1.2.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig-extensions.git",
-                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd"
+                "reference": "d188c76168b853481cc75879ea045bf93d718e9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
-                "reference": "8cf4b9fe04077bd54fc73f4fde83347040c3b8cd",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/d188c76168b853481cc75879ea045bf93d718e9c",
+                "reference": "d188c76168b853481cc75879ea045bf93d718e9c",
                 "shasum": ""
             },
             "require": {
-                "twig/twig": "~1.12"
+                "twig/twig": "~1.27|~2.0"
             },
             "require-dev": {
-                "symfony/translation": "~2.3"
+                "symfony/phpunit-bridge": "~3.3@dev",
+                "symfony/translation": "~2.3|~3.0"
             },
             "suggest": {
                 "symfony/translation": "Allow the time_diff output to be translated"
@@ -408,12 +424,15 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2.x-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
                     "Twig_Extensions_": "lib/"
+                },
+                "psr-4": {
+                    "Twig\\Extensions\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -432,34 +451,42 @@
                 "i18n",
                 "text"
             ],
-            "time": "2014-10-30 14:30:03"
+            "time": "2017-06-08T18:19:53+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v1.18.0",
+            "version": "v1.34.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "4cf7464348e7f9893a93f7096a90b73722be99cf"
+                "reference": "f878bab48edb66ad9c6ed626bf817f60c6c096ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4cf7464348e7f9893a93f7096a90b73722be99cf",
-                "reference": "4cf7464348e7f9893a93f7096a90b73722be99cf",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f878bab48edb66ad9c6ed626bf817f60c6c096ee",
+                "reference": "f878bab48edb66ad9c6ed626bf817f60c6c096ee",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.2.4"
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "psr/container": "^1.0",
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18-dev"
+                    "dev-master": "1.34-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
                     "Twig_": "lib/"
+                },
+                "psr-4": {
+                    "Twig\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -489,7 +516,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-01-25 17:32:08"
+            "time": "2017-07-04T13:19:31+00:00"
         }
     ],
     "packages-dev": [],

@@ -58,11 +58,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     </span>
                 {% endif %}
 
-                {% if not picture.isPyramidal %}
+                {% if not picture.isPyramidal and not zoomify %}
                 <div id="formats">
                     <select name="formats">
                         {% for key, fmt in picture.getVisibleFormats() %}
+                        {% if displayHD == false or (displayHD and key == 'full')%}
                         <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                        {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -112,16 +114,13 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="zoomout" title="{% trans "Zoom out" %}">
                         <li id="zoominfos">
                         {% if ((picture.hasFormat('full') and picture.hasFormat('default')) or series) and not(iip)%}
-                        <li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}">
-                            <span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span>
-                        </li>{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
+                        {% if displayHD == false %}<li id="hidef" data-state="off" title="{% trans %}Switch to high resolution image{% endtrans %}"><span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span></li>{% else %}<li id="hidef" data-state="on" class="on" style="display:none;"><span class="userinfo">{% trans %}Want a better quality?<br/>Get the high resolution version!{% endtrans %}<span class="inner"></span></span></li>{%endif%}{% endif %}<li id="zoomin" title="{% trans "Zoom in" %}">
                         <li id="fitsize" title="{% trans "Fit image to screen" %}">
                         <li id="fullsize" title="{% trans "Show full size image" %}">
                         {% if not iip %}
                             {% if comment %}
                         <li id="comments" title="{% trans "Show related comments" %}">
                             {% endif %}
-                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                             {% if print and picture.canPrint() %}
                         <li id="print" title="{% trans "Print image as currently displayed" %}">
                             {% endif %}
@@ -132,6 +131,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <li id="lockparams" class="off" title="{% trans "Lock image parameters" %}">
                             {% endif %}
                         {% endif %}
+                        <li id="infosRemote" title="{% trans "Show related informations"%}">
                     </ul>
                 </aside>
                 {% if not(iip) %}
@@ -215,6 +215,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/iipmooviewer-2.0.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/iipviewer.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/iip.js"></script>
+        <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/protocols/zoomify.js"></script>
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/touch.js"></script>
         {% if lang == 'fr_FR.utf8' %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/iipmooviewer/lang/help.fr.js"></script>
@@ -228,7 +229,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <script>
             //global variables
             var zoomGlobal = 100;
+            var communicability = '{{ communicability }}';
             var series_path = '{{ series.getPath() }}';
+            var displayHD = '{{ displayHD }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
             var image_path = '{{ picture.getPath() }}';
@@ -300,7 +303,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 {%- if not(iip) -%}
                 var comm;
+                {% if displayHD == true %}
+                comm = '{{ picture.getUrl(series, "full")}}';
+                {% else %}
                 comm = '{{ picture.getUrl(series)}}';
+                {% endif %}
                 var viewer = $("#viewer").bviewer({
                     {% if remote_method -%}
                     remote: {
@@ -337,7 +344,20 @@ POSSIBILITY OF SUCH DAMAGE.
             })(jQuery);
             //mootools stuff, if any
             {% if iip %}
+                {% if zoomify %}
                 // Create our iipmooviewer object
+                var _iipviewer = new BIIPMooViewer( "pviewer", {
+                    {% if enable_right_click %}
+                    disableContextMenu: false,
+                    {% endif %}
+                    server: '/images_serveur/',
+                    image: '{{ zoomify_path }}',
+                    protocol: 'zoomify',
+                    navWinSize: {{ thumb_format.width }},
+                    showNavButtons: false,
+                    prefix: '/images/'
+                });
+                {% else %}
                 var _iipviewer = new BIIPMooViewer( "pviewer", {
                     {% if enable_right_click %}
                     disableContextMenu: false,
@@ -349,6 +369,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     showNavButtons: false,
                     prefix: '/images/'
                 });
+
+                {% endif %}
             {% endif %}
         </script>
 {% endblock %}

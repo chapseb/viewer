@@ -141,6 +141,11 @@ var BNavigation = new Class({
         $$('.navwin').addEvent('click', function(e) {
             me.scroll(e);
         });
+
+        _iipviewer.updateImageInfos(app_url);
+        $$('#infosRemote').addEvent('click', function(){
+            _iipviewer.displayRemoteInfosWindow();
+        });
     },
 
     /**
