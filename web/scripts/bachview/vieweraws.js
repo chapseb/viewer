@@ -96,7 +96,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             if ( series_path != '' ) {
                 me.updateSeriesInfos();
                 me.updateImageInfos();
-                if ( $('#lockparams').hasClass('off') == false /*&& $('#hidef').data('state')=='on'*/ ){
+                if ( $('#lockparams').hasClass('off') == false ){
                     me.set_zoom(zoomGlobal);
                 }
             } else {
@@ -319,7 +319,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         _leftPosHD = Math.round(scale_width * _leftPos /_width);
 
         var _src = this.options.src.replace(/.*\/show\/default/, this.display_options.format);
-        var res = app_url.replace(/^\//, '') + '/print/'+ this.display_options.format +  image_database_name ;
+        var res = app_url + '/printAws/'+ this.display_options.format +  image_database_name ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
         if ( this.hasTransformations() ) {

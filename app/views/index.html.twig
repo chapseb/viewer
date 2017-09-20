@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
         {% endif %}
         {% if not(iip) %}
         <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.iviewer.css"/>
-            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
+            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or awsFlag%}
         <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.nouislider.css"/>
             {% endif %}
         {% else %}
@@ -84,7 +84,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 <!-- Toolbar -->
                 <aside>
-                    {% include 'toolbar.html.twig' with{'series': series, 'iip': iip, 'picture': picture, 'displayHD': displayHD, 'comment': comment, 'print': print, 'contrast': contrast,'brightness': brightness, 'negate': negate} %}
+                    {% include 'toolbar.html.twig' with{'series': series, 'iip': iip, 'picture': picture, 'displayHD': displayHD, 'comment': comment, 'print': print, 'contrast': contrast,'brightness': brightness, 'negate': negate, 'awsFlag': awsFlag} %}
                 </aside>
 
                 {% if not(iip) %}
@@ -101,7 +101,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <noscript><div id="warning_js">{% trans "JavaScript is off. Some feature may not work." %}</div></noscript>
 
             </figure>
-            {% include 'popups.html.twig' with{'contrast': contrast, 'picture': picture, 'brightness': brightness, 'negate': negate, 'comment': comment} %}
+            {% include 'popups.html.twig' with{'contrast': contrast, 'picture': picture, 'brightness': brightness, 'negate': negate, 'comment': comment, 'awsFlag': awsFlag} %}
         </section>
 {% endblock %}
 
@@ -119,7 +119,7 @@ POSSIBILITY OF SUCH DAMAGE.
         {% else %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/bachview/viewer.js"></script>
         {% endif %}
-            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}
+            {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or awsFlag %}
         <script type="text/javascript" src="{{ app_web_url }}/scripts/jquery/slider/jquery.nouislider.min.js"></script>
             {% endif %}
         {% else %}
@@ -147,15 +147,41 @@ POSSIBILITY OF SUCH DAMAGE.
             var displayHD = '{{ displayHD }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
+	    {% if awsFlag %}
+	    var image_path = '{{ cloudfront ~ path }}';
+	    {% else%}
             var image_path = '{{ picture.getPath() }}';
+	    {% endif %}
             {% endif %}
+	    {% if awsFlag %}
+            var aws_flag = '{{ awsFlag }}';
+            var src_default = '{{ default_src }}';
+            var thumb_src = '{{ thumb_src}}';
+	    {% endif %}
             {% if remote_infos_url is defined %}
             var remote_infos_url = '{{ remote_infos_url }}';
+            {% endif%}
+            {% if series and awsFlag %}
+            var pathHD = '{{pathHD}}';
+            var current_image = '{{ series.getRepresentative() }}';
+            var image_position = 0;
+            var full_path = '{{ series.getFullPath()}}';
             {% endif%}
             {% if not series.getStart is null and not series.getEnd is null -%}
             var series_start = '{{ series.getStart }}';
             var series_end = '{{ series.getEnd }}';
             {% endif -%}
+            {% if awsFlag%}
+            {% if image_database_name is defined %}
+            var image_database_name = '{{ image_database_name}}';
+            {% endif %}
+            var notGenerateImage = '{{ notGenerateImage }}';
+            var alertNotGenerateImage = '{{ "The image has not SD version, click HD button to have the image"|trans|escape('js')}}';
+            var alertNotCommunicableImage = '{{ "Image is not communicable."|trans|escape('js')}}';
+            var image_strictname = '{{ imageStrictName}}';
+            var cloudfront = '{{ cloudfront}}';
+            var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
+            {%endif%}
             var app_url = '{{ app_base_url }}';
             var notdownloadprint = '{{ notdownloadprint }}';
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
@@ -178,7 +204,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 "communicability_general": '{{ "general communicability"|trans|escape('js') }}',
                 "communicability_sallelecture": '{{ "reading room communicability"|trans|escape('js') }}'
                 }
-
+            var rotateImage = 0;
             var contentRemoteDefault = '{{ "No information for this picture."|trans|escape('js') }}';
             //source: https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
             function toggleFullScreen() {
@@ -206,6 +232,10 @@ POSSIBILITY OF SUCH DAMAGE.
             jQuery.noConflict();
             //jquery stuff
             (function($) {
+
+                {% if communicability is defined and communicability == false %}
+                    alert(alertNotCommunicableImage);
+                {% endif %}
                 $('#progressbar').fadeIn();
 
                 {% if not(enable_right_click) %}
@@ -215,26 +245,28 @@ POSSIBILITY OF SUCH DAMAGE.
                 {% endif %}
 
                 {%- if not(iip) -%}
-                var comm;
-                {% if displayHD == true %}
-                comm = '{{ picture.getUrl(series, "full")}}';
-                {% else %}
-                comm = '{{ picture.getUrl(series)}}';
-                {% endif %}
-                var viewer = $("#viewer").bviewer({
-                    {% if remote_method -%}
-                    remote: {
-                        method: '{{ remote_method }}',
-                        uri: '{{ remote_uri }}'
-                    },
-                    {% endif -%}
-                    src: comm,
-                    update_on_resize: true,
-                    zoom_animation: false,
-                    mousewheel: true,
-                    ui_disabled: true,
-                    imageName: '{{ picture.getName() }}'
-                });
+                    var comm;
+                    {% if displayHD == true and awsFlag != true%}
+                    comm = '{{ picture.getUrl(series, "full")}}';
+                    {% elseif awsFlag == true %}
+                    comm = '{{ default_src }}';
+                    {% else %}
+                    comm = '{{ picture.getUrl(series)}}';
+                    {% endif %}
+                    var viewer = $("#viewer").bviewer({
+                        {% if remote_method -%}
+                        remote: {
+                            method: '{{ remote_method }}',
+                            uri: '{{ remote_uri }}'
+                        },
+                        {% endif -%}
+                        src: comm,
+                        update_on_resize: true,
+                        zoom_animation: false,
+                        mousewheel: true,
+                        ui_disabled: true,
+                        imageName: '{{ picture.getName() }}'
+                    });
                 {% endif %}
 
                 if (document.fullScreenEnabled != undefined

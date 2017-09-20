@@ -65,6 +65,11 @@ $app->get(
         );
 
         $communicability = $rcontents['communicability'];
+
+        if ($communicability == false && $rcontents['archivist']) {
+            $communicability = true;
+        }
+
         if ($communicability == true) {
             $picture = $viewer->getImage($series_path, $image);
         } else {
@@ -295,3 +300,91 @@ $app->get(
     )
 );
 
+$app->get(
+    '/printAws/:format(/:series)/:image(/:display)',
+    function ($format, $series_path, $image, $display = false) use ($app,
+        $conf, $viewer, $app_base_url, $s3
+    ) {
+        $path_picture = $series_path . '/'. $image;
+        $results = array();
+        $roots = $conf->getRoots();
+
+        if ($format == 'default') {
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => 'prepared_images/default/'. $root.'/'.$path_picture,
+                        "Delimiter" => "/",
+                    )
+                );
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+            }
+        } else {
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                $objects = $s3->getIterator(
+                    'ListObjects',
+                    array(
+                        "Bucket" => $conf->getAWSBucket(),
+                        "Prefix" => $root . '/' . $path_picture,
+                        "Delimiter" => "/",
+                    )
+                );
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+            }
+        }
+
+        if (file_exists('s3://'.$conf->getAWSBucket().'/'.$results[0])) {
+            $uniqueFileName = uniqid();
+            $pathDisk = __DIR__.'/../cache/';
+            $ext = substr(strrchr($results[0], '.'), 1);
+            $imageFilePath = $pathDisk.$uniqueFileName.'.'.$ext;
+            $s3->getObject(
+                array(
+                    'Bucket' => $conf->getAWSBucket(),
+                    'Key'    => $results[0],
+                    'SaveAs' => $imageFilePath,
+                )
+            );
+            $handle = fopen(
+                $imageFilePath,
+                'rb'
+            );
+
+            $picture = new Picture(
+                $conf,
+                $uniqueFileName.'.'.$ext,
+                $app_base_url,
+                $pathDisk
+            );
+
+            $params = $viewer->bind($app->request);
+            $pdf = new Pdf($conf, $picture, $params, $format);
+
+            $app->response->headers->set('Content-Type', 'application/pdf');
+
+            if ($display === 'true') {
+                $content = $pdf->getContent();
+                $app->response->body($content);
+            } else {
+                $pdf->download();
+            }
+            unlink($imageFilePath);
+        }
+    }
+)->conditions(
+    array(
+        'display' => 'true|false'
+    )
+);

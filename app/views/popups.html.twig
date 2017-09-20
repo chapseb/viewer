@@ -1,23 +1,23 @@
 <!-- Params image window -->
-    {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
+    {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() or awsFlag%}
     <form id="image_params" action="">
         <fieldset>
             <legend class="iviewer_cursor">{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
-            {% if contrast and picture.canContrast() %}
+            {% if contrast and picture.canContrast() or awsFlag %}
             <div>
                 <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
-                <input type="number" name="contrast_value" id="contrast_value" step="1" min="-10" max="10"/>
+                <input type="number" name="contrast_value" id="contrast_value" step="{%if awsFlag%}10{%else%}1{%endif%}" min="{%if awsFlag%}0{%else%}-10{%endif%}" max="{%if awsFlag%}200{%else%}10{%endif%}"/>
                 <div id="change_contrast"></div>
             </div>
             {% endif %}
-            {% if brightness and picture.canBrightness() %}
+            {% if brightness and picture.canBrightness() or awsFlag%}
             <div>
                 <label for="brightness_value">{% trans %}Brightness:{% endtrans %}</label>
-                <input type="number" name="brightness_value" id="brightness_value" step="1" min="-80" max="80"/>
+                <input type="number" name="brightness_value" id="brightness_value" step="{%if awsFlag%}10{%else%}1{%endif%}" min="{%if awsFlag%}0{%else%}-80{%endif%}" max="{%if awsFlag%}300{%else%}80{%endif%} 80"/>
                 <div id="change_brightness"></div>
             </div>
             {% endif %}
-            {% if negate and picture.canNegate() %}
+            {% if negate and picture.canNegate() or awsFlag %}
             <div>
                 <label for="negate">{% trans %}Negate{% endtrans %}</label>
                 <input type="checkbox" name="negate" id="negate" value="1"/>

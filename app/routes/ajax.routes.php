@@ -105,6 +105,103 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/imgAws(/:series)/:image(/format/:format)',
+    function ($series_path = null, $image, $format = 'default') use ($app, $conf, $viewer) {
+
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+
+        $roots = $conf->getRoots();
+        $results = array();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => $root . $series_path .'/'. $image,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($results, $object['Key']);
+            }
+        }
+        if (!empty($results)) {
+            $srcUrl = $conf->getCloudfront() . 'prepared_images/'
+                . $format . '/' . $results[0];
+            if (!file_exists(
+                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+            )
+            ) {
+                $srcUrl = $conf->getCloudfront().'prepared_images/'
+                    . $format . '/main.jpg';
+            }
+        } else {
+            $srcUrl = $conf->getCloudfront().'prepared_images/'.$format.'/main.jpg';
+        }
+        echo $srcUrl;
+    }
+);
+
+$app->get(
+    '/ajax/representativeAws/:series/format/:format',
+    function ($series_path = null, $format) use ($app, $conf, $app_base_url) {
+
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+        if (strrpos($series_path, '.') == '') {
+            $series_path .= '/';
+        }
+
+        $roots = $conf->getRoots();
+        $results = array();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => $root . $series_path,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($results, $object['Key']);
+            }
+        }
+        if (!empty($results)) {
+            $srcUrl = $conf->getCloudfront() . 'prepared_images/'
+                . $format . '/' . $results[0];
+            if (!file_exists(
+                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+            )
+            ) {
+                $srcUrl = $conf->getCloudfront().'prepared_images/'
+                    . $format . '/main.jpg';
+            }
+        } else {
+            $srcUrl = $conf->getCloudfront().'prepared_images/'.$format.'/main.jpg';
+        }
+        echo $srcUrl;
+    }
+);
+
+$app->get(
     '/ajax/series/infos/:series/:image',
     function ($series_path, $img) use ($app, $conf, $app_base_url) {
         $request = $app->request;
@@ -201,5 +298,101 @@ $app->get(
         $thumbs = $series->getThumbs($fmt, $series_path, $communicability);
 
         echo json_encode($thumbs);
+    }
+);
+
+$app->post(
+    '/ajax/generateimages',
+    function () use ($app, $conf, $viewer) {
+
+        // get s3 client
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+
+        // get image need to be prepared in json request
+        $jsonPost = $app->request()->getBody();
+        $datas = json_decode($jsonPost, true);
+
+        // get url sender to send response after treatment
+        if (isset($datas['urlSender'])) {
+            $urlSender = $datas['urlSender'] . '/';
+        } else {
+            $urlSender = $conf->getRemoteInfos()['uri'];
+        }
+        // unset urlSender to have proper datas
+        unset($datas['urlSender']);
+        $authExt = array(
+            'png', 'jpg', 'jpeg', 'tiff',
+            'PNG', 'JPG', 'JPEG', 'TIFF'
+        );
+
+        $newData = array();
+        $cpt = $cptBefore = 0;
+        // foreach in daos_prepared row in database
+        foreach ($datas as $keyData => $data) {
+            // get aws file image path to generate
+            $results = $viewer->getPathAwsImage(
+                $data,
+                $s3,
+                $conf->getRoots(),
+                $authExt
+            );
+
+            //////////////////////////////
+            // generate prepared images //
+            //////////////////////////////
+            $fmts = $conf->getFormats();
+            foreach ($results as $result) {
+                $previousKey = '';
+                $cptBefore = $cpt;
+                $cpt = $viewer->generateOneRowImage(
+                    $result,
+                    $s3,
+                    $fmts,
+                    $cpt
+                );
+
+                if ($cpt > $cptBefore) {
+                    Analog::log(
+                        ('Creation prepared image for '. $result)
+                    );
+                }
+                // * 3 because 3 different formats
+                if ($cpt >= ($conf->getNbImagesToPrepare() * 3)) {
+                    $data['lastfile'] = $result;
+                    array_push($newData, $data);
+                    for ($i=$keyData+1; $i<sizeOf($datas); $i++) {
+                        array_push($newData, $datas[$i]);
+                    }
+                    $jsonData = json_encode($newData);
+                    $url = $urlSender . 'deleteImage?'.uniqid();
+                    $cmd = "curl -X POST -H 'Content-Type: application/json'";
+                    $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
+                    $out = exec($cmd, $output);
+                    Analog::log(
+                        ($out)
+                    );
+                    exit();
+                }
+            }
+            $data['action'] = 0;
+            array_push($newData, $data);
+        }
+        $jsonData = json_encode($newData);
+        $url = $urlSender . 'deleteImage?'.uniqid();
+        $cmd = "curl -X POST -H 'Content-Type: application/json'";
+        $cmd.= " -d '" . $jsonData . "' " . "'" . $url . "'";
+        $out = exec($cmd, $output);
+        Analog::log(
+            ($out)
+        );
     }
 );
