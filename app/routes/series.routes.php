@@ -47,7 +47,7 @@ use \Bach\Viewer\Picture;
 
 $app->get(
     '/series/:path+',
-    function ($path) use ($app, $conf, $app_base_url) {
+    function ($path) use ($app, $conf, $app_base_url, $s3) {
         $request = $app->request();
         $start = $request->params('s');
         if ( trim($start) === '' ) {
@@ -68,13 +68,23 @@ $app->get(
 
         $series = null;
         try {
-            $series = new Series(
-                $conf,
-                implode('/', $path),
-                $app_base_url,
-                $start,
-                $end
-            );
+            if ($conf->getAWSFlag() && $start != null) {
+                $series = new Series(
+                    $conf,
+                    implode('/', $path).'/',
+                    $app_base_url,
+                    $start,
+                    $end
+                );
+            } else {
+                $series = new Series(
+                    $conf,
+                    implode('/', $path),
+                    $app_base_url,
+                    $start,
+                    $end
+                );
+            }
         } catch ( \RuntimeException $e ) {
             Analog::log(
                 _('Cannot load series: ') . $e->getMessage(),
@@ -111,21 +121,59 @@ $app->get(
             $img = $series->getRepresentative();
         }
 
-        $picture = new Picture(
-            $conf,
-            $img,
-            $app_base_url,
-            $series->getFullPath()
-        );
+        if (!$conf->getAWSFlag()) {
+            $picture = new Picture(
+                $conf,
+                $img,
+                $app_base_url,
+                $series->getFullPath()
+            );
 
-        $args = array(
-            'img'       => $img,
-            'picture'   => $picture,
-            'iip'       => $picture->isPyramidal(),
-            'series'    => $series,
-        );
+            $args = array(
+                'img'       => $img,
+                'picture'   => $picture,
+                'iip'       => $picture->isPyramidal(),
+                'series'    => $series,
+            );
+        } else {
 
-        if ( $picture->isPyramidal() ) {
+            $results = array();
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($results, $object['Key']);
+            }
+
+            if (!empty($results)) {
+                $default_src = $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative();
+            } else {
+                $default_src = $conf->getCloudfront().'prepared_images/default/main.jpg';
+            }
+
+            $args = array(
+                'cloudfront'        => $conf->getCloudfront(),
+                'pathHD'            => $conf->getCloudfront().$series->getFullPath(),
+                'series'            => $series,
+                'default_src'       => $default_src,
+                'img'               => $img,
+                'imageStrictName'   => substr(
+                    $series->getRepresentative(),
+                    strrpos($series->getRepresentative(), '/')
+                ),
+                'image_database_name' => '/'.$series->getPath() . $img
+            );
+            if (substr($series->getPath(), -1) != '/') {
+                $args['image_database_name'] = '/'.$series->getPath().'/'.$img;
+            }
+        }
+
+        if (!$conf->getAWSFlag() && $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
             $args['iipserver'] = $iip['server'];
         } else {
@@ -136,27 +184,75 @@ $app->get(
             $args['themes'] = 'themes';
         }
 
+        if ($start != null && $end != null) {
+            $ruri = $conf->getRemoteInfos()['uri']
+                ."infosimage/". implode('/', $path) . '/' . $img;
+        } else {
+            $ruri = $conf->getRemoteInfos()['uri']
+                ."infosimage/". implode('/', $path) . $img;
+        }
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $path[0],
             $img,
-            $conf->getRemoteInfos()['uri']."infosimage/". $series->getPath() . '/' . $img,
+            $ruri,
             $conf->getReadingroom(),
             $conf->getIpInternal()
         );
+        $args['communicability'] = $rcontents['communicability'];
+        $resultsSD = array();
 
-        $args['communicability']  = $rcontents['communicability'];
-        $args['notdownloadprint'] = $conf->getNotDownloadPrint();
-        $args['displayHD'] = $conf->getDisplayHD();
+            $flagResult = false;
+        if ($conf->getAWSFlag()) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($resultsSD, $object['Key']);
+            }
+            if (!isset($resultsSD[0]) || $args['communicability'] == false) {
+                $results[0] = 'main.jpg';
+                $args['default_src'] = $conf->getCloudfront()
+                    .'prepared_images/default/'.$results[0];
+                $args['series']->setFullPath('');
+                if (!isset($resultsSD[0])) {
+                    $flagResult = true;
+                }
+                $contentSize = count($args['series']->getContent());
+                $arrayTmp = array();
+                if ($args['communicability'] == false) {
+                    for ($i=0; $i < $contentSize; $i++ ) {
+                        array_push($arrayTmp, 'main.jpg');
+                    }
+                    $args['series']->setContent($arrayTmp);
+                    $args['series']->setImage('main.jpg');
+                    $args['pathHD'] = $conf->getCloudfront()
+                        . $args['series']->getFullPath();
+                }
+            }
+        } else {
+            $args['communicability']  = $rcontents['communicability'];
+            $args['notdownloadprint'] = $conf->getNotDownloadPrint();
+            $args['displayHD']        = $conf->getDisplayHD();
+            $args['zoomify']          = false;
 
-        $args['zoomify']          = false;
-        foreach ($conf->getPatternZoomify() as $pattern) {
-            if (strstr($picture->getPath(), $pattern) == true) {
-                $args['zoomify'] = true;
-                break;
+            if ($conf->getPatternZoomify() != null) {
+                foreach ($conf->getPatternZoomify() as $pattern) {
+                    if (strstr($picture->getPath(), $pattern) == true) {
+                        $args['zoomify'] = true;
+                        break;
+                    }
+                }
             }
         }
 
+        $args['notGenerateImage'] = $flagResult;
+        $args['awsFlag'] = $conf->getAWSFlag();
         $app->render(
             'index.html.twig',
             $args

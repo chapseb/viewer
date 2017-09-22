@@ -139,12 +139,14 @@ $app->get(
 
             $zoomify      = false;
             $zoomify_path = null;
-            foreach ($conf->getPatternZoomify() as $pattern) {
-                if (strstr($path, $pattern) == true) {
-                    $zoomify      = true;
-                    $zoomify_path = $path.'/'.$img;
-                    $img = DEFAULT_PICTURE;
-                    break;
+            if ($conf->getPatternZoomify() != null) {
+                foreach ($conf->getPatternZoomify() as $pattern) {
+                    if (strstr($path, $pattern) == true) {
+                        $zoomify      = true;
+                        $zoomify_path = $path.'/'.$img;
+                        $img = DEFAULT_PICTURE;
+                        break;
+                    }
                 }
             }
 

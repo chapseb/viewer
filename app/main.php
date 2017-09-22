@@ -99,18 +99,20 @@ Analog::handler(
 $conf = new Conf();
 
 
-
-$s3 = new Aws\S3\S3Client(
-    [
-        'version' => $conf->getAWSVersion(),
-        'region'  => $conf->getAWSRegion(),
-        'credentials' => array(
-            'key' => $conf->getAWSKey(),
-            'secret' =>$conf->getAWSSecret()
-        )
-    ]
-);
-$s3->registerStreamWrapper();
+$s3 = null;
+if ($conf->getAWSFlag()) {
+    $s3 = new Aws\S3\S3Client(
+        [
+            'version' => $conf->getAWSVersion(),
+            'region'  => $conf->getAWSRegion(),
+            'credentials' => array(
+                'key' => $conf->getAWSKey(),
+                'secret' =>$conf->getAWSSecret()
+            )
+        ]
+    );
+    $s3->registerStreamWrapper();
+}
 
 /** I18n stuff */
 $lang = null;

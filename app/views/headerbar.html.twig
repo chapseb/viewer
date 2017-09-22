@@ -6,14 +6,19 @@
     </span>
 {% endif %}
 
-{% if not picture.isPyramidal and not zoomify and not awsFlag%}
+{% if not picture.isPyramidal and not zoomify %}
 <div id="formats">
     <select name="formats">
-        {% for key, fmt in picture.getVisibleFormats() %}
-        {% if displayHD == false or (displayHD and key == 'full')%}
-        <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+        {% if awsFlag %}
+                <option value="default"{% if image_format == 'default'  %} selected="selected"{% endif %}>default</option>
+                <option value="full"{% if image_format == 'full'  %} selected="selected"{% endif %}>full</option>
+        {% else %}
+            {% for key, fmt in picture.getVisibleFormats() %}
+                {% if displayHD == false or (displayHD and key == 'full')%}
+                <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+                {% endif %}
+            {% endfor %}
         {% endif %}
-        {% endfor %}
     </select>
 </div>
 {% endif %}

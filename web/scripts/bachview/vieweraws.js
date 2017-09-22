@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Anaphore
+Copyright (c) 2017, Anaphore
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -322,25 +322,18 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var res = app_url + '/printAws/'+ this.display_options.format +  image_database_name ;
         res += '?x=' + _leftPosHD + '&y=' + _topPosHD + '&w=' + scale_width + '&h=' + scale_height;
 
-        if ( this.hasTransformations() ) {
-            var _t = this.display_options.transform;
-
-            if ( _t.negate ) {
-                res += '&n=true';
-            }
-
-            if ( _t.contrast ) {
-                res += '&c=' + _t.contrast;
-            }
-
-            if ( _t.brightness ) {
-                res += '&b=' + _t.brightness;
-            }
-
-            if ( _t.rotate > 0 ) {
-                res += '&r=' + _t.rotate;
-            }
+        if ( negate_flag == true) {
+            res += '&n=true';
         }
+        /*if ($('#change_brightness').val() != 100) {
+            var newCoeff = parseFloat(160/300);
+            var newBrightness = ($('#change_brightness').val() * newCoeff)-80;
+            res += '&b=' + parseInt(newBrightness);
+        }
+        if ($('#change_contrast').val() != 100) {
+            var newContrast = ($('#change_contrast').val()/10)-10;
+            res += '&c=' + newContrast;
+        }*/
 
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + res + "&"+new Date();
@@ -387,9 +380,37 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         _a.addClass('current');
                     }
                     _a.bind('click touch', function(){
-                        me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +$(this).attr('href'));
+
+                        var _this = $("#hidef");
+                        var _state = _this.attr('data-state');
+                        var _format;
+
+                        if (!$('#lockparams').hasClass('off')) {
+                            if (_state == 'on') {
+                                me.loadImage(cloudfront + full_path +$(this).attr('href'));
+                                _format = 'full';
+                            } else {
+                                me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +$(this).attr('href'));
+                                _format = 'default';
+                            }
+                        }
+                        else {
+                            $('#negate').attr('checked', false);
+                            negate_flag = false;
+                            $('#change_contrast').val(100);
+                            $('#change_brightness').val(100);
+
+                            _state = 'off';
+                            _format = 'default';
+                            _this.data('state', 'off');
+                            _this.attr('data-state', 'off');
+                            _this.attr('title', hidef_off_title);
+                            _this.removeClass();
+                            _this.attr('class', 'off');
+
+                            me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +$(this).attr('href'));
+                        }
                         thumb_src = cloudfront +'prepared_images/thumb/'+full_path+$(this).attr('href');
-                        console.log($(this).attr('href'));
                         current_image = $(this).attr('href');
                         for (var i=0; i <listImage.length ; i++) {
                             if (listImage[i] == current_image) {
@@ -397,9 +418,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                                 imageShow = i + 1;
                             }
                         }
-                        //me.display(me._imgNameFromLink($(this)));
-                        $('#formats > select').val('default');
+                        $('#formats > select').val(_format);
                         _thumbview.remove();
+                        if (series_path.substr(series_path.length -1) == '/') {
+                            image_database_name = '/' + series_path + listImage[image_position];
+                        } else {
+                            image_database_name = '/' + series_path + '/' + listImage[image_position];
+                        }
+
                         return false;
                     });
                     _img.appendTo(_a);
@@ -408,50 +434,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 _thumbview.prependTo('body');
                 var posnum = $('#number_image').val();
                 location.hash = '#' + 'image' + posnum;
-
-                /*$.get(
-                    _url,
-                    function(data){
-                        var _thumbs = data['thumbs'];
-                        var _meta = data['meta'];
-                        for ( var i = 0 ; i < data['thumbs'].length ; i++ ) {
-                            if (typeof _thumbs[i].path_image == 'undefined') {
-                                var _src = app_url + '/ajax/img/' + series_path + '/' + _thumbs[i].name + '/format/thumb';
-                            } else {
-                                var _src = app_url + '/ajax/img/' + _thumbs[i].path_image + '/format/thumb';
-                            }
-                            var _img = $('<img src="' + _src  + '" alt=""/>');
-                            var index = i + 1;
-                            var _style = 'width:' + _meta.width  + 'px;height:' + _meta.height + 'px;line-height:' + _meta.height  + 'px;';
-                            var _a = $('<a href="' + series_path + '?img=' + _thumbs[i].path  + '" style="' + _style  + '" name="image' + index + '" title="'+_thumbs[i].path+'"></a>');
-                            if ( me.image_name == _thumbs[i].name ) {
-                                _a.addClass('current');
-                            }
-                            _a.bind('click touch', function(){
-                                me.display(me._imgNameFromLink($(this)));
-                                $('#formats > select').val('default');
-                                _thumbview.remove();
-                                return false;
-                            });
-                            _img.appendTo(_a);
-                            _a.appendTo(_thumbview);
-                        }
-                        _thumbview.prependTo('body');
-                        var posnum = $('#number_image').val();
-                        location.hash = '#' + 'image' + posnum;
-                    },
-                    'json'
-                ).fail(function(){
-                    alert('An error occured loading series thumbnails.');
-                });*/
             }
         });
         $("#zoomin").bind('click touchstart', function(){ me.zoom_by(1); });
         $("#zoomout").bind('click touchstart', function(){ me.zoom_by(-1); });
         $("#fitsize").bind('click touchstart', function(){ me.fit(); });
         $("#fullsize").bind('click touchstart', function(){ me.set_zoom(100); });
-        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); rotateImage -= 90;});
-        $("#rrotate").bind('click touchstart', function(){ me.angle(90); rotateImage += 90;});
+        $("#lrotate").bind('click touchstart', function(){ me.angle(-90); });
+        $("#rrotate").bind('click touchstart', function(){ me.angle(90); });
         $('#moreparams').bind('click touchstart', function(){ me.imageParamsWindow(); });
         $('#hidef').bind('click touchstart', function(){
             var _this = $(this);
@@ -510,21 +500,113 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
             me.display_options.format = _format;
-            _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
-            me.loadImage(_src);
+
+            _this = $('#hidef');
+            if (_format == 'full') {
+                _this.data('state', 'on');
+                _this.attr('data-state', 'on');
+                _this.attr('title', hidef_on_title);
+                $("#hidef").removeClass();
+                $("#hidef").addClass('on');
+            } else {
+                _this.data('state', 'off');
+                _this.attr('data-state', 'off');
+                _this.attr('title', hidef_off_title);
+                $("#hidef").removeClass();
+                $("#hidef").addClass('off');
+            }
+
+            $('#hidef .userinfo').hide();
+
+            if (series_path == '') {
+                if (_format == 'full') {
+                    me.loadImage(image_path);
+                } else {
+                    me.loadImage(src_default);
+                }
+            } else {
+                if (_format == 'full') {
+                    me.loadImage(pathHD + listImage[image_position]);
+                } else {
+                    if (notGenerateImage == false) {
+                        me.loadImage(cloudfront + 'prepared_images/default/' + full_path + listImage[image_position]);
+                    } else {
+                        me.loadImage(cloudfront + 'prepared_images/default/main.jpg');
+                    }
+                }
+            }
+
+            if (aws_flag && series_path == ''){
+                if (_format == 'full') {
+                    me.loadImage(image_path);
+                } else {
+                    me.loadImage(src_default);
+                }
+            }else if(aws_flag && series_path != '') {
+                if (_format == 'full' ){
+                    me.loadImage(pathHD + listImage[image_position]);
+                } else {
+                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                }
+            } else {
+                _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
+                me.loadImage(_src);
+            }
+
+            if (notGenerateImage == false) {
+                thumb_src = cloudfront + 'prepared_images/thumb/' + full_path + listImage[image_position];
+            }
+
+            var _this = $(this);
+            var _state = _this.attr('data-state');
+            var _format;
+            if ( _state == 'on' ) {
+                _state = 'off';
+                _format = 'default';
+                _this.data('state', 'off');
+                _this.attr('data-state', 'off');
+                _this.attr('title', hidef_off_title);
+                _this.removeClass();
+                _this.attr('class', 'off');
+            } else {
+                _state = 'on';
+                _format = 'full';
+                _this.data('state', 'on');
+                _this.attr('data-state', 'on');
+                _this.attr('title', hidef_on_title);
+                _this.removeClass();
+                _this.attr('class', 'on');
+            }
+            if ( $('#formats > select').length > 0 ) {
+                $('#formats > select').val(_format);
+            }
+            $('#hidef .userinfo').hide();
+            me.display_options.format = _format;
+            if(aws_flag && series_path == ''){
+                if (_format == 'full') {
+                    me.loadImage(image_path);
+                } else {
+                    me.loadImage(src_default);
+                }
+            }else if(aws_flag && series_path != '') {
+                if (_format == 'full' ){
+                    me.loadImage(pathHD + listImage[image_position]);
+                } else {
+                    me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
+                }
+            } else {
+                _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
+                me.loadImage(_src);
+            }
         }).val('default');
 
         //navbar
-        $('#previmg,#nextimg').bind('click touchstart', function(){
+        $('#previmg,#nextimg,#prevdoubleimg, #nextdoubleimg').bind('click touchstart', function(){
             if($('#lockparams').hasClass('off')) {
                 $('#negate').attr('checked', false);
-                //_t.contrast = false;
+                negate_flag = false;
                 $('#change_contrast').val(100);
-                //_t.brightness = false;
                 $('#change_brightness').val(100);
-                //_t.rotate = 0;
-                //$("#viewer img").css("transform","");
-                //me.display_options.format = 'default';
                 rotateImage = rotateImage % 360;
 
                 me.display_options.format = 'default';
@@ -565,11 +647,23 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 if (image_position == listImage.length) {
                     image_position = 0;
                 }
-            } else {
+            } else if($(this).attr('id') == 'previmg') {
                 image_position -= 1;
                 if (image_position < 0) {
                     image_position = listImage.length -1;
                 }
+            } else if($(this).attr('id') == 'prevdoubleimg') {
+               image_position = image_position - 10;
+               if (image_position < 0){
+                    var numtotal = $('#number_total').text();
+                    image_position = parseInt(numtotal) + parseInt(image_position);
+               }
+            } else if($(this).attr('id') == 'nextdoubleimg') {
+               image_position = image_position + 10;
+               if (image_position > $('#number_total').text()) {
+                    var numtotal = $('#number_total').text();
+                    image_position = parseInt(image_position) - numtotal;
+               }
             }
             imageShow = image_position + 1;
             $("#number_image").val(imageShow);
@@ -600,8 +694,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
             me.current_zoom = zoomGlobal;
             current_image = listImage[image_position];
-            //$('#hidef').attr('data-state', 'off');
-            //$('#hidef').attr('class', 'off');
 
             return false;
         });
@@ -628,7 +720,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         });
 
         //prevent double click to be passed to viewer container
-        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#formats,#image_params,#lockparams,#infosRemote,#moreparams,#print").on('dblclick', function(e){
+        $("#thumbnails,#zoomin,#zoomout,#fitsize,#fullsize,#lrotate,#rrotate,#nextimg,#previmg,#nextdoubleimg,#prevdoubleimg,#formats,#image_params,#lockparams,#infosRemote,#moreparams,#print").on('dblclick', function(e){
             e.stopPropagation();
         });
         //bind keys
@@ -744,6 +836,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 $negate_string = '';
                 if ($('#negate').is(':checked')) {
                     $negate_string = "invert(100%)";
+                    negate_flag = true;
                 }
 
                 $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
@@ -814,16 +907,10 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             }
 
             $('#reset_parameters').on('click', function(event) {
-                //var _t = me.display_options.transform;
-                //_t.negate = false;
                 $('#negate').attr('checked', false);
-                //_t.contrast = false;
+                negate_flag = false;
                 $('#change_contrast').val(100);
-                //_t.brightness = false;
                 $('#change_brightness').val(100);
-                //_t.rotate = 0;
-                //$("#viewer img").css("transform","");
-                //me.display_options.format = 'default';
                 rotateImage = rotateImage % 360;
                 switch(rotateImage) {
                     case 90:
@@ -840,7 +927,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         break;
                 }
                 rotateImage = 0;
-                //$('#formats > select').val('default');
+
+                me.display_options.transform.rotate = 0;
+                $('#formats > select').val('default');
             });
         }
     },
@@ -999,33 +1088,9 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if (aws_flag == true) {
             _url += image_strictname;
         }
-        /*$.get(
-            _url,
-            function(data){
-                if ( data.remote ) {
-                    $('header > h2').html(data.remote.link);
-                    if( data.mat ) {
-                        $('header > h2').html(data.remote.mat.link_mat);
-                        $('#allInfosRemote').html(data.remote.mat.record);
-                    }
-                    $('#allInfosRemote').html(data.remote.unitid);
-                } else {
-                    $('header > h2').html(data.current);
-                    $('#allInfosRemote').html(contentRemoteDefault);
-                }
-            },
-            'json'
-        ).fail(function(){
-            alert('An error occured loading series informations, navigation may fail.');
-        });*/
+
         var _prev = $('#previmg');
-        if (aws_flag != true) {
-            _prev.attr('href', series_path + '?img=' + data.prev);
-        }
         var _next = $('#nextimg');
-        if (aws_flag != true) {
-            _next.attr('href', series_path + '?img=' + data.next);
-        }
         imageShow = image_position + 1;
 
         $('#current_pos').html('<form id="search_img"><input id="number_image" type="text" value="'+imageShow+'"/></form>');
@@ -1036,23 +1101,14 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                 var numtotal = $('#number_total').text();
                 if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
                     var app_series_url = app_url + '/series/' + series_path;
-                    if( typeof series_start != 'undefined' && typeof series_end != 'undefined'){
-                        //window.location.href = app_series_url + '?s=' + series_start + '&e=' + series_end + '&num=' + posnum;
-                    } else {
-                        //window.location.href = app_series_url + '?num=' + posnum;
-                    }
 
                     image_position = parseInt(posnum) - 1;
 
                     if($('#lockparams').hasClass('off')) {
                         $('#negate').attr('checked', false);
-                        //_t.contrast = false;
+                        negate_flag = false;
                         $('#change_contrast').val(100);
-                        //_t.brightness = false;
                         $('#change_brightness').val(100);
-                        //_t.rotate = 0;
-                        //$("#viewer img").css("transform","");
-                        //me.display_options.format = 'default';
                         rotateImage = rotateImage % 360;
 
                         me.display_options.format = 'default';
@@ -1093,10 +1149,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                     }
                     image_strictname = listImage[image_position];
                     $("#titleImage").empty().append(image_strictname);;
-                    //me.loadImage(cloudfront + 'prepared_images/default/'+ full_path +listImage[image_position]);
-
-                    /*$('#hidef').attr('data-state', 'off');
-                    $('#hidef').attr('class', 'off');*/
 
                     thumb_src = cloudfront +'prepared_images/thumb/'+ full_path +listImage[image_position];
                     current_image = listImage[image_position];
@@ -1112,9 +1164,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _path = series_path;
 
         this.getComment(app_url, _path, _name);
-
         this.addComment(app_url, _path, _name);
-
     },
 
     /**
@@ -1449,24 +1499,13 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $negate_string = '';
         if ($('#negate').is(':checked')) {
             $negate_string = "invert(100%)";
+            negate_flag = true;
         }
+        $('.colorup').css("filter",$brightness_string+$contrast_string+$negate_string);
         $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
 
     },
 
-    _imgNameFromLink: function(link) {
-        var _str = link.attr('href').replace('/series', '');
-        var _re = /\?img=(.+)/;
-        return _str.replace(_re, '/$1');
-    },
-    _imgNameFromLinkAws: function(link) {
-        var _str = link.attr('href').replace('/series', '');
-        var _re = /\?img=(.+)/;
-        _str = _str.replace(_re, '/$1');
-        _str = 'http://cdn-ad84.anaphore.org/prepared_images/default/destination'+_str;
-        return _str;
-    },
-   
 }));
 
 $.ui.bviewer.defaults = $.extend({}, $.ui.iviewer.defaults);

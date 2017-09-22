@@ -392,8 +392,15 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                                 _a.addClass('current');
                             }
                             _a.bind('click touch', function(){
+                                if($("#lockparams").hasClass('off')) {
+                                    me._rebootParams(me);
+                                } else {
+                                    var _t = me.display_options.transform;
+                                    _t.rotate = 0;
+                                    zoomGlobal = me.current_zoom;
+                                }
                                 me.display(me._imgNameFromLink($(this)));
-                                $('#formats > select').val('default');
+                                $('#formats > select').val(me.display_options.format);
                                 _thumbview.remove();
                                 return false;
                             });
@@ -454,31 +461,34 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         $('#formats > select').change(function(){
             var _format = $("select option:selected").attr('value');
             me.display_options.format = _format;
+
+            _this = $('#hidef');
+            if (_format == 'full') {
+                _this.data('state', 'on');
+                _this.attr('data-state', 'on');
+                _this.attr('title', hidef_on_title);
+                $("#hidef").removeClass();
+                $("#hidef").addClass('on');
+            } else {
+                _this.data('state', 'off');
+                _this.attr('data-state', 'off');
+                _this.attr('title', hidef_off_title);
+                $("#hidef").removeClass();
+                $("#hidef").addClass('off');
+            }
+
+            $('#hidef .userinfo').hide();
             _src  = me.options.src.replace(/show\/.[^\/]+/, 'show/' + _format);
             me.loadImage(_src);
         }).val('default');
 
         //navbar
         $('#previmg,#nextimg,#prevdoubleimg,#nextdoubleimg').bind('click touchstart', function(){
+            var _t = me.display_options.transform;
             if($("#lockparams").hasClass('off')) {
-                _this  = $(this);
-                var _t = me.display_options.transform;
-                _t.negate = false;
-                $('#negate').attr('checked', false);
-                _t.contrast = false;
-                $('#change_contrast').val(0);
-                _t.brightness = false;
-                $('#change_brightness').val(0);
-                _t.rotate = 0;
-                me.display_options.format = 'default';
-                $('#formats > select').val('default');
-                _format = 'full';
-                _this.data('state', 'on');
-                _this.attr('data-state', 'on');
-                _this.attr('title', hidef_on_title);
-
-                zoomGlobal = 100;
+                me._rebootParams(me);
             } else {
+                _t.rotate = 0;
                 zoomGlobal = me.current_zoom;
             }
 
@@ -868,26 +878,12 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                         var posnum = $('#number_image').val();
                         var numtotal = $('#number_total').text();
                         if( !(isNaN(posnum)) && parseInt(posnum) > 0 && (parseInt(posnum) <= parseInt(numtotal) )) {
+                            var _t = me.display_options.transform;
                             if($("#lockparams").hasClass('off')) {
-                                _this  = $(this);
-                                var _t = me.display_options.transform;
-                                _t.negate = false;
-                                $('#negate').attr('checked', false);
-                                _t.contrast = false;
-                                $('#change_contrast').val(0);
-                                _t.brightness = false;
-                                $('#change_brightness').val(0);
-                                _t.rotate = 0;
-                                me.display_options.format = 'default';
-                                $('#formats > select').val('default');
-                                _format = 'full';
-                                _this.data('state', 'on');
-                                _this.attr('data-state', 'on');
-                                _this.attr('title', hidef_on_title);
-
-                                zoomGlobal = 100;
+                               me._rebootParams(me);
                             } else {
                                 zoomGlobal = me.current_zoom;
+                                _t.rotate = 0;
                             }
                             if (series_path.substr(series_path.length-1) == '/') {
                                 me.display(series_path + series_content[parseInt(posnum)-1]);
@@ -1261,6 +1257,25 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         var _str = link.attr('href').replace('/series', '');
         var _re = /\?img=(.+)/;
         return _str.replace(_re, '/$1');
+    },
+    _rebootParams: function(me) {
+        var _t = me.display_options.transform;
+        _t.negate = false;
+        $('#negate').attr('checked', false);
+        _t.contrast = false;
+        $('#change_contrast').val(0);
+        _t.brightness = false;
+        $('#change_brightness').val(0);
+        _t.rotate = 0;
+        me.display_options.format = 'default';
+        $('#formats > select').val('default');
+        _format = 'default';
+        $("#hidef").data('state', 'off');
+        $("#hidef").removeClass();
+        $("#hidef").addClass('off');
+        $("#hidef").attr('data-state', 'off');
+        $("#hidef").attr('title', hidef_off_title);
+        zoomGlobal = 100;
     }
 }));
 

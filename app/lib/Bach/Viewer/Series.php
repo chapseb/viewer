@@ -83,45 +83,125 @@ class Series
         $this->_end = $end;
         $roots = $conf->getRoots();
 
-        foreach ( $roots as $root ) {
-            if ( file_exists($root . $path) && is_dir($root . $path) ) {
-                $this->_full_path = $root . $path;
-                Analog::log(
-                    str_replace(
-                        '%path',
-                        $this->_full_path,
-                        _('Series path set to "%path"')
+        if ($conf->getAWSFlag() == true) {
+            $s3 = new \Aws\S3\S3Client(
+                [
+                    'version' => $conf->getAWSVersion(),
+                    'region'  => $conf->getAWSRegion(),
+                    'credentials' => array(
+                        'key' => $conf->getAWSKey(),
+                        'secret' =>$conf->getAWSSecret()
                     )
-                );
-                break;
+                ]
+            );
+            $results = array();
+
+            foreach ($roots as $root) {
+                if (substr($root, - 1) == '/') {
+                    $root = substr($root, 0, -1);
+                }
+                if ($this->_start == null) {
+                    $objects = $s3->getIterator(
+                        'ListObjects',
+                        array(
+                            "Bucket" => $conf->getAWSBucket(),
+                            "Prefix" => $root . '/' . $path,
+                            "Delimiter" => "/",
+                        )
+                    );
+                } else {
+                    $objects = $s3->getIterator(
+                        'ListObjects',
+                        array(
+                            "Bucket" => $conf->getAWSBucket(),
+                            "Prefix" => $root . '/' . $path,
+                            "Delimiter" => "/",
+                        )
+                    );
+
+                }
+
+                foreach ($objects as $object) {
+                    array_push($results, $object['Key']);
+                }
+
+                if (!empty($results)) {
+                    $this->_full_path = $root . '/' . $path;
+                    Analog::log(
+                        str_replace(
+                            '%path',
+                            $this->_full_path,
+                            _('Series path set to "%path"')
+                        )
+                    );
+                    break;
+                }
+            }
+
+        } else {
+            foreach ( $roots as $root ) {
+                if ( file_exists($root . $path) && is_dir($root . $path) ) {
+                    $this->_full_path = $root . $path;
+                    Analog::log(
+                        str_replace(
+                            '%path',
+                            $this->_full_path,
+                            _('Series path set to "%path"')
+                        )
+                    );
+                    break;
+                }
             }
         }
 
-        if ( $this->_full_path === null ) {
+        if ($this->_full_path === null) {
             throw new \RuntimeException(
                 _('No matching root found!')
             );
         } else {
             $this->_content = array();
-            $handle = opendir($this->_full_path);
+            if (!$conf->getAWSFlag()) {
+                $handle = opendir($this->_full_path);
+            } else {
+                $handle = opendir('s3://'.$conf->getAWSBucket().'/'.$this->_full_path);
+            }
 
             $all_entries = array();
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $go = ($this->_start === null ) ? true : false;
+            if ($conf->getAWSFlag()) {
+                $go = true;
+            }
             if ($go === true) {
                 while ( false !== ($entry = readdir($handle)) ) {
                     if ($entry != "."
                         && $entry != ".."
                         && !is_dir($this->_full_path . '/' . $entry)
                     ) {
-                        $mimetype = $finfo->file($this->_full_path . '/' . $entry);
-                        if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                        if (!$conf->getAWSFlag()) {
+                            $mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                        }
+                        if ($conf->getAWSFlag() or $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
                             $all_entries[] = $entry;
                         }
                     }
                 }
+
                 closedir($handle);
                 sort($all_entries, SORT_STRING);
+
+                if ($this->_start != null && $conf->getAWSFlag()) {
+                    $tmp_entry = array();
+                    foreach ($all_entries as $entry) {
+                        if (strcmp($this->_start, $entry) <= 0
+                            && strcmp($this->_end, $entry) >= 0
+                        ) {
+                            array_push($tmp_entry, $entry);
+
+                        }
+                    }
+                    $all_entries = $tmp_entry;
+                }
             } else {
                 $listFiles = scandir($this->_full_path);
                 sort($listFiles, SORT_STRING);
@@ -132,28 +212,31 @@ class Series
 
                 foreach ($arrayDif as $entry) {
                     $mimetype = $finfo->file($this->_full_path . '/' . $entry);
-                    if ( $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                    if ($mimetype != '' && strpos($mimetype, 'image') === 0 or $conf->getAWSFlag()) {
                         $all_entries[] = $entry;
                     }
                 }
             }
 
-            foreach ( $all_entries as $entry ) {
+            foreach ($all_entries as $entry) {
                 //check for subseries start
-                if ( !$go
+                if (!$go
                     && substr($entry, -strlen($this->_start)) === $this->_start
                 ) {
                     $go = true;
                 }
 
-                if ( $go ) {
+                if ($go) {
+
                     try {
-                        $picture = new Picture(
-                            $this->_conf,
-                            $entry,
-                            $app_base_url,
-                            $this->_full_path
-                        );
+                        if (!$conf->getAWSFlag()) {
+                            $picture = new Picture(
+                                $this->_conf,
+                                $entry,
+                                $app_base_url,
+                                $this->_full_path
+                            );
+                        }
                         $this->_content[] = $entry;
                     } catch (\RuntimeException $re) {
                         Analog::warning(
@@ -161,7 +244,7 @@ class Series
                         );
                     }
 
-                    if ( $this->_end !== false
+                    if ($this->_end !== false
                         && substr($entry, -strlen($this->_end)) === $this->_end
                     ) {
                         $go = false;
@@ -197,6 +280,18 @@ class Series
     public function getFullPath()
     {
         return $this->_full_path;
+    }
+
+    /**
+     * Change series full path
+     *
+     * @param string $fullpath new serie's full path
+     *
+     * @return void
+     */
+    public function setFullPath($fullpath)
+    {
+        $this->_full_path = $fullpath;
     }
 
     /**
@@ -487,6 +582,18 @@ class Series
     public function getEnd()
     {
         return $this->_end;
+    }
+
+    /**
+     * Set content Series
+     *
+     * @param array $content new serie's content
+     *
+     * @return void
+     */
+    public function setContent($content)
+    {
+        $this->_content = $content;
     }
 
 }

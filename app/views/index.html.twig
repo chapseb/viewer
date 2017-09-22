@@ -147,17 +147,18 @@ POSSIBILITY OF SUCH DAMAGE.
             var displayHD = '{{ displayHD }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
-	    {% if awsFlag %}
-	    var image_path = '{{ cloudfront ~ path }}';
-	    {% else%}
+        {% if awsFlag %}
+            var image_path = '{{ cloudfront ~ path }}';
+        {% else%}
             var image_path = '{{ picture.getPath() }}';
-	    {% endif %}
+        {% endif %}
             {% endif %}
-	    {% if awsFlag %}
+        {% if awsFlag %}
             var aws_flag = '{{ awsFlag }}';
             var src_default = '{{ default_src }}';
             var thumb_src = '{{ thumb_src}}';
-	    {% endif %}
+            var negate_flag = false;
+        {% endif %}
             {% if remote_infos_url is defined %}
             var remote_infos_url = '{{ remote_infos_url }}';
             {% endif%}
