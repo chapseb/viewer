@@ -146,6 +146,9 @@ var BNavigation = new Class({
         $$('#infosRemote').addEvent('click', function(){
             _iipviewer.displayRemoteInfosWindow();
         });
+        $$('#comments').addEvent('click', function(){
+            _iipviewer.imageCommentsWindow(app_url);
+        });
     },
 
     /**
