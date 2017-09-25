@@ -1,4 +1,4 @@
-<h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined %}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
+<h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined and themes != ''%}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
 <h2>{{ img }}</h2>
 {% if series %}
     {% set series_name = series.getPath() %}
