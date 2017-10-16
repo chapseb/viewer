@@ -79,6 +79,7 @@ class Conf
     private $_namefileprint;
     private $_displayHD;
     private $_patternzoomify;
+    private $_titlehtml;
 
     private $_known_remote_methods = array(
         'bach',
@@ -187,6 +188,7 @@ class Conf
         $this->_namefileprint    = $this->_conf['namefileprint'];
         $this->_displayHD        = $this->_conf['displayHD'];
         $this->_patternzoomify   = $this->_conf['patternzoomify'];
+        $this->_titlehtml        = $this->_conf['titlehtml'];
     }
 
     /**
@@ -467,14 +469,25 @@ class Conf
     {
         return $this->_displayHD;
     }
-    
+
     /**
-    * Retrieve pattern zoomify param
-    *
-    * @return boolean
-    */
+     * Retrieve pattern zoomify param
+     *
+     * @return boolean
+     */
     public function getPatternZoomify()
     {
         return $this->_patternzoomify;
     }
+
+    /**
+     * Retrive html papge title
+     *
+     * @return boolean
+     */
+    public function getTitleHtml()
+    {
+        return $this->_titlehtml;
+    }
+
 }

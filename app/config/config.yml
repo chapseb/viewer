@@ -36,6 +36,7 @@ notdownloadprint: false
 namefileprint: 'bach-print.pdf'
 displayHD: false
 patternzoomify: []
+titlehtml: null
 
 formats:
     #default format *MUST* be present
