@@ -15,7 +15,7 @@ Protocols.Djatoka = new Class({
 
   /* Return an individual tile request URL
    */
-  getTileURL: function(server,image,resolution,sds,contrast,k,x,y){
+  getTileURL: function(t){
     var f = this.getMultiplier(t.resolution);
     var djatoka_x = t.x*f; var djatoka_y = t.y*f;
     var src = t.server + this.url_ver
@@ -45,7 +45,7 @@ Protocols.Djatoka = new Class({
 
   /* Return URL for a full view
    */
-  getRegionURL: function(server,image,region,width){
+  getRegionURL: function(server,image,region,width,height){
     return server + this.url_ver
       + image + "&svc_id=" + this.svc_id
       + "&svc_val_fmt=" + this.svc_val_fmt

@@ -18,7 +18,7 @@ Protocols.Zoomify = new Class({
   /* Parse a Zoomify protocol metadata request
    */
   parseMetaData: function(response){
-    // Simply split the reponse as a string
+    // Simply split the response as a string
     var tmp = response.split('"');
     var w = parseInt(tmp[1]);
     var h = parseInt(tmp[3]);
@@ -40,7 +40,7 @@ Protocols.Zoomify = new Class({
 
   /* Return URL for a full view - not possible with Zoomify
    */
-  getRegionURL: function(server,image,region,w){
+  getRegionURL: function(server,image,region,w,h){
     return null;
   },
 

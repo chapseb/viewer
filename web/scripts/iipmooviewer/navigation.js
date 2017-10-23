@@ -1,7 +1,6 @@
 /* IIPMooViewer Navigation Widget
 
-   Copyright (c) 2007-2013 Ruven Pillay <ruven@users.sourceforge.net>
-   Copyright (c) 2013-2014 Anaphore
+   Copyright (c) 2007-2014 Ruven Pillay <ruven@users.sourceforge.net>
    IIPImage: http://iipimage.sourceforge.net
 
    --------------------------------------------------------------------
@@ -35,6 +34,8 @@ var Navigation = new Class({
     this.options.navWinSize = options.navWinSize || 0.2;
     this.options.showCoords = (options.showCoords == true) ? true : false;
     this.prefix = options.prefix;
+    this.standalone = (options.navigation&&options.navigation.id&&document.id(options.navigation.id)) ? true : false;
+    this.options.navButtons = (options.navigation&&options.navigation.buttons) || ['reset','zoomIn','zoomOut'];
   },
 
 
@@ -47,22 +48,23 @@ var Navigation = new Class({
 
     this.navcontainer = new Element( 'div',{
       'class': 'navcontainer',
-      'styles': { width: this.size.x }
+      'styles': {
+	width: this.size.x,
+	position: (this.standalone) ? 'static' : 'absolute' }
     });
 
-    // For standalone iphone/ipad the logo gets covered by the status bar
-    if( Browser.Platform.ios && window.navigator.standalone ) this.navcontainer.setStyle( 'top', 20 );
-
-    var toolbar = new Element( 'div', {
-      'class': 'toolbar',
-      'events': {
-	 dblclick: function(source){
-	   source.getElement('div.navbuttons').get('slide').toggle();
-         }.pass(container)
-      }
-    });
-    toolbar.store( 'tip:text', IIPMooViewer.lang.drag );
-    toolbar.inject(this.navcontainer);
+    if(!this.standalone) {
+      var toolbar = new Element( 'div', {
+        'class': 'toolbar',
+        'events': {
+	   dblclick: function(source){
+	     source.getElement('div.navbuttons').get('slide').toggle();
+           }.pass(container)
+        }
+      });
+      toolbar.store( 'tip:text', IIPMooViewer.lang.drag );
+      toolbar.inject(this.navcontainer);
+    }  
 
 
     // Create our navigation div and inject it inside our frame if requested
@@ -112,7 +114,7 @@ var Navigation = new Class({
           'html': '<div></div>',
           'styles': {
 	    top: this.size.y - 6,
-	    opacity: 0.65
+	    opacity: 0.8
            },
            'tween': {
              duration: 1000,
@@ -124,8 +126,6 @@ var Navigation = new Class({
       }
     }
 
-    //[JC 2013-06-20] _this was previously declared in the if...
-    var _this = this;
 
     // Create our nav buttons if requested
     if( this.options.showNavButtons ){
@@ -136,10 +136,11 @@ var Navigation = new Class({
 
       // Create our buttons as SVG with fallback to PNG
       var prefix = this.prefix;
-      ['reset','zoomIn','zoomOut','rotateLeft','rotateRight'].each( function(k){
+      this.options.navButtons.each( function(k){
 	new Element('img',{
 	  'src': prefix + k + (Browser.buggy?'.png':'.svg'),
 	  'class': k,
+	  'title': IIPMooViewer.lang.tooltips[k],
  	  'events':{
 	    'error': function(){
 	      this.removeEvents('error'); // Prevent infinite reloading
@@ -155,11 +156,13 @@ var Navigation = new Class({
       navbuttons.set('slide', {duration: 300, transition: Fx.Transitions.Quad.easeInOut, mode:'vertical'});
 
       // Add events to our buttons
-      navbuttons.getElement('img.zoomIn').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
-      navbuttons.getElement('img.zoomOut').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
-      navbuttons.getElement('img.reset').addEvent( 'click', function(){ _this.fireEvent('reload'); });
-      navbuttons.getElement('img.rotateLeft').addEvent( 'click', function(){ _this.fireEvent('rotate',-90); });
-      navbuttons.getElement('img.rotateRight').addEvent( 'click', function(){ _this.fireEvent('rotate',90); });
+      var _this = this;
+      if(this.options.navButtons.contains('reset')) navbuttons.getElement('img.reset').addEvent( 'click', function(){ _this.fireEvent('reload'); });
+      if(this.options.navButtons.contains('zoomIn')) navbuttons.getElement('img.zoomIn').addEvent( 'click', function(){ _this.fireEvent('zoomIn'); });
+      if(this.options.navButtons.contains('zoomOut')) navbuttons.getElement('img.zoomOut').addEvent( 'click', function(){ _this.fireEvent('zoomOut'); });
+      if(this.options.navButtons.contains('rotateLeft')) navbuttons.getElement('img.rotateLeft').addEvent( 'click', function(){ _this.fireEvent('rotate',-90); });
+      if(this.options.navButtons.contains('rotateRight')) navbuttons.getElement('img.rotateRight').addEvent( 'click', function(){ _this.fireEvent('rotate',90); });
+      if(this.options.navButtons.contains('print')) navbuttons.getElement('img.print').addEvent( 'click', function(){ _this.fireEvent('print'); });
 
     }
 
@@ -195,44 +198,11 @@ var Navigation = new Class({
 	    _this.position = {x: pos.x, y: pos.y-10};
 	    _this.zone.get('morph').cancel();
 	  },
-      //[JC 2013-06-20] Update outerZone
-      onDrag: function() {
-        var _navWin = $$('.navwin')[0];
-        var _toolbar = $$('.toolbar')[0];
-
-        var _styles = _this.zone.getStyles(
-            'width',
-            'height',
-            'border-top-width',
-            'border-bottom-width',
-            'border-left-width',
-            'border-right-width',
-            'top',
-            'left'
-        );
-
-        var _outerHeight = _styles.height.toInt();
-        var _outerTopBorder = _styles.top.toInt() - _toolbar.getStyle('height').toInt() + _styles['border-top-width'].toInt()
-        var _outerBottomBorder = _navWin.getStyle('height').toInt() - _outerHeight - _outerTopBorder + _styles['border-bottom-width'].toInt();
-
-        var _outerWidth = _styles.width.toInt();
-        var _outerLeftBorder = _styles.left.toInt() + _styles['border-left-width'].toInt()
-        var _outerRightBorder = _navWin.getStyle('width').toInt() - _outerWidth - _outerLeftBorder + _styles['border-right-width'].toInt();
-
-        _this.outerZone.setStyles({
-            'border-top-width':     _outerTopBorder,
-            'border-left-width':    _outerLeftBorder,
-            'border-bottom-width':  _outerBottomBorder,
-            'border-right-width':   _outerRightBorder,
-            'height':               _outerHeight,
-            'width':                _outerWidth
-        });
-      },
 	  onComplete: this.scroll.bind(this)
         });
     }
 
-    this.navcontainer.makeDraggable( {container:container, handle:toolbar} );
+    if(!this.standalone) this.navcontainer.makeDraggable( {container:container, handle:toolbar} );
 
   },
 
@@ -289,10 +259,7 @@ var Navigation = new Class({
 
     // And reposition the navigation window
     if( this.options.showNavWindow ){
-      if( this.navcontainer ) this.navcontainer.setStyles({
-	top: (Browser.Platform.ios&&window.navigator.standalone) ? 20 : 10, // Nudge down window in iOS standalone mode
-	left: container.getPosition(container).x + container.getSize().x - this.size.x - 10
-      });
+      if( this.navcontainer ) this.navcontainer.setStyle( 'left', container.getPosition(container).x + container.getSize().x - this.size.x - 10 );
 
       // Resize our navigation window div
       if(this.zone) this.zone.getParent().setStyle('height', this.size.y );
@@ -308,13 +275,6 @@ var Navigation = new Class({
   setImage: function( src ){
     if( this.navcontainer && this.navcontainer.getElement('img.navimage') ){
       this.navcontainer.getElement('img.navimage').src = src;
-
-      //[JC 2014-04-24] Update preview image size
-      var _navWin = $$('.navwin')[0];
-      this.navcontainer.getElement('img.navimage').setStyles({
-        'height': _navWin.getStyle('height'),
-        'width': _navWin.getStyle('width'),
-      });
     }
   },
 
@@ -352,8 +312,7 @@ var Navigation = new Class({
       // From a drag
       xmove = e.offsetLeft;
       ymove = e.offsetTop-10;
-      //[JC - 2013-06-20] the following line is CSS related and CSS has been heavily changed... I don't know what was the purpose of this one.
-      //if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
+      if( (Math.abs(xmove-this.position.x) < 3) && (Math.abs(ymove-this.position.y) < 3) ) return;
     }
 
     if( xmove > (this.size.x - zone_w) ) xmove = this.size.x - zone_w;
@@ -399,7 +358,7 @@ var Navigation = new Class({
     this.zone.morph({
       fps: 30,
       left: pleft,
-      top: ptop + 10, // 8 is the height of toolbar
+      top: (this.standalone) ? ptop : ptop + 8, // 8 is the height of toolbar
       width: (width-border>0)? width - border : 1, // Watch out for zero sizes!
       height: (height-border>0)? height - border : 1
     });
