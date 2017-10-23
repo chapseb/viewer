@@ -149,6 +149,10 @@ var BNavigation = new Class({
         $$('#comments').addEvent('click', function(){
             _iipviewer.imageCommentsWindow(app_url);
         });
+        $$('#print').addEvent('click', function(){
+            _iipviewer.print();
+        });
+
     },
 
     /**

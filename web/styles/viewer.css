@@ -652,7 +652,7 @@ aside#progressbar > div > progress {
   border: 1px solid black;
 }
 
-.navwin img { position: absolute; border: 0; width: 100%; height: 100%; display: block;}
+.navwin img { border: 0; width: 100%; height: 100%; display: block;}
 
 .navwin .outerzone {
     position: absolute;
@@ -908,6 +908,10 @@ aside#progressbar > div > progress {
 .mat_record_head, .ead_description_head {
     font-weight: bold;
     padding: 1px;
+}
+
+.iipmooviewer .canvas img:hover {
+    cursor: grabbing !important;
 }
 
 /* Mobile view */
