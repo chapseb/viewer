@@ -19,7 +19,7 @@ aside, header {
     display:none;
 }
 
-.navwin, .logo {
+.navwin, .logo, .loadBarContainer {
     display:none;
 }
 
