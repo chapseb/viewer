@@ -41,7 +41,10 @@ POSSIBILITY OF SUCH DAMAGE.
         <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.nouislider.css"/>
             {% endif %}
         {% else %}
-        <link rel="stylesheet" type="text/css" media="all" href="{{ app_web_url }}/styles/iip.css" />
+        <link rel="stylesheet" type="text/css" href="{{ app_web_url }}/styles/iip.css" />
+        {% endif %}
+        {% if zoomify %}
+        <link rel="stylesheet" type="text/css" media="print" href="{{ app_web_url }}/styles/zoomifyprint.css" />
         {% endif %}
         <link rel="stylesheet" href="{{ app_web_url }}/styles/viewer.css"/>
 {% endblock %}

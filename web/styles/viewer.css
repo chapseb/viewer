@@ -364,7 +364,7 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     background-position: -405px 0!important;
 }
 
-#print {
+#print, #printZoomify {
     background-position: -500px 0;
 }
 

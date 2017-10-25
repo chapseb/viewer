@@ -15,7 +15,11 @@
     <li id="fullsize" title="{% trans "Show full size image" %}">
 
     {% if print and picture.canPrint() %}
-    <li id="print" title="{% trans "Print image as currently displayed" %}">
+        {% if zoomify %}
+            <li id="printZoomify" title="{% trans "Print image as currently displayed" %}">
+        {% else %}
+            <li id="print" title="{% trans "Print image as currently displayed" %}">
+        {% endif %}
     {% endif %}
     {% if not iip %}
         {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}

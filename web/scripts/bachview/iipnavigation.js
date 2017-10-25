@@ -152,7 +152,18 @@ var BNavigation = new Class({
         $$('#print').addEvent('click', function(){
             _iipviewer.print();
         });
+        $$('#printZoomify').addEvent('click', function(){
+            // Firefox 1.0+
+            var isFirefox = typeof InstallTrigger !== 'undefined';
 
+            // Safari 3.0+ "[object HTMLElementConstructor]" 
+            var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+            if (isFirefox || isSafari) {
+                alert("Pensez à mettre l'orientation en mode paysage et l'échelle à 50% lors de l'impression");
+            }
+            window.print();
+        });
     },
 
     /**
