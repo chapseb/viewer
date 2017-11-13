@@ -56,7 +56,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <![endif]-->
 
         {% block head %}{% endblock %}
+        {% if app_favicon_path is defined and app_favicon_path is not null %}
+        <link rel="shortcut icon" href="{{ app_web_url ~ app_favicon_path}}" />
+        {% else %}
         <link rel="shortcut icon" href="{{ app_web_url ~ '/favicon.png' }}" />
+        {% endif %}
     </head>
     <body>
         <!--[if lt IE 8]>

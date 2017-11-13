@@ -80,6 +80,7 @@ class Conf
     private $_displayHD;
     private $_patternzoomify;
     private $_titlehtml;
+    private $_faviconpath;
 
     private $_known_remote_methods = array(
         'bach',
@@ -189,6 +190,7 @@ class Conf
         $this->_displayHD        = $this->_conf['displayHD'];
         $this->_patternzoomify   = $this->_conf['patternzoomify'];
         $this->_titlehtml        = $this->_conf['titlehtml'];
+        $this->_faviconpath      = $this->_conf['faviconpath'];
     }
 
     /**
@@ -490,4 +492,13 @@ class Conf
         return $this->_titlehtml;
     }
 
+    /**
+     * Retrive favicon path
+     *
+     * @return boolean
+     */
+    public function getFaviconPath()
+    {
+        return $this->_faviconpath;
+    }
 }
