@@ -628,6 +628,7 @@ aside#progressbar > div > progress {
     width: 34px;
     height: 34px;
     background: url(../images/buttons/ico-zoom-on.png) top left no-repeat;
+    background-size: 34px 34px;
     top: -18px;
     left:50%;
     margin-left:-18px;
@@ -637,6 +638,7 @@ aside#progressbar > div > progress {
 
 .navcontainer .toolbar .toolbarbtn.off {
     background: url(../images/buttons/ico-zoom-off.png) top left no-repeat;
+    background-size: 34px 34px;
 }
 
 .navwin, .navwin > img {
