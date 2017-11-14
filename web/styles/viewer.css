@@ -372,8 +372,12 @@ aside li:hover, #thumbnails:hover, #moreparams:hover {
     width: 20px;
     height: 20px;
     background-image: url(../images/buttons/ico-full-screen.png);
+    background-size: 34px 34px;
     float: right;
     margin: .2em;
+    margin-right: 1em !important;
+    border: #fff 1px solid !important;
+    padding: 3px;
 }
 
 #fullscreen > span {
