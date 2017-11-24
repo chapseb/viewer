@@ -85,13 +85,13 @@ h2 {
     line-height: 1.9em;
 }
 
-header a, #comm_header a, #infos_header a {
+header a, #comm_header a, #infos_header a, #alert_header a {
     color: #9b9b9b;
     font-weight: normal;
     text-decoration: none;
 }
 
-header a:hover, #comm_header a:hover, #infos_header a:hover {
+header a:hover, #comm_header a:hover, #infos_header a:hover, #alert_header a:hover {
     text-decoration: underline;
 }
 
@@ -714,7 +714,23 @@ aside#progressbar > div > progress {
     right: 50px;
 }
 
-#image_params legend, #comm_header, #infos_header {
+#zoomifyalert_content {
+    position: absolute;
+    bottom: em;
+    background-color: black;
+    background-color: rgba(0,0,0,0.8);
+    display: none;
+    color: #9b9b9b;
+    border: 1px solid #660912;
+    border-radius: 6px;
+    padding-bottom: .3em;
+    left: 35%;
+    top: 35%;
+    height: 180px;
+    width: 30%;
+}
+
+#image_params legend, #comm_header, #infos_header, #alert_header {
     text-align: center;
     width: 100%;
     padding: .3em 0;
@@ -725,7 +741,7 @@ aside#progressbar > div > progress {
 }
 
 #image_params legend .close,
-#comm_header .close, #infos_header .close {
+#comm_header .close, #infos_header .close, #alert_header .close {
     display: block;
     position: absolute;
     background: url(../images/buttons/close.png) no-repeat top left;
@@ -738,11 +754,12 @@ aside#progressbar > div > progress {
 
 #image_params legend .close:hover,
 #comm_header .close:hover,
-#infos_header .close:hover{
+#infos_header .close:hover,
+#alert_header .close:hover{
     background-image: url(../images/buttons/close-hover.png);
 }
 
-#comm_header a:visited, #infos_header a:visited {
+#comm_header a:visited, #infos_header a:visited, #alert_header a:visited {
     color: #9b9b9b;
 }
 
@@ -770,6 +787,11 @@ aside#progressbar > div > progress {
     overflow-y: auto;
     height: 400px;
     padding: 0.5em;
+}
+
+#zoomifyalert {
+    padding: 0.5em;
+    font-size: 16px;
 }
 
 #allInfosRemote hr {

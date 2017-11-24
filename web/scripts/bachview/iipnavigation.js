@@ -160,7 +160,8 @@ var BNavigation = new Class({
             //var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
             //if (isFirefox || isSafari) {
-                alert("Utilisez la fonctionnalité 'Aperçu avant impression' de votre navigateur pour imprimer, cela vous permettra de régler l'orientation ainsi que l'échelle pour avoir l'ensemble de votre capture.");
+                //alert("Utilisez la fonctionnalité 'Aperçu avant impression' de votre navigateur pour imprimer, cela vous permettra de régler l'orientation ainsi que l'échelle pour avoir l'ensemble de votre capture.");
+            _iipviewer.zoomifyAlertWindow(app_url);
             //}
             //window.print();
         });

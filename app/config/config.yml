@@ -38,6 +38,7 @@ displayHD: false
 patternzoomify: []
 titlehtml: null
 faviconpath: null
+helppath: null
 
 formats:
     #default format *MUST* be present

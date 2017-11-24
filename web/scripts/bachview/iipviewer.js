@@ -379,6 +379,37 @@ var BIIPMooViewer = new Class({
     },
 
     /**
+     * Display image comments window
+     */
+    zoomifyAlertWindow: function(app_url)
+    {
+        var _win = jQuery('#zoomifyalert_content');
+        if ( this.zoomifyalert_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.zoomifyalert_win_init = true;
+            _win.css('display', 'block');
+
+            jQuery('#zoomifyalert_content .close').on('click', function(){
+                me.zoomifyAlertWindow();
+            });
+
+            var dragComment = new Drag(
+                'zoomifyalert_content', {
+                    handle: '#alert_header',
+                    containment: 'parent'
+            });
+        }
+        console.debug(_win);
+    },
+
+
+    /**
      * Overrides IIP navigation
      */
     changeImage: function( name, path ) {

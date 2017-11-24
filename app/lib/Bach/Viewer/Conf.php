@@ -81,6 +81,7 @@ class Conf
     private $_patternzoomify;
     private $_titlehtml;
     private $_faviconpath;
+    private $_helppath;
 
     private $_known_remote_methods = array(
         'bach',
@@ -191,6 +192,7 @@ class Conf
         $this->_patternzoomify   = $this->_conf['patternzoomify'];
         $this->_titlehtml        = $this->_conf['titlehtml'];
         $this->_faviconpath      = $this->_conf['faviconpath'];
+        $this->_helppath         = $this->_conf['helppath'];
     }
 
     /**
@@ -501,4 +503,15 @@ class Conf
     {
         return $this->_faviconpath;
     }
+
+    /**
+     * Retrieve help pdf path
+     *
+     * @return boolean
+     */
+    public function getHelpPath()
+    {
+        return $this->_helppath;
+    }
+
 }

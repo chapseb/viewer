@@ -19,6 +19,10 @@ aside, header {
     display:none;
 }
 
+#zoomifyalert_content, #remoteInfos_content, #image_comments {
+    visibility: hidden;
+}
+
 .navwin, .logo, .loadBarContainer {
     display:none;
 }
