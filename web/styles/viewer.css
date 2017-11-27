@@ -718,16 +718,18 @@ aside#progressbar > div > progress {
     position: absolute;
     bottom: em;
     background-color: black;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0);
     display: none;
     color: #9b9b9b;
     border: 1px solid #660912;
     border-radius: 6px;
     padding-bottom: .3em;
-    left: 35%;
-    top: 35%;
-    height: 180px;
-    width: 30%;
+    left: 50%;
+    top: 50%;
+    height: 110px;
+    width: 400px;
+    margin-left: -200px;
+    margin-top: -55px;
 }
 
 #image_params legend, #comm_header, #infos_header, #alert_header {
@@ -791,7 +793,9 @@ aside#progressbar > div > progress {
 
 #zoomifyalert {
     padding: 0.5em;
-    font-size: 16px;
+    font-size: 18px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 #allInfosRemote hr {
@@ -947,5 +951,12 @@ aside#progressbar > div > progress {
     header > h1 {
         width: 40px;
         overflow: hidden;
+    }
+
+    #zoomifyalert_content {
+        height: 120px;
+        width: 320px;
+        margin-left: -160px;
+        margin-top: -60px;
     }
 }
