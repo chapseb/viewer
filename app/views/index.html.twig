@@ -33,8 +33,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 {% extends "main.html.twig" %}
 
-{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}
 {% block head %}
+        {% if app_title_html is defined and app_title_html is not null %}
+            <title>{{ app_title_html }} - {{ img }}</title>
+        {% else %}
+            <title>{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}</title>
+        {% endif %}
         {% if not(iip) %}
         <link rel="stylesheet" href="{{ app_web_url }}/styles/jquery.iviewer.css"/>
             {% if contrast and picture.canContrast() or brightness and picture.canBrightness() %}

@@ -33,8 +33,12 @@ POSSIBILITY OF SUCH DAMAGE.
 
 {% extends "main.html.twig" %}
 
-{% block title %}{% trans "Bach's viewer - Error" %}{% endblock %}
 {% block head %}
+    {% if app_title_html is defined and app_title_html is not null %}
+        <title>{{ app_title_html }} - {% trans "Error"%}</title>
+    {% else %}
+        <title>{% trans "Bach's viewer - Error" %}</title>
+    {% endif %}
     <link rel="stylesheet" href="/styles/statics.css"/>
 {% endblock %}
 {% block content %}
