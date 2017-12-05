@@ -133,7 +133,6 @@ $app->get(
                 }
 
             }
-
         } else {
             $picture = null;
 

@@ -158,7 +158,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
             me._setOverviewMaskSize();
         };
 
-
         this.options.onStopDrag = function(ev, point) {
             me._setOverviewMaskSize();
         }
@@ -325,15 +324,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         if ( negate_flag == true) {
             res += '&n=true';
         }
-        /*if ($('#change_brightness').val() != 100) {
-            var newCoeff = parseFloat(160/300);
-            var newBrightness = ($('#change_brightness').val() * newCoeff)-80;
-            res += '&b=' + parseInt(newBrightness);
-        }
-        if ($('#change_contrast').val() != 100) {
-            var newContrast = ($('#change_contrast').val()/10)-10;
-            res += '&c=' + newContrast;
-        }*/
 
         var _path_info = window.location.href.split('/');
         res = _path_info[0] + '//' + _path_info[2] + res + "&"+new Date();
@@ -660,7 +650,7 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
                }
             } else if($(this).attr('id') == 'nextdoubleimg') {
                image_position = image_position + 10;
-               if (image_position > $('#number_total').text()) {
+               if (image_position >= $('#number_total').text()) {
                     var numtotal = $('#number_total').text();
                     image_position = parseInt(image_position) - numtotal;
                }
@@ -841,28 +831,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
 
                 $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
 
-                /*var _v = $('#contrast_value').val();
-                if ( _v != 0 ) {
-                    me.display_options.transform.contrast = _v;
-                } else {
-                    me.display_options.transform.contrast = false;
-                }
-
-                _v = $('#brightness_value').val();
-                if ( _v != 0 ) {
-                    me.display_options.transform.brightness = _v;
-                } else {
-                    me.display_options.transform.brightness = false;
-                }
-
-                _v = $('#negate:checked');
-                if ( _v.length > 0 ) {
-                    me.display_options.transform.negate = true;
-                } else {
-                    me.display_options.transform.negate = false;
-                }
-
-                me.display(me.options.src.replace(/.*\/show\/default\//, ''));*/
             });
 
             _win.draggable({
@@ -1503,7 +1471,6 @@ $.widget("ui.bviewer", $.extend({}, $.ui.iviewer.prototype, {
         }
         $('.colorup').css("filter",$brightness_string+$contrast_string+$negate_string);
         $('.colorup').css("-webkit-filter",$brightness_string+$contrast_string+$negate_string);
-
     },
 
 }));

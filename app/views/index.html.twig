@@ -147,42 +147,42 @@ POSSIBILITY OF SUCH DAMAGE.
             var displayHD = '{{ displayHD }}';
             var series_content =  $.parseJSON('{{series.getContent()|json_encode|raw}}');
             {% if not series %}
-        {% if awsFlag %}
-            var image_path = '{{ cloudfront ~ path }}';
-        {% else%}
-            var image_path = '{{ picture.getPath() }}';
-        {% endif %}
+                {% if awsFlag %}
+                    var image_path = '{{ cloudfront ~ path }}';
+                {% else %}
+                    var image_path = '{{ picture.getPath() }}';
+                {% endif %}
             {% endif %}
-        {% if awsFlag %}
-            var aws_flag = '{{ awsFlag }}';
-            var src_default = '{{ default_src }}';
-            var thumb_src = '{{ thumb_src}}';
-            var negate_flag = false;
-        {% endif %}
+            {% if awsFlag %}
+                var aws_flag = '{{ awsFlag }}';
+                var src_default = '{{ default_src }}';
+                var thumb_src = '{{ thumb_src}}';
+                var negate_flag = false;
+            {% endif %}
             {% if remote_infos_url is defined %}
-            var remote_infos_url = '{{ remote_infos_url }}';
+                var remote_infos_url = '{{ remote_infos_url }}';
             {% endif%}
             {% if series and awsFlag %}
-            var pathHD = '{{pathHD}}';
-            var current_image = '{{ series.getRepresentative() }}';
-            var image_position = 0;
-            var full_path = '{{ series.getFullPath()}}';
+                var pathHD = '{{pathHD}}';
+                var current_image = '{{ series.getRepresentative() }}';
+                var image_position = 0;
+                var full_path = '{{ series.getFullPath()}}';
             {% endif%}
             {% if not series.getStart is null and not series.getEnd is null -%}
-            var series_start = '{{ series.getStart }}';
-            var series_end = '{{ series.getEnd }}';
-            {% endif -%}
-            {% if awsFlag%}
-            {% if image_database_name is defined %}
-            var image_database_name = '{{ image_database_name}}';
+                var series_start = '{{ series.getStart }}';
+                var series_end = '{{ series.getEnd }}';
             {% endif %}
-            var notGenerateImage = '{{ notGenerateImage }}';
-            var alertNotGenerateImage = '{{ "The image has not SD version, click HD button to have the image"|trans|escape('js')}}';
+            {% if awsFlag%}
+                {% if image_database_name is defined %}
+                    var image_database_name = '{{ image_database_name}}';
+                {% endif %}
+                var notGenerateImage = '{{ notGenerateImage }}';
+                var alertNotGenerateImage = '{{ "The image has not SD version, click HD button to have the image"|trans|escape('js')}}';
+                var image_strictname = '{{ imageStrictName}}';
+                var cloudfront = '{{ cloudfront}}';
+                var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
+            {% endif %}
             var alertNotCommunicableImage = '{{ "Image is not communicable."|trans|escape('js')}}';
-            var image_strictname = '{{ imageStrictName}}';
-            var cloudfront = '{{ cloudfront}}';
-            var listImage = JSON.parse('{{ series.getContent()|json_encode|raw }}');
-            {%endif%}
             var app_url = '{{ app_base_url }}';
             var notdownloadprint = '{{ notdownloadprint }}';
             var hidef_off_title = '{{ "Switch to high resolution image"|trans|escape('js') }}';
