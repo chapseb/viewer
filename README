@@ -17,8 +17,10 @@ Directories structure
 Under the main bachview directory, you'll find several directories and files:
 bachview
     - *app*: main application source files
+    - *bin*: binaries (strings extraction, unit tests, ...°
     - *vendor*: 3rd party libraries needeed
     - *web*: web files that should be available from the webserver (main routing, css, js, images and so on)
+    - *build.xml*: Phing (ant equivalent) config file
     - *composer.json*: composer configuration file
     - *composer.lock*: composer versions file
 

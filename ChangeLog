@@ -1,3 +1,18 @@
+1.5.2 (2017-12-11)
+- Update translations
+- Fix title html in error page
+- Fix independence from Bach
+- Add popup for zoomify print help
+- Change fullscreen icon
+- Add favicon in parameters
+- Change reduce thumbnail icon
+- Activate print in iip case
+- Update iipmooviewer libs
+- Add title html page and favicon in parameters
+- Fix logo display in website and print pdf
+- Take care of comment and remote infos in zoomify
+- Split main template
+
 1.5.1 (2017-09-19)
 - Update third party libs
 - Zoomify integration
