@@ -1,0 +1,65 @@
+.iipmooviewer {
+  font-family: Verdana, sans-serif;
+  left: 0;
+  top: 0;
+  background: #000;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: none;
+  position: absolute;
+  zoom: 0.5;
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable tap highlighting */
+}
+.iipmooviewer:focus, .iipmooviewer:active {
+  outline: none;
+}
+
+aside, header {
+    display:none;
+}
+
+#zoomifyalert_content, #remoteInfos_content, #image_comments {
+    visibility: hidden;
+}
+
+.navwin, .logo, .loadBarContainer {
+    display:none;
+}
+
+@page {
+    size: landscape;
+}
+
+/* iPhone, iPad and Android Devices
+ */
+@media screen and (max-device-width: 480px){
+  .iipmooviewer { -webkit-text-size-adjust: 80%; }
+  .iipmooviewer .info div div { width: 100%; }
+  .iipmooviewer .info div div ul { padding: 1em; }
+  .iipmooviewer .info div div, .info div div ul li { font-size: 8pt; }
+  .iipmooviewer .navcontainer .navbuttons img {
+    width: 24px;
+    height: 24px;
+  }
+}
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) {
+  .iipmooviewer { -webkit-text-size-adjust: 120%; }
+  .navcontainer .loadBarContainer .loadBar { -webkit-text-size-adjust: 95%; }
+  .iipmooviewer .info div div { width: 100%; }
+  .iipmooviewer .navcontainer .navbuttons img {
+    width: 36px;
+    height: 36px;
+    padding: 2px;
+  }
+  div.blending div#area { margin-top: 1em; }
+  div.blending div#area div#knob {
+    top: -14px;
+    height: 32px;
+    width: 24px;
+  }
+  /* For standalone iphone/ipad the logo and navigation gets covered by the status bar
+   */
+  .iipmooviewer.standalone img.logo { top: 15px; }
+  .iipmooviewer.standalone .navcontainer { top: 20px; }
+}

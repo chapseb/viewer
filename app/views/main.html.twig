@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 <html>
     <head>
         <meta charset="utf-8"/>
-        <title>{% block title %}{% trans "Bach Viewer" %} - {{ img }}{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="stylesheet" href="{{ app_web_url  }}/styles/reset.css"/>
         {% if themes is defined %}
@@ -50,9 +49,12 @@ POSSIBILITY OF SUCH DAMAGE.
             </script>
             <link rel="stylesheet" href="{{ app_web_url }}/styles/ie.css"/>
         <![endif]-->
-
         {% block head %}{% endblock %}
+        {% if app_favicon_path is defined and app_favicon_path is not null %}
+        <link rel="shortcut icon" href="{{ app_web_url ~ app_favicon_path}}" />
+        {% else %}
         <link rel="shortcut icon" href="{{ app_web_url ~ '/favicon.png' }}" />
+        {% endif %}
     </head>
     <body>
         <!--[if lt IE 8]>

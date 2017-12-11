@@ -2,8 +2,7 @@
    IIPMooViewer 2.0
    IIPImage Javascript Viewer <http://iipimage.sourceforge.net>
 
-   Copyright (c) 2007-2013 Ruven Pillay <ruven@users.sourceforge.net>
-   Copyright (c) 2013-2014 Anaphore
+   Copyright (c) 2007-2016 Ruven Pillay <ruven@users.sourceforge.net>
 
    ---------------------------------------------------------------------------
 
@@ -23,7 +22,7 @@
 
    ---------------------------------------------------------------------------
 
-   Built using the Mootools 1.4.5 javascript framework <http://www.mootools.net>
+   Built using the Mootools 1.6.0 javascript framework <http://www.mootools.net>
 
 
    Usage Example:
@@ -49,13 +48,21 @@
 	      showNavWindow: whether to show the navigation window. Default true
 	      showNavButtons: whether to show the navigation buttons. Default true
 	      showCoords: whether to show live screen coordinates. Default false
-	      protocol: iip (default), zoomify or deepzoom
+	      protocol: iip (default), zoomify, deepzoom or iiif
 	      enableFullscreen: allow full screen mode. Default true
 	      viewport: object containing x, y, resolution, rotation of initial view
 	      winResize: whether view is reflowed on window resize. Default true
 	      preload: load extra surrounding tiles
+	      navigation: a hash containing options for the navigation box:
+	         (a) id: the id of the element where the navigation box will be embedded.
+	                 Defaults to the main container.
+	         (b) draggable: a boolean, indicating whether the navigation box is draggable.
+	                 Defaults to true, however, if a navigation id is specified, defaults
+	                 to false.
+	         (c) buttons: an array of the available buttons: reset, zoomIn, zoomOut, rotateLeft, rotateRight
+	                      Defaults to: ['reset','zoomIn','zoomOut']
 
-   Note: Requires mootools version 1.4 or later <http://www.mootools.net>
+   Note: Requires mootools version 1.6 or later <http://www.mootools.net>
        : The page MUST have a standard-compliant HTML declaration at the beginning
 
 */
@@ -107,10 +114,10 @@ var IIPMooViewer = new Class({
     options.image || alert( 'Image location not set in class constructor options');
     if( typeOf(options.image) == 'array' ){
        for( i=0; i<options.image.length;i++ ){
-	 this.images[i] = { src:options.image[i], sds:"0,90", cnt:(this.viewport&&this.viewport.contrast!=null)? this.viewport.contrast : null };
+	 this.images[i] = { src:options.image[i], sds:"0,90", cnt:(this.viewport&&this.viewport.contrast!=null)? this.viewport.contrast : null, opacity:(i==0)?1:0 };
        }
     }
-    else this.images = [{ src:options.image, sds:"0,90", cnt:(this.viewport&&this.viewport.contrast!=null)? this.viewport.contrast : null } ];
+    else this.images = [{ src:options.image, sds:"0,90", cnt:(this.viewport&&this.viewport.contrast!=null)? this.viewport.contrast : null, shade: null } ];
 
     this.loadoptions = options.load || null;
 
@@ -122,8 +129,10 @@ var IIPMooViewer = new Class({
     // Enable fullscreen mode? If false, then disable. Otherwise option can be "native" for HTML5
     // fullscreen API mode or "page" for standard web page fill page mode
     this.enableFullscreen = 'native';
-    if( options.enableFullscreen == false ) this.enableFullscreen = false;
-    if( options.enableFullscreen == 'page' ) this.enableFullscreen = 'page';
+    if( typeof(options.enableFullcreen) != 'undefined' ){
+      if( options.enableFullcreen == false ) this.enableFullscreen = false;
+      if( options.enableFullscreen == 'page' ) this.enableFullscreen = 'page';
+    }
     this.fullscreen = null;
     if( this.enableFullscreen != false ){
       this.fullscreen = {
@@ -144,16 +153,18 @@ var IIPMooViewer = new Class({
 
     // Navigation window options
     this.navigation = null;
+    this.navOptions = options.navigation || null;
     if( (typeof(Navigation)==="function") ){
       this.navigation = new Navigation({ showNavWindow:options.showNavWindow,
 					 showNavButtons: options.showNavButtons,
 					 navWinSize: options.navWinSize,
 				         showCoords: options.showCoords,
-					 prefix: this.prefix
+					 prefix: this.prefix,
+					 navigation: options.navigation
 				       });
     }
 
-    this.winResize = (options.winResize==false)? false : true;
+    this.winResize = (typeof(options.winResize)!='undefined' && options.winResize==false)? false : true;
 
 
     // Set up our protocol handler
@@ -167,6 +178,9 @@ var IIPMooViewer = new Class({
       case 'djatoka':
         this.protocol = new Protocols.Djatoka();
 	break;
+      case 'IIIF':
+        this.protocol = new Protocols.IIIF();
+        break;
       default:
 	this.protocol = new Protocols.IIP();
     }
@@ -186,10 +200,9 @@ var IIPMooViewer = new Class({
     this.click = options.click || null;
 
     this.max_size = {};       // Dimensions of largest resolution
-    this.opacity = 0;
     this.wid = 0;             // Width of current resolution
     this.hei = 0;             // Height of current resolution
-    this.resolutions;         // List of available resolutions
+    this.resolutions = [];    // List of available resolutions
     this.num_resolutions = 0; // Number of available resolutions
     this.view = {
       x: 0,                   // Location and dimensions of current visible view
@@ -211,11 +224,22 @@ var IIPMooViewer = new Class({
 
     // CSS3: Need to prefix depending on browser. Cannot handle IE<9
     this.CSSprefix = '';
-    if( Browser.firefox ) this.CSSprefix = '-moz-';
-    else if( Browser.chrome || Browser.safari || Browser.Platform.ios ) this.CSSprefix = '-webkit-';
-    else if( Browser.opera ) this.CSSprefix = '-o-';
-    else if( Browser.ie ) this.CSSprefix = 'ms-';  // Note that there should be no leading "-" !!
+    if( Browser.name=='firefox' ) this.CSSprefix = '-moz-';
+    else if( Browser.name=='chrome' || Browser.name=='safari' || Browser.platform=='ios' ) this.CSSprefix = '-webkit-';
+    else if( Browser.name=='opera' ) this.CSSprefix = '-o-';
+    else if( Browser.name=='ie' ) this.CSSprefix = 'ms-';  // Note that there should be no leading "-" !!
 
+    // Override the `show` method of the Tips class so that tips are children of the image-viewer container.
+    // This is needed so when the image-viewer container is "fullscreened", tips still show.
+    var _this = this;
+    Tips = new Class({
+      Extends: Tips,
+      show: function(element){
+        if (!this.tip) document.id(this);
+        if (!this.tip.getParent()) this.tip.inject(document.id(_this.source));
+        this.fireEvent('show', [this.tip, element]);
+      }
+    });
 
     // Load us up when the DOM is fully loaded!
     window.addEvent( 'domready', this.load.bind(this) );
@@ -230,11 +254,8 @@ var IIPMooViewer = new Class({
     // Set our cursor
     this.canvas.setStyle( 'cursor', 'wait' );
 
-    // Delete our annotations
-    if( this.annotations ) this.destroyAnnotations();
-
     // Set our rotation origin - calculate differently if canvas is smaller than view port
-    
+
     if( !Browser.buggy ){
       var view = this.getView();
       var wid = this.wid;
@@ -255,7 +276,7 @@ var IIPMooViewer = new Class({
 
     // Create new annotations and attach the tooltip to them if it already exists
     if( this.annotations ){
-      this.createAnnotations();
+      this.drawAnnotations();
       if( this.annotationTip ) this.annotationTip.attach( this.canvas.getChildren('div.annotation') );
     }
   },
@@ -278,27 +299,25 @@ var IIPMooViewer = new Class({
 
 
     // If our size is smaller than the display window, only get these tiles!
-    var len = view.w;
-    if( this.wid < view.w ) len = this.wid;
+    var len = Math.min(this.wid, view.w);
     var endx =  Math.ceil( ((len + view.x)/this.tileSize.w) - 1 ) + border;
 
 
-    len = view.h;
-    if( this.hei < view.h ) len = this.hei;
+    var len = Math.min(this.hei, view.h);
     var endy = Math.ceil( ( (len + view.y)/this.tileSize.h) - 1 ) + border;
 
 
     // Number of tiles is dependent on view width and height
-    var xtiles = Math.ceil( this.wid / this.tileSize.h );
+    var xtiles = Math.ceil( this.wid / this.tileSize.w );
     var ytiles = Math.ceil( this.hei / this.tileSize.h );
 
-    if( endx >= xtiles ) endx = xtiles-1;
-    if( endy >= ytiles ) endy = ytiles-1;
+    endx = Math.min( endx, xtiles - 1 );
+    endy = Math.min( endy, ytiles - 1 );
 
 
     /* Calculate the offset from the tile top left that we want to display.
        Also Center the image if our viewable image is smaller than the window
-    */
+     */
     var xoffset = Math.floor(view.x % this.tileSize.w);
     if( this.wid < view.w ) xoffset -=  (view.w - this.wid)/2;
 
@@ -397,6 +416,7 @@ var IIPMooViewer = new Class({
 	  sds: (this.images[n].sds||'0,90'),
           contrast: (this.images[n].cnt||null),
 	  gamma: (this.images[n].gam||null),
+	  shade: (this.images[n].shade||null),
           tileindex: k,
           x: i,
           y: j
@@ -428,13 +448,13 @@ var IIPMooViewer = new Class({
 	// We must set the source at the end so that the 'load' function is properly fired
 	tile.set( 'src', src );
 	tile.store('tile',k);
+
+        if( this.images[n].opacity !== 1 ){ // opacity is 1 by default.
+          var selector = 'img.layer'+ n;
+          this.canvas.getChildren(selector).setStyle( 'opacity', this.images[n].opacity );
+        }
       }
 
-    }
-
-    if( this.images.length > 1 ){
-      var selector = 'img.layer'+(n-1);
-      this.canvas.getChildren(selector).setStyle( 'opacity', this.opacity );
     }
 
   },
@@ -446,7 +466,7 @@ var IIPMooViewer = new Class({
     var w = this.resolutions[this.view.res].w;
     var h = this.resolutions[this.view.res].h;
     var region = {x: this.view.x/w, y: this.view.y/h, w: this.view.w/w, h: this.view.h/h};
-    var url = this.protocol.getRegionURL( this.server, this.images[0].src, region, w );
+    var url = this.protocol.getRegionURL( this.server, this.images[0].src, region, w, h );
     return url;
   },
 
@@ -496,10 +516,16 @@ var IIPMooViewer = new Class({
       }
       break;
     case 72: // h
+      if( this.navOptions&&this.navOptions.id ) break;
+      event.preventDefault();
       if( this.navigation ) this.navigation.toggleWindow();
       if( this.credit ) this.container.getElement('div.credit').get('reveal').toggle();
       break;
     case 82: // r
+      if( this.navOptions&&this.navOptions.buttons &&
+    	  ( !this.navOptions.buttons.contains('rotateLeft') &&
+    	    !this.navOptions.buttons.contains('rotateRight') ) ) break;
+      event.preventDefault();
       if(!e.control){
 	var r = this.view.rotation;
 	if(e.shift) r -= 90 % 360;
@@ -511,6 +537,7 @@ var IIPMooViewer = new Class({
       break;
     case 65: // a
       if( this.annotations ) this.toggleAnnotations();
+      event.preventDefault();
       break;
     case 27: // esc
       if( this.fullscreen && this.fullscreen.isFullscreen ) if(!IIPMooViewer.sync) this.toggleFullScreen();
@@ -518,12 +545,13 @@ var IIPMooViewer = new Class({
       break;
     case 70: // f fullscreen, but if we have multiple views
       if(!IIPMooViewer.sync) this.toggleFullScreen();
+      event.preventDefault();
       break;
     case 67: // For control-c, show our current view location
       if(e.control) prompt( "URL of current view:", window.location.href.split("#")[0] + '#' +
+			    this.view.res + ':' +
 			    (this.view.x+this.view.w/2)/this.wid + ',' +
-			    (this.view.y+this.view.h/2)/this.hei + ',' +
-			    this.view.res );
+			    (this.view.y+this.view.h/2)/this.hei );
       break;
     default:
       break;
@@ -570,7 +598,7 @@ var IIPMooViewer = new Class({
       h = '100%';
       p = 'absolute'; // Must make our container absolute for fullscreen
 
-      if( this.fullscreen.enter && !this.fullscreen.isFullscreen ) this.fullscreen.enter.call(this.container);
+      if( this.fullscreen.enter ) this.fullscreen.enter.call(this.container);
     }
     else{
       l = this.fullscreen.targetsize.pos.x;
@@ -579,7 +607,7 @@ var IIPMooViewer = new Class({
       h = this.fullscreen.targetsize.size.y;
       p = this.fullscreen.targetsize.position;
 
-      if( this.fullscreen.exit && this.fullscreen.isFullscreen ) this.fullscreen.exit.call(document);
+      if( this.fullscreen.exit ) this.fullscreen.exit.call(document);
     }
 
     if( !this.fullscreen.enter ){
@@ -624,11 +652,12 @@ var IIPMooViewer = new Class({
     var xmove = Math.round(e.x * this.wid);
     var ymove = Math.round(e.y * this.hei);
 
+    // Only morph transition if we have moved a short distance and our rotation is zero
+    var morphable = Math.abs(xmove-this.view.x)<this.view.w/2 && Math.abs(ymove-this.view.y)<this.view.h/2 && this.view.rotation==0;
+
     this.view.x = xmove;
     this.view.y = ymove;
 
-    // Only morph transition if we have moved a short distance and our rotation is zero
-    var morphable = Math.abs(xmove-this.view.x)<this.view.w/2 && Math.abs(ymove-this.view.y)<this.view.h/2 && this.view.rotation==0;
     if( morphable ){
       this.canvas.morph({
 	left: (this.wid>this.view.w)? -xmove : Math.round((this.view.w-this.wid)/2),
@@ -638,7 +667,7 @@ var IIPMooViewer = new Class({
     else{
       this.positionCanvas();
       // The morph event automatically calls requestImages
-      this.requestImages();      
+      this.requestImages();
     }
 
     if(IIPMooViewer.sync) IIPMooViewer.windows(this).invoke( 'moveTo', xmove, ymove );
@@ -677,7 +706,7 @@ var IIPMooViewer = new Class({
       ymove = this.view.y - (this.view.x + pos.x);
     }
 
-    // Need to do the moveTo rather than just requestImages() to avoid problems with rotated views 
+    // Need to do the moveTo rather than just requestImages() to avoid problems with rotated views
     this.moveTo( xmove, ymove );
 
     if( IIPMooViewer.sync ) IIPMooViewer.windows(this).invoke( 'moveTo', xmove, ymove );
@@ -822,7 +851,7 @@ var IIPMooViewer = new Class({
 	  x: this.canvas.style.left.toInt() + cpos.x,
 	  y: this.canvas.style.top.toInt() + cpos.y
 	};
-	
+
 	// Center our zooming on the mouse position when over the main target window
 	this.view.x = event.page.x - pos.x - Math.floor(this.view.w/2);
 	this.view.y = event.page.y - pos.y - Math.floor(this.view.h/2);
@@ -954,28 +983,44 @@ var IIPMooViewer = new Class({
     var thumb_width = Math.round(this.view.w * this.navigation.options.navWinSize);
 
     // For panoramic images, use a large navigation window
-    if( this.max_size.w > 2*this.max_size.h ) thumb_width = Math.round( this.view.w/2 );
+    if( this.max_size.w > 2*this.max_size.h ) thumb_width = Math.round( this.view.w/3 );
 
-    // Make sure our height is not more than 50% of view height
-    if( (this.max_size.h/this.max_size.w)*thumb_width > this.view.h*0.5 ){
-      thumb_width = Math.round( this.view.h * 0.5 * this.max_size.w/this.max_size.h );
+    // Make sure our height is not more than 40% of view height
+    if( (this.max_size.h/this.max_size.w)*thumb_width > this.view.h*0.4 ){
+      thumb_width = Math.round( this.view.h * 0.4 * this.max_size.w/this.max_size.h );
     }
 
     this.navigation.size.x = thumb_width;
     this.navigation.size.y = Math.round( (this.max_size.h/this.max_size.w)*thumb_width );
+
+    // If the nav is stand-alone, fit it to the container
+    if( this.navOptions&&this.navOptions.id&&document.id(this.navOptions.id) ){
+      var navContainer = document.id(this.navOptions.id);
+      // If the container width < 30, throw an error
+      var navContainerSize = navContainer.getSize();
+      if(navContainerSize.x < 30) throw "Error: Navigation container is too small!";
+      this.navigation.size.x = navContainerSize.x;
+      this.navigation.size.y = Math.round( (this.max_size.h/this.max_size.w)*navContainerSize.x );
+    }
   },
 
+
+  /* Check and update container position and size
+   */
+  updateContainerSize: function(){
+    this.containerPosition = this.container.getPosition();
+    var target_size = this.container.getSize();
+    this.view.w = target_size.x;
+    this.view.h = target_size.y;
+  },
+  
 
   /* Calculate some dimensions
    */
   calculateSizes: function(){
 
-    // Set up our default sizes
-    var target_size = this.container.getSize();
-    this.view.x = -1; // Intitalize x,y with dummy values
-    this.view.y = -1;
-    this.view.w = target_size.x;
-    this.view.h = target_size.y;
+    // Get our container size
+    this.updateContainerSize();
 
     // Calculate our navigation window size
     if( this.navigation ) this.calculateNavSize();
@@ -985,25 +1030,38 @@ var IIPMooViewer = new Class({
     var tx = this.max_size.w;
     var ty = this.max_size.h;
 
-    // Calculate our list of resolution sizes and the best resolution
-    // for our window size
-    this.resolutions = new Array(this.num_resolutions);
-    this.resolutions.push({w:tx,h:ty});
-    this.view.res = 0;
-    for( var i=1; i<this.num_resolutions; i++ ){
-      tx = Math.floor(tx/2);
-      ty = Math.floor(ty/2);
+    // Calculate our list of resolution sizes if we don't have a full list
+    // from the server
+    if( typeof(this.resolutions) == 'undefined' ){
+
+      this.resolutions = new Array(this.num_resolutions);
       this.resolutions.push({w:tx,h:ty});
-      if( tx < this.view.w && ty < this.view.h ) this.view.res++;
+
+      for( var i=1; i<this.num_resolutions; i++ ){
+	tx = Math.floor(tx/2);
+	ty = Math.floor(ty/2);
+	this.resolutions.push({w:tx,h:ty});
+      }
+
+      // We reverse so that the smallest resolution is at index 0      
+      this.resolutions.reverse();
     }
-    this.view.res -= 1;
+
+    // Calculate the resolution that fits into the view port
+    this.view.res = 0;
+    for( var i=this.num_resolutions-1; i>0; i-- ){
+      var tx = this.resolutions[i].w;
+      var ty = this.resolutions[i].h;
+      if( tx <  this.view.w && ty < this.view.h ){
+	this.view.res = i;
+	break;
+      }
+    }
 
     // Sanity check and watch our for small screen displays causing the res to be negative
     if( this.view.res < 0 ) this.view.res = 0;
     if( this.view.res >= this.num_resolutions ) this.view.res = this.num_resolutions-1;
 
-    // We reverse so that the smallest resolution is at index 0
-    this.resolutions.reverse();
     this.wid = this.resolutions[this.view.res].w;
     this.hei = this.resolutions[this.view.res].h;
 
@@ -1036,26 +1094,25 @@ var IIPMooViewer = new Class({
 
       if( document.documentElement.requestFullscreen ){
         this.fullscreen.eventChangeName = 'fullscreenchange';
-        this.enter =  this.container.requestFullscreen;
-        this.exit = document.documentElement.cancelFullScreen;
+        this.fullscreen.enter = this.container.requestFullscreen;
+        this.fullscreen.exit = document.cancelFullScreen;
       }
       else if( document.mozCancelFullScreen ){
         this.fullscreen.eventChangeName = 'mozfullscreenchange';
         this.fullscreen.enter = this.container.mozRequestFullScreen;
-        this.fullscreen.exit = document.documentElement.mozCancelFullScreen;
+        this.fullscreen.exit = document.mozCancelFullScreen;
       }
       else if( document.webkitCancelFullScreen ){
         this.fullscreen.eventChangeName = 'webkitfullscreenchange';
         this.fullscreen.enter = this.container.webkitRequestFullScreen;
-        this.fullscreen.exit = document.documentElement.webkitCancelFullScreen;
+        this.fullscreen.exit = document.webkitCancelFullScreen;
       }
 
       if( this.fullscreen.enter ){
 	// Monitor Fullscreen change events
-	document.addEvent( this.fullscreen.eventChangeName, function(){
-			     _this.fullscreen.isFullscreen = !_this.fullscreen.isFullscreen;
-			     _this.reload();
-			   });
+        document.addEventListener( this.fullscreen.eventChangeName, function(){
+	  _this.fullscreen.isFullscreen = !_this.fullscreen.isFullscreen;
+	});
       }
       else{
 	// Disable fullscreen mode if we are already at 100% size and we don't have real Fullscreen
@@ -1073,7 +1130,7 @@ var IIPMooViewer = new Class({
       'events': {
 	click: function(){ this.fade('out'); }
       },
-      'html': '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="'+this.prefix+'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 Ajax High Resolution Image Viewer - Version '+this.version+'<br/><ul><li>'+IIPMooViewer.lang.navigate+'</li><li>'+IIPMooViewer.lang.zoomIn+'</li><li>'+IIPMooViewer.lang.zoomOut+'</li><li>'+IIPMooViewer.lang.rotate+'</li><li>'+IIPMooViewer.lang.fullscreen+'<li>'+IIPMooViewer.lang.annotations+'</li><li>'+IIPMooViewer.lang.navigation+'</li></ul><br/>'+IIPMooViewer.lang.more+' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
+      'html': '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="'+this.prefix+'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 High Resolution Image Viewer - Version '+this.version+'<br/><ul><li>'+IIPMooViewer.lang.navigate+'</li><li>'+IIPMooViewer.lang.zoomIn+'</li><li>'+IIPMooViewer.lang.zoomOut+'</li><li>'+IIPMooViewer.lang.rotate+'</li><li>'+IIPMooViewer.lang.fullscreen+'<li>'+IIPMooViewer.lang.annotations+'</li><li>'+IIPMooViewer.lang.navigation+'</li></ul><br/>'+IIPMooViewer.lang.more+' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
     }).inject( this.container );
 
     // Create our main window target div, add our events and inject inside the frame
@@ -1089,7 +1146,7 @@ var IIPMooViewer = new Class({
 
 
     // Add touch or drag events to our canvas
-    if( Browser.Platform.ios || Browser.Platform.android ){
+    if( 'ontouchstart' in window || navigator.msMaxTouchPoints ){
       // Add our touch events
       this.addTouchEvents();
     }
@@ -1146,10 +1203,12 @@ var IIPMooViewer = new Class({
       this.canvas.addEvent( 'mouseup', fn );
 
       // And additionally disable this during dragging
-      this.touch.addEvents({
-	start: function(e){ _this.canvas.removeEvents( 'mouseup' ); },
-	complete: function(e){ _this.canvas.addEvent( 'mouseup', fn ); }
-      });
+      if( this.touch ){
+	this.touch.addEvents({
+	  start: function(e){ _this.canvas.removeEvents( 'mouseup' ); },
+	  complete: function(e){ _this.canvas.addEvent( 'mouseup', fn ); }
+	});
+      }
     }
 
 
@@ -1167,13 +1226,18 @@ var IIPMooViewer = new Class({
     var info = new Element( 'img', {
       'src': this.prefix+'iip.32x32.png',
       'class': 'logo',
-      'title': IIPMooViewer.lang.help,
+      'title': IIPMooViewer.lang.tooltips['help'],
       'events': {
 	click: function(){ _this.container.getElement('div.info').fade(0.95); },
 	// Prevent user from dragging image
 	mousedown: function(e){ var event = new DOMEvent(e); event.stop(); }
       }
     }).inject(this.container);
+
+
+    // For standalone iphone/ipad the logo gets covered by the status bar
+    if( Browser.platform=='ios' && window.navigator.standalone ) this.container.addClass( 'standalone' );
+    // info.setStyle( 'top', 15 );
 
 
     // Add some information or credit
@@ -1191,13 +1255,19 @@ var IIPMooViewer = new Class({
 
     // Calculate some sizes and create the navigation window
     this.calculateSizes();
-    if( this.navigation){
-      this.navigation.create(this.container);
+    if( this.navigation ){
+
+      if( this.navOptions&&this.navOptions.id&&document.id(this.navOptions.id) ){
+	this.navigation.create( document.id(this.navOptions.id) );
+      }
+      else this.navigation.create( this.container );
+
       this.navigation.setImage(this.protocol.getThumbnailURL(this.server,this.images[0].src,this.navigation.size.x));
       this.navigation.addEvents({
        'rotate': function(r){
-	  _this.rotate(_this.view.rotation+r);
-	  if( IIPMooViewer.sync ) IIPMooViewer.windows(_this).invoke( 'rotateLeft' );
+        var rotation = _this.view.rotation+r;
+	  _this.rotate(rotation);
+	  if( IIPMooViewer.sync ) IIPMooViewer.windows(_this).invoke( 'rotate', rotation );
 	},
 	'zoomIn': function(){
 	  _this.zoomIn();
@@ -1212,16 +1282,16 @@ var IIPMooViewer = new Class({
 	  if( IIPMooViewer.sync ) IIPMooViewer.windows(_this).invoke( 'reload' );
 	},
 	'scroll': this.scrollNavigation.bind(this),
-	'zoom': this.zoom.bind(this)
+	'zoom': this.zoom.bind(this),
+	'print': this.print.bind(this)
      });
     }
-    if( this.annotations ) this.createAnnotations();
 
 
     // Add tips if we are not on a mobile device
-    if( !(Browser.Platform.ios||Browser.Platform.android) ){
+    if( !(Browser.platform=='ios'||Browser.platform=='android') ){
       var tip_list = 'img.logo, div.toolbar, div.scale';
-      if( Browser.ie8||Browser.ie7 ) tip_list = 'img.logo, div.toolbar'; // IE8 bug which triggers window resize
+      if( Browser.name=='ie' && (Browser.version==8||Browser.version==7) ) tip_list = 'img.logo, div.toolbar'; // IE8 bug which triggers window resize
       new Tips( tip_list, {
 	className: 'tip', // We need this to force the tip in front of nav window
 	  onShow: function(tip,hovered){
@@ -1244,7 +1314,7 @@ var IIPMooViewer = new Class({
       this.view.res = this.viewport.resolution;
       this.wid = this.resolutions[this.view.res].w;
       this.hei = this.resolutions[this.view.res].h;
-      this.touch.options.limit = { x: Array(this.view.w-this.wid,0), y: Array(this.view.h-this.hei,0) };
+      if( this.touch ) this.touch.options.limit = { x: Array(this.view.w-this.wid,0), y: Array(this.view.h-this.hei,0) };
     }
 
     // Center our view or move to initial viewport position
@@ -1276,18 +1346,16 @@ var IIPMooViewer = new Class({
     // Add a hash change event if this is supported by the browser
     if( 'onhashchange' in window ){
       window.addEvent( 'hashchange', function(){
-			 var params = window.location.hash.split('#')[1].split(',');
-			 _this.zoomTo( params[2] );
-			 _this.centerTo( params[0], params[1] );
+			 var params = window.location.hash.split('#')[1].split(':');
+			 _this.zoomTo( parseInt(params[0]) );
+			 params = params.split(',');
+			 _this.centerTo( parseFloat(params[0]), parseFloat(params[1]) );
 		       });
     }
 
     // Add our key press and window resize events. Do this at the end to avoid reloading before
     // we are fully set up
     if(this.winResize) window.addEvent( 'resize', this.reflow.bind(this) );
-
-    // Record our container position
-    this.containerPosition = this.container.getPosition();
 
     this.fireEvent('load');
 
@@ -1341,10 +1409,13 @@ var IIPMooViewer = new Class({
 	this.max_size = result.max_size;
 	this.tileSize = result.tileSize;
 	this.num_resolutions = result.num_resolutions;
+	if( typeof(this.resolutions) != 'undefined' ) this.resolutions = result.resolutions;
 
 	this.reload();
 
 	if( this.navigation ) this.navigation.setImage( this.protocol.getThumbnailURL( this.server, image, this.navigation.size.x ) );
+
+	this.fireEvent('imageChanged');
 
       }.bind(this),
 	onFailure: function(){ alert('Error: Unable to get image metadata from server!'); }
@@ -1360,7 +1431,7 @@ var IIPMooViewer = new Class({
    */
   load: function(){
 
-    // If we have supplied the relevent information, simply use the given data
+    // If we have supplied the relevant information, simply use the given data
     if( this.loadoptions ){
       this.max_size = this.loadoptions.size;
       this.tileSize = this.loadoptions.tiles;
@@ -1375,10 +1446,12 @@ var IIPMooViewer = new Class({
 	  var response = transport || alert( "Error: No response from server " + this.server );
 
 	  // Parse the result
-	  var result = this.protocol.parseMetaData( response );
+	  var result = this.protocol.parseMetaData( response ) ||
+	    alert( "Error: Unexpected response from server " + this.server );
 	  this.max_size = result.max_size;
 	  this.tileSize = result.tileSize;
 	  this.num_resolutions = result.num_resolutions;
+	  if( typeof(this.resolutions) != 'undefined' ) this.resolutions = result.resolutions;
 
 	  this.createWindows();
         }.bind(this),
@@ -1394,11 +1467,9 @@ var IIPMooViewer = new Class({
   /* Reflow our viewer after a resize
    */
   reflow: function(){
-    
-    this.containerPosition = this.container.getPosition();
-    var target_size = this.container.getSize();
-    this.view.w = target_size.x;
-    this.view.h = target_size.y;
+
+    // Check changes to the container
+    this.updateContainerSize();
 
     // Constrain our canvas if it is smaller than the view window
     this.positionCanvas();
@@ -1439,13 +1510,18 @@ var IIPMooViewer = new Class({
       this.view.res = this.viewport.resolution;
       this.wid = this.resolutions[this.view.res].w;
       this.hei = this.resolutions[this.view.res].h;
-      this.touch.options.limit = { x: Array(this.view.w-this.wid,0), y: Array(this.view.h-this.hei,0) };
+      if( this.touch ) this.touch.options.limit = { x: Array(this.view.w-this.wid,0), y: Array(this.view.h-this.hei,0) };
     }
     // Center our view or move to initial viewport position
     if( this.viewport && this.viewport.x!=null && this.viewport.y!=null ){
       this.centerTo( this.viewport.x, this.viewport.y );
     }
     else this.recenter();
+
+    // Create scale if it doesn't exist
+    if( typeof(Scale)==="function" && this.viewport && this.viewport.scale!=null && !this.scale ){
+      this.scale = new Scale(this.viewport.scale);
+    }
 
     this.canvas.setStyles({
       width: this.wid,
@@ -1489,9 +1565,7 @@ var IIPMooViewer = new Class({
 
     var ax = this.wid<this.view.w ? Array(Math.round((this.view.w-this.wid)/2), Math.round((this.view.w-this.wid)/2)) : Array(this.view.w-this.wid,0);
     var ay = this.hei<this.view.h ? Array(Math.round((this.view.h-this.hei)/2), Math.round((this.view.h-this.hei)/2)) : Array(this.view.h-this.hei,0);
-    if ( this.touch ) {
-        this.touch.options.limit = { x: ax, y: ay };
-    }
+    if( this.touch ) this.touch.options.limit = { x: ax, y: ay };
   },
 
 
@@ -1512,7 +1586,38 @@ var IIPMooViewer = new Class({
       var view = this.getView();
       this.navigation.update( view.x/this.wid, view.y/this.hei, view.w/this.wid, view.h/this.hei );
     }
-  }
+  },
+
+
+  /* Toggle navigation window
+   */
+  toggleNavigationWindow: function() {
+    if( this.navigation ) {
+      this.navigation.toggleWindow();
+    }
+  },
+
+
+  /* Print view - opens a new window, prints, then closes
+   */
+  print: function() {
+
+   var w = this.resolutions[this.view.res].w;
+   var h = this.resolutions[this.view.res].h;
+   var region = {x: this.view.x/w, y: this.view.y/h, w: this.view.w/w, h: this.view.h/h};
+   var url = this.protocol.getRegionURL( this.server, this.images[0].src, region, 1280, 1754 );
+
+   // Open window
+   var print_window = window.open( url, '_blank' );
+
+   // Once image is loaded, print and close
+   print_window.addEventListener( 'load', function(){
+     this.focus();
+     this.print();
+     this.close();
+   });
+ }
+
 
 });
 
@@ -1538,8 +1643,7 @@ IIPMooViewer.windows = function(s){
 
 /* Add a little convenience variable to detect buggy IE versions
  */
-if( Browser.ie && Browser.version<9 ) Browser.buggy = true;
-else Browser.buggy = false;
+Browser.buggy = ( Browser.name=='ie' && (!Browser.version || Browser.version<9) );
 
 
 /* Add hash change event to our Mootools native event list

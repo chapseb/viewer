@@ -1,0 +1,57 @@
+<!-- Params image window -->
+    {% if contrast and picture.canContrast() or brightness and picture.canBrightness() or negate and picture.canNegate() %}
+    <form id="image_params" action="">
+        <fieldset>
+            <legend class="iviewer_cursor">{% trans %}Image parameters{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span></legend>
+            {% if contrast and picture.canContrast() %}
+            <div>
+                <label for="contrast_value">{% trans %}Contrast:{% endtrans %}</label>
+                <input type="number" name="contrast_value" id="contrast_value" step="1" min="-10" max="10"/>
+                <div id="change_contrast"></div>
+            </div>
+            {% endif %}
+            {% if brightness and picture.canBrightness() %}
+            <div>
+                <label for="brightness_value">{% trans %}Brightness:{% endtrans %}</label>
+                <input type="number" name="brightness_value" id="brightness_value" step="1" min="-80" max="80"/>
+                <div id="change_brightness"></div>
+            </div>
+            {% endif %}
+            {% if negate and picture.canNegate() %}
+            <div>
+                <label for="negate">{% trans %}Negate{% endtrans %}</label>
+                <input type="checkbox" name="negate" id="negate" value="1"/>
+                <div id="toggle_negate"></div>
+            </div>
+            {% endif %}
+            <div class="controls">
+                <input type="submit" id="reset_parameters" value="{% trans %}Reset{% endtrans %}"/>
+                <input type="submit" id="set_parameters" value="{% trans %}Set{% endtrans %}"/>
+            </div>
+        </fieldset>
+    </form>
+    {% endif %}
+
+<!-- Comment window -->
+    <div id="image_comments">
+        <div id="comm_header" class="iviewer_cursor">
+            {% trans %}Image comments{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span>
+            <span class="linkComment"><a href="#" target="_blank" id="add_comment">{% trans %}New comment{% endtrans %}</a></span>
+        </div>
+        <div id="allComments"></div>
+    </div>
+
+<!-- Rmote infos window -->
+<div id="remoteInfos_content">
+    <div id="infos_header" class="iviewer_cursor">
+        {% trans %}Information images{% endtrans %}<span class="close" title="{% trans %}Close window{% endtrans %}"></span>
+    </div>
+    <div id="allInfosRemote">{% trans %}No information for this picture. {% endtrans %}</div>
+</div>
+<!-- alert infos zoomify print window -->
+<div id="zoomifyalert_content">
+    <div id="alert_header" class="iviewer_cursor">
+        {% trans %}Print help{% endtrans %}<span class="close" title="{% trans %}close window{% endtrans %}"></span>
+    </div>
+    <div id="zoomifyalert">{% trans %}Use the print feature of your browser to print. For more information, you can consult the tutorial by clicking{% endtrans %}&nbsp;<a href="{{ app_web_url ~ app_help_path}}" target="_blank">{% trans %}here{% endtrans %}</a></div>
+</div>

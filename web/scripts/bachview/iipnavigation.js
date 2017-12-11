@@ -146,6 +146,25 @@ var BNavigation = new Class({
         $$('#infosRemote').addEvent('click', function(){
             _iipviewer.displayRemoteInfosWindow();
         });
+        $$('#comments').addEvent('click', function(){
+            _iipviewer.imageCommentsWindow(app_url);
+        });
+        $$('#print').addEvent('click', function(){
+            _iipviewer.print();
+        });
+        $$('#printZoomify').addEvent('click', function(){
+            // Firefox 1.0+
+            //var isFirefox = typeof InstallTrigger !== 'undefined';
+
+            // Safari 3.0+ "[object HTMLElementConstructor]" 
+            //var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+            //if (isFirefox || isSafari) {
+                //alert("Utilisez la fonctionnalité 'Aperçu avant impression' de votre navigateur pour imprimer, cela vous permettra de régler l'orientation ainsi que l'échelle pour avoir l'ensemble de votre capture.");
+            _iipviewer.zoomifyAlertWindow(app_url);
+            //}
+            //window.print();
+        });
     },
 
     /**

@@ -150,6 +150,9 @@ $app = new Slim(
 );
 
 $app_base_url = '';
+$app_title_html = $conf->getTitleHtml();
+$app_favicon_path = $conf->getFaviconPath();
+$app_help_path = $conf->getHelpPath();
 if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php')) 
     && strncmp($_SERVER['PHP_SELF'], '/debug.php', strlen('/debug.php'))
 ) {
@@ -184,6 +187,9 @@ $app->hook(
         $v = $app->view();
         $ui = $conf->getUI();
         $v->setData('app_base_url', $app_base_url);
+        $v->setData('app_title_html', $conf->getTitleHtml());
+        $v->setData('app_favicon_path', $conf->getFaviconPath());
+        $v->setData('app_help_path', $conf->getHelpPath());
         $v->setData(
             'app_web_url',
             str_replace(

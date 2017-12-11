@@ -723,6 +723,8 @@ class Picture
                 $readingRoomIp,
                 $ipInternal
             );
+        } else {
+            $rcontents['communicability'] = true;
         }
 
         return $rcontents;

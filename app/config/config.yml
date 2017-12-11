@@ -35,7 +35,10 @@ debug_mode: false
 notdownloadprint: false
 namefileprint: 'bach-print.pdf'
 displayHD: false
-patternzoomify: null
+patternzoomify: []
+titlehtml: null
+faviconpath: null
+helppath: null
 
 formats:
     #default format *MUST* be present

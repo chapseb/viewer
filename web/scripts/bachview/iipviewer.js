@@ -234,16 +234,18 @@ var BIIPMooViewer = new Class({
             url: _url,
             onSuccess: function(data){
                 if(data.remote.ead ) {
-                    $$('header > h2').set('html', data.remote.ead.link);
-                    $$('#allInfosRemote').set('html', '<h3 class="header_infos">' + header_ead + '</h3><ul id="ead_list_infos"><li id="intitule_ead"></li><li id="unitid_ead"></li><li id="link_document"></li></ul>');
+                    jQuery('#allInfosRemote').html('');
+                    jQuery('header > h2').html(data.remote.ead.link);
+                    jQuery('#allInfosRemote').append('<h3 class="header_infos">' + header_ead + '</h3>');
+                    jQuery('#allInfosRemote').append('<ul id="ead_list_infos"></ul>');
                     if (data.remote.ead.cUnittitle != null) {
-                        $$('#intitule_ead').set('html', '<li><span class="ead_description_head">' + intitule_ead + '</span> ' + data.remote.ead.cUnittitle + '</li>');
+                        jQuery('#ead_list_infos').append('<li><span class="ead_description_head">' + intitule_ead + '</span>' + data.remote.ead.cUnittitle + '</li>');
                     }
                     if (data.remote.ead.unitid != null) {
-                        $$('#unitid_ead').set('html', '<li><span class="ead_description_head">' + unitid_ead + '</span> ' + data.remote.ead.unitid + '</li>');
+                        jQuery('#ead_list_infos').append('<li><span class="ead_description_head">' + unitid_ead + '</span>' + data.remote.ead.unitid + '</li>');
                     }
                     if (data.remote.ead.doclink != null) {
-                        $$('#link_document').set('html', '<li><span class="ead_description_head">' + link_document + '</span> ' + data.remote.ead.doclink + '</li>');
+                        jQuery('#ead_list_infos').append('<li><span class="ead_description_head">' + link_document + '</span>' + data.remote.ead.doclink + '</li>');
                     }
                 }
             },
@@ -258,16 +260,154 @@ var BIIPMooViewer = new Class({
      */
     displayRemoteInfosWindow: function()
     {
-        var _win = $$('#remoteInfos_content');
+        var _win = jQuery('#remoteInfos_content');
 
-        this.remoteInfos_win_init = true;
-        _win.set('style', 'display: block');
+        if ( this.remoteInfos_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.remoteInfos_win_init = true;
+            _win.css('display', 'block');
 
-        $$('#remoteInfos_content .close').addEvent('click', function(){
-            _win.set('style', 'display: none');
-            this.remoteInfos_win_init = false;
+            jQuery('#remoteInfos_content .close').on('click', function(){
+                me.displayRemoteInfosWindow();
+            });
+
+            var dragRemoteInfos = new Drag(
+                'remoteInfos_content', {
+                    handle: '#comm_header',
+                    containment: 'parent'
+            });
+
+        }
+    },
+
+    /**
+     * Display image comments window
+     */
+    imageCommentsWindow: function(app_url)
+    {
+        var _win = jQuery('#image_comments');
+        var _name = this.image_name;
+        var _path = this.fpath;
+        if ( this.comments_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.comments_win_init = true;
+            _win.css('display', 'block');
+
+            // get the comments of the image
+            if((jQuery('#allComments').is(':empty'))){
+                me.getComment(app_url, _path, _name);
+            }
+
+            me.addComment(app_url, _path, _name);
+            jQuery('#image_comments .close').on('click', function(){
+                me.imageCommentsWindow();
+            });
+
+            var dragComment = new Drag(
+                'image_comments', {
+                    handle: '#comm_header',
+                    containment: 'parent'
+            });
+        }
+    },
+
+    getComment: function(app_url, path, name)
+    {
+        if (path != '' && path.substr(-1) != '/') {
+            path += '/';
+        }
+        var _url = '';
+        if (name === undefined || name === null) {
+            _url = app_url + '/ajax/image/comments' + path + 'zoomify.jpg';
+        } else {
+            _url = app_url + '/ajax/image/comments/' + path + name;
+        }
+        jQuery.get(
+            _url,
+            function(data){
+                var comments = JSON.parse(data);
+                for (i=0; i < comments.length; i++) {
+                    jQuery("#allComments").append(
+                        "<div class='oneComment'><strong>" +
+                        comments[i].subject +
+                        "</strong><p class='contentComment'>" +
+                        comments[i].message +
+                        "</p></div><hr />"
+                    );
+                }
+            },
+            'json'
+        ).fail(function(){
+            alert('An error occured loading form commentary, navigation may fail.');
         });
     },
+
+    /**
+     * Add a comment
+     */
+    addComment: function(appUrl, path, name)
+    {
+        jQuery('#add_comment').unbind();
+
+        if (path != '' && path.substr(-1) != '/') {
+            path += '/';
+        }
+
+        jQuery('#add_comment').on('click', function(event) {
+            event.preventDefault();
+            jQuery.get(
+                appUrl + '/ajax/image/comment/bachURL',
+                function(urlBach) {
+                    urlBach += 'comment/images/'+ path +'zoomify.jpg'+'/add';
+                    var commentTab = window.open(urlBach);
+                    commentTab.focus();
+                }
+            );
+        });
+    },
+
+    /**
+     * Display image comments window
+     */
+    zoomifyAlertWindow: function(app_url)
+    {
+        var _win = jQuery('#zoomifyalert_content');
+        if ( this.zoomifyalert_win_init == true ) {
+            if ( _win.is(':visible') ) {
+                _win.fadeOut();
+            } else {
+                _win.fadeIn();
+            }
+        } else {
+            var me = this;
+            this.zoomifyalert_win_init = true;
+            _win.css('display', 'block');
+
+            jQuery('#zoomifyalert_content .close').on('click', function(){
+                me.zoomifyAlertWindow();
+            });
+
+            var dragComment = new Drag(
+                'zoomifyalert_content', {
+                    handle: '#alert_header',
+                    containment: 'parent'
+            });
+        }
+        console.debug(_win);
+    },
+
 
     /**
      * Overrides IIP navigation

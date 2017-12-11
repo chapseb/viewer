@@ -118,7 +118,7 @@ class Pdf extends \TCPDF
         $this->SetY(5);
         $html = '';
         if (file_exists($image)) {
-            $html = '<img style="width:40px;" src="' . $image . '"/>';
+            $html = '<img style="width:40px;background-repeat:no-repeat;" src="' . $image . '"/>';
         } else {
             Analog::error(
                 str_replace(

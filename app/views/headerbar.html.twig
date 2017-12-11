@@ -1,0 +1,19 @@
+<h1 {%if awsFlag == true%}style="position:absolute;"{%endif%}>{% if themes is defined and themes != ''%}<img id="custom_logo" src="{{app_web_url}}/themes/images/logo.png"/>{% else %}<img src="{{ app_web_url }}/images/logo.png" alt="BACH"/>{%endif%}</h1>
+<h2>{{ img }}</h2>
+{% if series %}
+    {% set series_name = series.getPath() %}
+    <span id="series_pos" title="{% trans %}You are currently browsing '{{ series_name }}' series.{% endtrans %}"> - {% trans %}Image{% endtrans %} <span id="current_pos">{{ series.getCurrentPosition() }}</span> / <span id="number_total">{{ series.getCount() }}</span>
+    </span>
+{% endif %}
+
+{% if not picture.isPyramidal and not zoomify and not awsFlag%}
+<div id="formats">
+    <select name="formats">
+        {% for key, fmt in picture.getVisibleFormats() %}
+        {% if displayHD == false or (displayHD and key == 'full')%}
+        <option value="{{ key }}"{% if image_format == key  %} selected="selected"{% endif %}>{{ fmt }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+</div>
+{% endif %}
