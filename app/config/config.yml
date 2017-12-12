@@ -31,6 +31,14 @@
 comment: true
 readingroom: null
 ip_internal: false
+aws_key: null
+aws_secret: null
+aws_version: 'latest'
+aws_region: null
+aws_flag: false
+aws_bucket: null
+cloudfront: null
+nb_images_to_prepare: 10
 debug_mode: false
 notdownloadprint: false
 namefileprint: 'bach-print.pdf'

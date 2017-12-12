@@ -96,14 +96,13 @@ class Picture
         $this->_name = $name;
         $this->_app_base_url = $app_base_url;
 
-        if ( $name === DEFAULT_PICTURE ) {
+        if ($name === DEFAULT_PICTURE) {
             $this->_full_path = WEB_DIR . '/images/' . $this->_name;
         } else {
-            if ( $path !== null ) {
-
+            if ($path !== null) {
                 $this->_path = $path;
                 //normalize path
-                if (  substr($this->_path, - 1) !== '/'
+                if (substr($this->_path, - 1) !== '/'
                     && !substr($this->_name, 0, 1) !== '/'
                 ) {
                     $this->_path = $this->_path . '/';
@@ -113,16 +112,26 @@ class Picture
             $this->_full_path = $this->_path . $this->_name;
         }
 
-        if ( !file_exists($this->_full_path) ) {
-            if ( isset($this->_conf) ) {
+        if (!file_exists($this->_full_path)) {
+            if (isset($this->_conf)) {
                 $roots = $this->_conf->getRoots();
-                foreach ( $roots as $root ) {
-                    if ( file_exists($root . $this->_full_path)
-                        && is_file($root . $this->_full_path)
-                    ) {
-                        $this->_full_path = $root . $this->_full_path;
-
-                        if ($this->_conf->getDebugMode()) {
+                if ($this->_conf->getAWSFlag()) {
+                    foreach ( $roots as $root ) {
+                        if (substr($this->_full_path, 0, 1) == '/'
+                            && substr($root, -1) == '/'
+                        ) {
+                            $allPathFile = substr_replace(
+                                $root,
+                                "",
+                                -1
+                            ) . $this->_full_path;
+                        } else {
+                            $allPathFile = $root . $this->_full_path;
+                        }
+                        if (file_exists($allPathFile)
+                            && is_file($allPathFile)
+                        ) {
+                            $this->_full_path = $allPathFile;
                             Analog::log(
                                 str_replace(
                                     '%path',
@@ -130,14 +139,33 @@ class Picture
                                     _('Image path set to "%path"')
                                 )
                             );
+                            break;
                         }
-                        break;
+                    }
+                } else {
+                    foreach ($roots as $root) {
+                        if (file_exists($root . $this->_full_path)
+                            && is_file($root . $this->_full_path)
+                        ) {
+                            $this->_full_path = $root . $this->_full_path;
+
+                            if ($this->_conf->getDebugMode()) {
+                                Analog::log(
+                                    str_replace(
+                                        '%path',
+                                        $this->_full_path,
+                                        _('Image path set to "%path"')
+                                    )
+                                );
+                            }
+                            break;
+                        }
                     }
                 }
             }
 
             //if file has not been found in roots, throw an exception
-            if ( !file_exists($this->_full_path) ) {
+            if (!file_exists($this->_full_path)) {
                 throw new \RuntimeException(
                     str_replace(
                         '%file',
@@ -152,7 +180,7 @@ class Picture
 
         $this->_prepareHandler();
 
-        if ( $this->_exif === false ) {
+        if ($this->_exif === false) {
             //no exif data in picture, let's ask handler
             list(
                 $this->_width,
@@ -160,21 +188,21 @@ class Picture
                 $this->_type,
                 $this->_mime) = $this->_handler->getImageInfos($this->_full_path);
         } else {
-            if ( isset($this->_exif['ExifImageWidth']) ) {
+            if (isset($this->_exif['ExifImageWidth'])) {
                 $this->_width = $this->_exif['ExifImageWidth'];
-            } else if ( isset($this->_exif['ImageWidth']) ) {
+            } else if (isset($this->_exif['ImageWidth'])) {
                 $this->_width = $this->_exif['ImageWidth'];
-            } else if ( isset($this->_exif['COMPUTED']['Width']) ) {
+            } else if (isset($this->_exif['COMPUTED']['Width'])) {
                 $this->_width = $this->_exif['COMPUTED']['Width'];
             } else {
                 throw new \RuntimeException(_('Unable to get image width!'));
             }
 
-            if ( isset($this->_exif['ExifImageLength']) ) {
+            if (isset($this->_exif['ExifImageLength'])) {
                 $this->_height = $this->_exif['ExifImageLength'];
-            } else if ( isset($this->_exif['ImageLength']) ) {
+            } else if (isset($this->_exif['ImageLength'])) {
                 $this->_height = $this->_exif['ImageLength'];
-            } else if ( isset($this->_exif['COMPUTED']['Height']) ) {
+            } else if (isset($this->_exif['COMPUTED']['Height'])) {
                 $this->_height = $this->_exif['COMPUTED']['Height'];
             } else {
                 throw new \RuntimeException(_('Unable to get image height!'));
@@ -185,8 +213,8 @@ class Picture
             $this->_mime =  $this->_exif['MimeType'];
 
             //checks pyramidal images
-            if ( in_array($this->_type, $this->_pyramidal_types) ) {
-                if ( isset($this->_exif['TileWidth'])
+            if (in_array($this->_type, $this->_pyramidal_types)) {
+                if (isset($this->_exif['TileWidth'])
                     || isset($this->_exif['TileLength'])
                 ) {
                     $this->_pyramidal = true;
@@ -207,18 +235,18 @@ class Picture
         //chek method that will be used
         $method = $this->_conf->getPrepareMethod();
 
-        if ( $method === 'choose' ) {
+        if ($method === 'choose') {
             //automatically set method
-            if ( class_exists('Imagick') ) {
+            if (class_exists('Imagick')) {
                 $method = self::METHOD_IMAGICK;
-            } else if ( class_exists('Gmagick') ) {
+            } else if (class_exists('Gmagick')) {
                 $method = self::METHOD_GMAGICK;
             } else {
                 $method = self::METHOD_GD;
             }
         }
 
-        if ( $method === null ) {
+        if ($method === null) {
             Analog::info(
                 _('Falling back to Gd method.')
             );
@@ -264,46 +292,52 @@ class Picture
 
         $length = null;
         $file_path = null;
-        if ( $format == 'full' ) {
+        if ($this->_conf->getAWSFlag()) {
             $file_path = $this->_full_path;
             $length = filesize($this->_full_path);
         } else {
-            list($file_path, $length) = $this->_checkImageFormat($format);
+            if ($format == 'full') {
+                $file_path = $this->_full_path;
+                $length = filesize($this->_full_path);
+            } else {
+                list($file_path, $length) = $this->_checkImageFormat($format);
+            }
         }
 
         $content = null;
-        if ( $transform_params === null ) {
+        if ($transform_params === null) {
             $content = file_get_contents($file_path);
         } else {
             $length = null; //FIXME: find a way to get lenght
 
             $params = array();
             //translate parameters for handler
-            if ( $transform_params['rotate'] !== null ) {
+            if ($transform_params['rotate'] !== null) {
                 $params['rotate'] = array('angle' => $transform_params['rotate']);
             }
-            if ( $transform_params['negate'] !== null ) {
+            if ($transform_params['negate'] !== null) {
                 $params['negate'] = true;
             }
-            if ( $transform_params['crop'] !== false ) {
+            if ($transform_params['crop'] !== false) {
                 $params['crop'] = $transform_params['crop'];
             }
-            if ( $transform_params['contrast'] !== null ) {
+            if ($transform_params['contrast'] !== null) {
                 $params['contrast'] = $transform_params['contrast'];
             }
-            if ( $transform_params['brightness'] !== null ) {
+            if ($transform_params['brightness'] !== null) {
                 $params['brightness'] = $transform_params['brightness'];
             }
 
             $content = $this->_handler->transform($file_path, $params, $store);
         }
+
         $headers = array();
 
-        if ( $length !== null ) {
+        if ($length !== null) {
             $headers['Content-Length'] = $length;
         }
 
-        if ( $this->_mime !== null ) {
+        if ($this->_mime !== null) {
             $headers['Content-Type'] = $this->_mime;
         }
 
@@ -333,13 +367,13 @@ class Picture
     private function _getRelativePath($image_name)
     {
 
-        if ( $image_name === DEFAULT_PICTURE ) {
+        if ($image_name === DEFAULT_PICTURE) {
             return '';
         } else {
             $relative_path = str_replace($image_name, '', $this->_full_path);
 
-            foreach ( $this->_conf->getRoots() as $root ) {
-                if ( strpos($this->_full_path, $root) === 0 ) {
+            foreach ($this->_conf->getRoots() as $root) {
+                if (strpos($this->_full_path, $root) === 0) {
                     return str_replace($root, '', $relative_path);
                 }
             }
@@ -465,9 +499,9 @@ class Picture
     {
         $prefix = $this->_app_base_url . '/show/';
         $prefix .= $format . '/';
-        if ( $series ) {
+        if ($series) {
             $prefix .= $series->getPath() . '/';
-        } else if ( $this->_path !== null ) {
+        } else if ($this->_path !== null) {
             $prefix .= $this->_path;
         }
         return $prefix . $this->getName();
@@ -482,11 +516,11 @@ class Picture
     {
         $visibles = array();
 
-        if ( count($this->_conf->getFormats()) > 0 ) {
+        if (count($this->_conf->getFormats()) > 0) {
             $formats = $this->_conf->getFormats();
-            foreach ( $formats as $k=>$fmt ) {
-                if ( $k !== 'thumb' && $k !== 'medium' ) {
-                    if ( $fmt['width'] < $this->_width
+            foreach ($formats as $k=>$fmt) {
+                if ($k !== 'thumb' && $k !== 'medium') {
+                    if ($fmt['width'] < $this->_width
                         || $fmt['height'] < $this->_height
                     ) {
                         $visibles[$k] = $k . ' ' . $fmt['width'] . 'x' .
@@ -494,7 +528,7 @@ class Picture
                     }
                 }
             }
-            if ( !isset($formats['full']) ) {
+            if (!isset($formats['full'])) {
                 $visibles["full"] = _('full') . ' ' . $this->_width .
                     'x' . $this->_height;
             }
@@ -639,9 +673,9 @@ class Picture
     public static function getRemoteInfosURI($rinfos, $path, $img)
     {
         $uri = $rinfos['uri'];
-        if ( $rinfos['method'] === 'bach' ) {
+        if ($rinfos['method'] === 'bach') {
             $uri .= 'infosimage/' . $path . $img;
-        } else if ( $rinfos['method'] === 'pleade' ) {
+        } else if ($rinfos['method'] === 'pleade') {
             $uri .= 'functions/ead/infosimage.xml?path=' .
                 $path  . '&name=' . $img;
         }
@@ -693,7 +727,8 @@ class Picture
                         $remoteContents->ead->link
                     );
                     $rcontents['ead']['unitid'] = $remoteContents->ead->unitid;
-                    $rcontents['ead']['cUnittitle'] = $remoteContents->ead->cUnittitle;
+                    $rcontents['ead']['cUnittitle']
+                        = $remoteContents->ead->cUnittitle;
                     $rcontents['ead']['doclink'] = str_replace(
                         'href="',
                         'target="_blank" href="' . rtrim($rinfos['uri'], '/'),
@@ -703,6 +738,8 @@ class Picture
                         = $remoteContents->ead->communicability_general;
                     $rcontents['ead']['communicability_sallelecture']
                         = $remoteContents->ead->communicability_sallelecture;
+                    $rcontents['ead']['cAudience'] = $remoteContents->ead->cAudience;
+                    $rcontents['ead']['audience'] = $remoteContents->ead->audience;
                 }
             } else if ($rinfos['method'] === 'pleade') {
                 $rxml = @simplexml_load_string($remoteContents->link);
@@ -749,6 +786,7 @@ class Picture
         } else {
             $ipClient = $_SERVER['REMOTE_ADDR'];
         }
+
         $rcontents['reader'] = $rcontents['archivist'] = false;
         if (isset($_COOKIE[$rcontents['cookie'].'_reader']) ) {
             $jsonCookie = json_decode(
@@ -766,10 +804,12 @@ class Picture
         }
         $readerFlag = $rcontents['reader'];
         $archivistFlag = $rcontents['archivist'];
+
         if ($archivistFlag) {
             $rcontents['communicability'] = true;
             return $rcontents;
         }
+
         // FIXME find a better to take care of communicability
         // in series with a start and an end image
         if (!isset($rcontents['ead'])
@@ -778,11 +818,14 @@ class Picture
             $rcontents['communicability'] = true;
             return $rcontents;
         }
+
         $communicability = $communicabilityEad = $communicabilityMat = false;
         $current_date = new \DateTime();
         $current_year = $current_date->format("Y");
+
         if (isset($rcontents['ead'])) {
             $remoteInfosEad = $rcontents['ead'];
+
             if (isset($remoteInfosEad['cAudience'])
                 && $remoteInfosEad['cAudience'] == 'internal'
             ) {
@@ -791,12 +834,14 @@ class Picture
                 unset($rcontents['ead']);
                 return $rcontents;
             }
+
             if (isset($remoteInfosEad['audience'])
                 && $remoteInfosEad['audience'] == 'internal'
             ) {
                 $rcontents['communicability'] = false;
                 return $rcontents;
             }
+
             // test communicability_general
             if ($remoteInfosEad['communicability_general'] == null) {
                 $communicabilityEad = true;
@@ -806,6 +851,7 @@ class Picture
             ) {
                     $communicabilityEad = true;
             }
+
             // test communicability_sallelecture
             if (strpos($readingRoomIp, $ipClient) !== false
                 && $readerFlag == true
@@ -815,6 +861,7 @@ class Picture
                 $communicabilityEad = true;
             }
         }
+
         if (isset($rcontents['mat'])) {
             if (isset($rcontents['mat']['record'])) {
                 $remoteInfosMat = $rcontents['mat']['record'];
@@ -837,6 +884,7 @@ class Picture
                         $communicabilityMat = true;
                     }
                 }
+
                 if (!isset($remoteInfosMat->communicability_general)
                     && !isset($remoteInfosMat->communicability_sallelecture)
                 ) {
@@ -844,9 +892,11 @@ class Picture
                 }
             }
         }
+
         if ($communicabilityEad  || $communicabilityMat) {
             $communicability = true;
         }
+
         $rcontents['communicability'] = $communicability;
         return $rcontents;
     }
@@ -863,7 +913,7 @@ class Picture
     public static function getRemoteComments($rinfos, $path, $img)
     {
         $uri = $rinfos['uri'];
-        if ( $rinfos['method'] === 'bach' ) {
+        if ($rinfos['method'] === 'bach') {
             $uri .= 'comment/images/' . $path . $img . '/get';
         } else {
             return;

@@ -105,6 +105,103 @@ $app->get(
 );
 
 $app->get(
+    '/ajax/imgAws(/:series)/:image(/format/:format)',
+    function ($series_path = null, $image, $format = 'default') use ($app, $conf, $viewer) {
+
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+
+        $roots = $conf->getRoots();
+        $results = array();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => $root . $series_path .'/'. $image,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($results, $object['Key']);
+            }
+        }
+        if (!empty($results)) {
+            $srcUrl = $conf->getCloudfront() . 'prepared_images/'
+                . $format . '/' . $results[0];
+            if (!file_exists(
+                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+            )
+            ) {
+                $srcUrl = $conf->getCloudfront().'prepared_images/'
+                    . $format . '/main.jpg';
+            }
+        } else {
+            $srcUrl = $conf->getCloudfront().'prepared_images/'.$format.'/main.jpg';
+        }
+        echo $srcUrl;
+    }
+);
+
+$app->get(
+    '/ajax/representativeAws/:series/format/:format',
+    function ($series_path = null, $format) use ($app, $conf, $app_base_url) {
+
+        $s3 = new Aws\S3\S3Client(
+            [
+                'version' => $conf->getAWSVersion(),
+                'region'  => $conf->getAWSRegion(),
+                'credentials' => array(
+                    'key' => $conf->getAWSKey(),
+                    'secret' =>$conf->getAWSSecret()
+                )
+            ]
+        );
+        if (strrpos($series_path, '.') == '') {
+            $series_path .= '/';
+        }
+
+        $roots = $conf->getRoots();
+        $results = array();
+        foreach ($roots as $root) {
+            $objects = $s3->getIterator(
+                'ListObjects',
+                array(
+                    "Bucket" => $conf->getAWSBucket(),
+                    "Prefix" => $root . $series_path,
+                    "Delimiter" => "/",
+                )
+            );
+            foreach ($objects as $object) {
+                array_push($results, $object['Key']);
+            }
+        }
+        if (!empty($results)) {
+            $srcUrl = $conf->getCloudfront() . 'prepared_images/'
+                . $format . '/' . $results[0];
+            if (!file_exists(
+                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+            )
+            ) {
+                $srcUrl = $conf->getCloudfront().'prepared_images/'
+                    . $format . '/main.jpg';
+            }
+        } else {
+            $srcUrl = $conf->getCloudfront().'prepared_images/'.$format.'/main.jpg';
+        }
+        echo $srcUrl;
+    }
+);
+
+$app->get(
     '/ajax/series/infos/:series/:image',
     function ($series_path, $img) use ($app, $conf, $app_base_url) {
         $request = $app->request;
