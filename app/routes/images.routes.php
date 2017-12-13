@@ -183,9 +183,6 @@ $app->get(
         }
 
         /////////////////////////////////////////////////////////////////////////////////////
-        if (file_exists('../web/themes/styles/themes.css') ) {
-            $args['themes'] = 'themes';
-        }
 
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
@@ -252,6 +249,9 @@ $app->get(
         }
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
         $args['displayHD'] = $conf->getDisplayHD();
+        if (file_exists('../web/themes/styles/themes.css') ) {
+            $args['themes'] = 'themes';
+        }
 
         $app->render(
             'index.html.twig',
