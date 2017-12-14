@@ -47,6 +47,7 @@ patternzoomify: []
 titlehtml: null
 faviconpath: null
 helppath: null
+organisationname: null
 
 redis_addr: null
 redis_port: null

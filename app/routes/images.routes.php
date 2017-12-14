@@ -286,6 +286,14 @@ $app->get(
 
         $pdf = new Pdf($conf, $picture, $params, $format, $unitid);
 
+        if ($conf->getOrganisationName() != null) {
+            $fileFolder = str_replace('/', '__', $series_path);
+            $fileName = preg_replace('/.[^.]*$/', '', $image);
+            $filePdfName = $conf->getOrganisationName()
+                . $fileFolder . '__' . $fileName . '.pdf';
+            $pdf->setFilename($filePdfName);
+        }
+
         $app->response->headers->set('Content-Type', 'application/pdf');
 
         if ( $display === 'true'  || $conf->getNotDownloadPrint()) {
@@ -373,8 +381,15 @@ $app->get(
             $params = $viewer->bind($app->request);
             $pdf = new Pdf($conf, $picture, $params, $format);
 
-            $app->response->headers->set('Content-Type', 'application/pdf');
+            if ($conf->getOrganisationName() != null) {
+                $fileFolder = str_replace('/', '__', $series_path);
+                $fileName = preg_replace('/.[^.]*$/', '', $image);
+                $filePdfName = $conf->getOrganisationName()
+                    . $fileFolder . '__' . $fileName . '.pdf';
+                $pdf->setFilename($filePdfName);
+            }
 
+            $app->response->headers->set('Content-Type', 'application/pdf');
             if ($display === 'true') {
                 $content = $pdf->getContent();
                 $app->response->body($content);

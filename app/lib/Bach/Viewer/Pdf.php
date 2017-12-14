@@ -64,6 +64,7 @@ class Pdf extends \TCPDF
     private $_params;
     private $_image_format;
     private $_unitid;
+    private $_filename;
     private $_header_height = 0;
     private $_footer_height = 0;
 
@@ -102,6 +103,7 @@ class Pdf extends \TCPDF
         $this->_params = $params;
         $this->_image_format = $format;
         $this->_unitid = $unitid;
+        $this->_filename = $this->_conf->getNameFilePrint();
 
         $this->setCreator('Bach - ' . PDF_CREATOR);
         $this->setTitle($picture->getName());
@@ -214,7 +216,7 @@ class Pdf extends \TCPDF
     public function getContent()
     {
         $this->_prepareImage();
-        return $this->Output($this->_conf->getNameFilePrint(), 'S');
+        return $this->Output($this->_filename, 'S');
     }
 
     /**
@@ -225,7 +227,18 @@ class Pdf extends \TCPDF
     public function download()
     {
         $this->_prepareImage();
-        $this->output($this->_conf->getNameFilePrint(), 'D');
+        $this->output($this->_filename, 'D');
     }
 
+    /**
+     * Set pdf file name
+     *
+     * @param string $fileName new name
+     *
+     * @return void
+     */
+    public function setFilename($fileName)
+    {
+        $this->_filename = $fileName;
+    }
 }

@@ -90,6 +90,7 @@ class Conf
     private $_titlehtml;
     private $_faviconpath;
     private $_helppath;
+    private $_organisationname;
     private $_redis_addr;
     private $_redis_port;
     private $_redis_session;
@@ -212,6 +213,7 @@ class Conf
         $this->_titlehtml        = $this->_conf['titlehtml'];
         $this->_faviconpath      = $this->_conf['faviconpath'];
         $this->_helppath         = $this->_conf['helppath'];
+        $this->_organisationname = $this->_conf['organisationname'];
         $this->_redis_addr       = $this->_conf['redis_addr'];
         $this->_redis_port       = $this->_conf['redis_port'];
         $this->_redis_session    = $this->_conf['redis_session'];
@@ -619,6 +621,16 @@ class Conf
     public function getHelpPath()
     {
         return $this->_helppath;
+    }
+
+    /**
+     * Retrieve configured roots
+     *
+     * @return array
+     */
+    public function getOrganisationName()
+    {
+        return $this->_organisationname;
     }
 
     /**
