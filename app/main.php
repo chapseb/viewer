@@ -316,6 +316,33 @@ $app->error(
     }
 );
 
+if ($conf->getRedisAddr() && $conf->getRedisPort() && $conf->getRedisSession()) {
+    $client = new \Predis\Client(
+        $conf->getRedisAddr() . ':' . $conf->getRedisPort(), [
+            'prefix' => $conf->getRedisSession()
+        ]
+    );
+    try {
+        $client->ping();
+        $app->add(
+            new \Slim\Middleware\RedisCache(
+                $client,
+                [
+                    'timeout' => 60
+                ]
+            )
+        );
+    } catch (Exception $e){
+        if ($conf->getDebugMode()) {
+            Analog::error(
+                'Exception redis with message \'' . $e->getMessage() .
+                '\' in ' . $e->getFile()  . ':' . $e->getLine()  .
+                "\nStack trace:\n" . $e->getTraceAsString()
+            );
+        }
+    }
+}
+
 //main route
 $app->get(
     '/',

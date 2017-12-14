@@ -22,6 +22,7 @@
         "symfony/yaml": "2.3.*",
         "tecnickcom/tcpdf": "6.0.*",
         "atoum/atoum": "dev-master",
-        "aws/aws-sdk-php": "^3.19"
+        "aws/aws-sdk-php": "^3.19",
+        "abouvier/slim-redis-cache": "^0.1.0"
     }
 }

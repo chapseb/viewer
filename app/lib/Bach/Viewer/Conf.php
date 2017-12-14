@@ -90,6 +90,9 @@ class Conf
     private $_titlehtml;
     private $_faviconpath;
     private $_helppath;
+    private $_redis_addr;
+    private $_redis_port;
+    private $_redis_session;
 
     private $_known_remote_methods = array(
         'bach',
@@ -194,12 +197,12 @@ class Conf
                 'uri'       => $this->_conf['remote_infos']['uri']
             );
         }
-        $this->_aws_key     = $this->_conf['aws_key'];
-        $this->_aws_secret  = $this->_conf['aws_secret'];
-        $this->_aws_version = $this->_conf['aws_version'];
-        $this->_aws_region  = $this->_conf['aws_region'];
-        $this->_cloudfront  = $this->_conf['cloudfront'];
-        $this->_aws_bucket  = $this->_conf['aws_bucket'];
+        $this->_aws_key         = $this->_conf['aws_key'];
+        $this->_aws_secret      = $this->_conf['aws_secret'];
+        $this->_aws_version     = $this->_conf['aws_version'];
+        $this->_aws_region      = $this->_conf['aws_region'];
+        $this->_cloudfront      = $this->_conf['cloudfront'];
+        $this->_aws_bucket      = $this->_conf['aws_bucket'];
         $this->_nb_images_to_prepare  = $this->_conf['nb_images_to_prepare'];
         $this->_debug_mode       = $this->_conf['debug_mode'];
         $this->_notdownloadprint = $this->_conf['notdownloadprint'];
@@ -209,6 +212,10 @@ class Conf
         $this->_titlehtml        = $this->_conf['titlehtml'];
         $this->_faviconpath      = $this->_conf['faviconpath'];
         $this->_helppath         = $this->_conf['helppath'];
+        $this->_redis_addr       = $this->_conf['redis_addr'];
+        $this->_redis_port       = $this->_conf['redis_port'];
+        $this->_redis_session    = $this->_conf['redis_session'];
+        $this->_debug_mode       = $this->_conf['debug_mode'];
     }
 
     /**
@@ -614,4 +621,33 @@ class Conf
         return $this->_helppath;
     }
 
+    /**
+     * Retrieve redis adress
+     *
+     * @return string
+     */
+    public function getRedisAddr()
+    {
+        return $this->_redis_addr;
+    }
+
+    /**
+     * Retrieve redis port
+     *
+     * @return string
+     */
+    public function getRedisPort()
+    {
+        return $this->_redis_port;
+    }
+
+    /**
+     * Retrieve redis session name
+     *
+     * @return string
+     */
+    public function getRedisSession()
+    {
+        return $this->_redis_session;
+    }
 }

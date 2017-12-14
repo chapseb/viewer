@@ -48,6 +48,10 @@ titlehtml: null
 faviconpath: null
 helppath: null
 
+redis_addr: null
+redis_port: null
+redis_session: null
+
 formats:
     #default format *MUST* be present
     default:

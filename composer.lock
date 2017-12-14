@@ -4,8 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "308fbeb151eeb4dd2f558484ec904481",
+    "content-hash": "2d44ff29c598c186d3175ed978eb188d",
     "packages": [
+        {
+            "name": "abouvier/slim-redis-cache",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abouvier/slim-redis-cache.git",
+                "reference": "01fa762ed75c6d121c3f94a3642e0202eeba13b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abouvier/slim-redis-cache/zipball/01fa762ed75c6d121c3f94a3642e0202eeba13b5",
+                "reference": "01fa762ed75c6d121c3f94a3642e0202eeba13b5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "predis/predis": "~1.0",
+                "slim/slim": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Slim\\Middleware\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "abouvier",
+                    "email": "abouvier@student.42.fr"
+                }
+            ],
+            "description": "Redis cache middleware for Slim framework",
+            "homepage": "https://github.com/abouvier/slim-redis-cache",
+            "keywords": [
+                "cache",
+                "middleware",
+                "redis",
+                "slim"
+            ],
+            "time": "2015-09-06T01:37:25+00:00"
+        },
         {
             "name": "analog/analog",
             "version": "1.0.10-stable",
@@ -61,12 +111,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd"
+                "reference": "24ec4c46f4036113439e1e38e92252d65a328bfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd",
-                "reference": "f7bb8d9a37daf0d2be67aca7dc8f6f54212a41bd",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/24ec4c46f4036113439e1e38e92252d65a328bfa",
+                "reference": "24ec4c46f4036113439e1e38e92252d65a328bfa",
                 "shasum": ""
             },
             "require": {
@@ -74,7 +124,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "ext-xml": "*",
-                "php": "^5.6.0 || ^7.0.0"
+                "php": "^5.6.0 || ^7.0.0 <7.4.0"
             },
             "replace": {
                 "mageekguy/atoum": "*"
@@ -136,20 +186,20 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2017-09-07 08:27:16"
+            "time": "2017-11-06 21:02:33"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.10",
+            "version": "3.47.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f133e6583f67c2ffe490527dc741ec9ad32c4325"
+                "reference": "6707345b9e6d670aa45209310b930857043a4557"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f133e6583f67c2ffe490527dc741ec9ad32c4325",
-                "reference": "f133e6583f67c2ffe490527dc741ec9ad32c4325",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6707345b9e6d670aa45209310b930857043a4557",
+                "reference": "6707345b9e6d670aa45209310b930857043a4557",
                 "shasum": ""
             },
             "require": {
@@ -171,7 +221,7 @@
                 "ext-dom": "*",
                 "ext-openssl": "*",
                 "nette/neon": "^2.3",
-                "phpunit/phpunit": "^4.8.35|^5.4.0",
+                "phpunit/phpunit": "^4.8.35|^5.4.3",
                 "psr/cache": "^1.0"
             },
             "suggest": {
@@ -216,7 +266,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-09-18T22:37:10+00:00"
+            "time": "2017-12-12T20:10:41+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -453,6 +503,56 @@
                 "jsonpath"
             ],
             "time": "2016-12-03T22:08:25+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nrk/predis.git",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "ext-curl": "Allows access to Webdis when paired with phpiredis",
+                "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniele Alessandri",
+                    "email": "suppakilla@gmail.com",
+                    "homepage": "http://clorophilla.net"
+                }
+            ],
+            "description": "Flexible and feature-complete Redis client for PHP and HHVM",
+            "homepage": "http://github.com/nrk/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "time": "2016-06-16T16:22:20+00:00"
         },
         {
             "name": "psr/http-message",
@@ -821,16 +921,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.34.4",
+            "version": "v1.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "f878bab48edb66ad9c6ed626bf817f60c6c096ee"
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f878bab48edb66ad9c6ed626bf817f60c6c096ee",
-                "reference": "f878bab48edb66ad9c6ed626bf817f60c6c096ee",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
                 "shasum": ""
             },
             "require": {
@@ -844,7 +944,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.34-dev"
+                    "dev-master": "1.35-dev"
                 }
             },
             "autoload": {
@@ -882,7 +982,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-07-04T13:19:31+00:00"
+            "time": "2017-09-27T18:06:46+00:00"
         }
     ],
     "packages-dev": [],
