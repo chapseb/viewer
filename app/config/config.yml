@@ -48,6 +48,7 @@ titlehtml: null
 faviconpath: null
 helppath: null
 organisationname: null
+display_url: false
 
 redis_addr: null
 redis_port: null

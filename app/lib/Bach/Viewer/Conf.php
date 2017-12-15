@@ -90,6 +90,7 @@ class Conf
     private $_titlehtml;
     private $_faviconpath;
     private $_helppath;
+    private $_display_url;
     private $_organisationname;
     private $_redis_addr;
     private $_redis_port;
@@ -218,6 +219,7 @@ class Conf
         $this->_redis_port       = $this->_conf['redis_port'];
         $this->_redis_session    = $this->_conf['redis_session'];
         $this->_debug_mode       = $this->_conf['debug_mode'];
+        $this->_display_url      = $this->_conf['display_url'];
     }
 
     /**
@@ -661,5 +663,15 @@ class Conf
     public function getRedisSession()
     {
         return $this->_redis_session;
+    }
+
+    /**
+     * Retrieve display url in pdf flag
+     *
+     * @return string
+     */
+    public function getDisplayUrl()
+    {
+        return $this->_display_url;
     }
 }

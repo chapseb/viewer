@@ -67,6 +67,7 @@ class Pdf extends \TCPDF
     private $_filename;
     private $_header_height = 0;
     private $_footer_height = 0;
+    private $_urlpdf;
 
     /**
      * Main constructor
@@ -76,9 +77,10 @@ class Pdf extends \TCPDF
      * @param array   $params  Print params
      * @param string  $format  Image format
      * @param string  $unitid  Print document cote
+     * @param string  $urlpdf  Print source url
      */
     public function __construct(Conf $conf, Picture $picture, $params,
-        $format, $unitid = null
+        $format, $unitid = null, $urlpdf = null
     ) {
         $orientation = 'P';
 
@@ -103,6 +105,7 @@ class Pdf extends \TCPDF
         $this->_params = $params;
         $this->_image_format = $format;
         $this->_unitid = $unitid;
+        $this->_urlpdf = $urlpdf;
         $this->_filename = $this->_conf->getNameFilePrint();
 
         $this->setCreator('Bach - ' . PDF_CREATOR);
@@ -169,6 +172,9 @@ class Pdf extends \TCPDF
         }
         if ($this->_conf->getPrintFooterContent()) {
             $html .= $this->_conf->getPrintFooterContent();
+        }
+        if ($this->_conf->getDisplayUrl()) {
+            $html .= $this->_urlpdf;
         }
         if ($html != '') {
             $this->writeHTML($html);

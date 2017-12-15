@@ -284,7 +284,7 @@ $app->get(
 
         $params = $viewer->bind($app->request);
 
-        $pdf = new Pdf($conf, $picture, $params, $format, $unitid);
+        $pdf = new Pdf($conf, $picture, $params, $format, $unitid, $app->request->getReferrer());
 
         if ($conf->getOrganisationName() != null) {
             $fileFolder = str_replace('/', '__', $series_path);
@@ -379,7 +379,7 @@ $app->get(
             );
 
             $params = $viewer->bind($app->request);
-            $pdf = new Pdf($conf, $picture, $params, $format);
+            $pdf = new Pdf($conf, $picture, $params, $format, null, $app->request->getReferrer());
 
             if ($conf->getOrganisationName() != null) {
                 $fileFolder = str_replace('/', '__', $series_path);
