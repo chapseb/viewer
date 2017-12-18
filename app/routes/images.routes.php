@@ -269,6 +269,10 @@ $app->get(
         if (substr($series_path, -1) == '/') {
             $series_path = substr($series_path, 0, -1);
         }
+        if (substr($series_path, 0, 1) == '/') {
+            $series_path = substr($series_path, 1);
+        }
+
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $series_path,
