@@ -38,6 +38,7 @@
  * @category Routes
  * @package  Viewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -49,22 +50,24 @@ $app->get(
     '/series/:path+',
     function ($path) use ($app, $conf, $app_base_url, $s3) {
         $request = $app->request();
+        // Take care of begin and end parameters
         $start = $request->params('s');
-        if ( trim($start) === '' ) {
+        if (trim($start) === '') {
             $start = null;
         }
         $end = $request->params('e');
-        if ( trim($end) === '' ) {
+        if (trim($end) === '') {
             $end = null;
         }
 
-        if ( $start === null && $end !== null || $start !== null && $end === null ) {
+        if ($start === null && $end !== null || $start !== null && $end === null) {
             $start = null;
             $end = null;
             throw new \RuntimeException(
                 _('Sub series cannot be instancied; missing one of start or end param!')
             );
         }
+        ///////////////////////////////////////
 
         $series = null;
         try {
@@ -94,7 +97,7 @@ $app->get(
         }
 
         //check if series has content, throw an error if not
-        if ( $series->getCount() === 0 ) {
+        if ($series->getCount() === 0) {
             throw new \RuntimeException(
                 str_replace(
                     '%s',
@@ -105,19 +108,19 @@ $app->get(
         }
 
         $img = null;
-        if ( $request->params('img') !== null ) {
+        if ($request->params('img') !== null) {
             //get image from its name
-            if ( $series->setImage($request->params('img')) ) {
+            if ($series->setImage($request->params('img'))) {
                 $img = $series->getImage();
             }
-        } else if ( $request->get('num') !== null ) {
+        } else if ($request->get('num') !== null) {
             //get image from its position
-            if ( $series->setNumberedImage($request->params('num')) ) {
+            if ($series->setNumberedImage($request->params('num'))) {
                 $img = $series->getImage();
             }
         }
 
-        if ( $img === null ) {
+        if ($img === null) {
             $img = $series->getRepresentative();
         }
 
@@ -136,13 +139,15 @@ $app->get(
                 'series'    => $series,
             );
         } else {
-
             $results = array();
+            // image displayed will be a default image
+            // default images are in prepared_images/default directory
             $objects = $s3->getIterator(
                 'ListObjects',
                 array(
                     "Bucket" => $conf->getAWSBucket(),
-                    "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                    "Prefix" => 'prepared_images/default/'
+                        . $series->getFullPath() . $series->getRepresentative(),
                     "Delimiter" => "/",
                 )
             );
@@ -151,14 +156,19 @@ $app->get(
             }
 
             if (!empty($results)) {
-                $default_src = $conf->getCloudfront().'prepared_images/default/'.$series->getFullPath().$series->getRepresentative();
+                $default_src = $conf->getCloudfront() . 'prepared_images/default/'
+                    . $series->getFullPath() . $series->getRepresentative();    // default_src is the first image to display in default mode
             } else {
-                $default_src = $conf->getCloudfront().'prepared_images/default/main.jpg';
+                // need a main.jpg in default mode in prepared_images directory
+                $default_src = $conf->getCloudfront()
+                    . 'prepared_images/default/main.jpg';
             }
 
+            // args pass variable to twig
             $args = array(
                 'cloudfront'        => $conf->getCloudfront(),
-                'pathHD'            => $conf->getCloudfront().$series->getFullPath(),
+                'pathHD'            => $conf->getCloudfront()
+                                        . $series->getFullPath(),
                 'series'            => $series,
                 'default_src'       => $default_src,
                 'img'               => $img,
@@ -173,6 +183,7 @@ $app->get(
             }
         }
 
+        // iip viewer
         if (!$conf->getAWSFlag() && $picture->isPyramidal() ) {
             $iip = $conf->getIIP();
             $args['iipserver'] = $iip['server'];
@@ -180,10 +191,12 @@ $app->get(
             $args['image_format'] = 'default';
         }
 
+        // Take care of theme
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
         }
 
+        // uri of remote informations
         if ($start != null && $end != null) {
             $ruri = $conf->getRemoteInfos()['uri']
                 ."infosimage/". implode('/', $path) . '/' . $img;
@@ -191,6 +204,8 @@ $app->get(
             $ruri = $conf->getRemoteInfos()['uri']
                 ."infosimage/". implode('/', $path) . $img;
         }
+
+        // Call to Bach rcontents to verify communicability
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $path[0],
@@ -202,19 +217,23 @@ $app->get(
         $args['communicability'] = $rcontents['communicability'];
         $resultsSD = array();
 
-            $flagResult = false;
+        $flagResult = false;
+        /* get list of image in aws s3 in default format */
         if ($conf->getAWSFlag()) {
             $objects = $s3->getIterator(
                 'ListObjects',
                 array(
                     "Bucket" => $conf->getAWSBucket(),
-                    "Prefix" => 'prepared_images/default/'.$series->getFullPath().$series->getRepresentative(),
+                    "Prefix" => 'prepared_images/default/' . $series->getFullPath()
+                        . $series->getRepresentative(),
                     "Delimiter" => "/",
                 )
             );
             foreach ($objects as $object) {
                 array_push($resultsSD, $object['Key']);
             }
+            // if no result or no communicable,
+            // take just main.jpg image for all the serie
             if (!isset($resultsSD[0]) || $args['communicability'] == false) {
                 $results[0] = 'main.jpg';
                 $args['default_src'] = $conf->getCloudfront()

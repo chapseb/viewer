@@ -37,7 +37,8 @@
  *
  * @category Main
  * @package  Viewer
- * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Johan Cwiklinski  <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -51,7 +52,8 @@ use \Analog\Analog;
  *
  * @category Main
  * @package  Viewer
- * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Johan Cwiklinski  <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -84,6 +86,7 @@ class Series
         $roots = $conf->getRoots();
 
         if ($conf->getAWSFlag() == true) {
+            /* FIXME find a way to get s3 from main.php in class object without reinstanciate */
             $s3 = new \Aws\S3\S3Client(
                 [
                     'version' => $conf->getAWSVersion(),
@@ -96,6 +99,7 @@ class Series
             );
             $results = array();
 
+            // test root with path and get matched link
             foreach ($roots as $root) {
                 if (substr($root, - 1) == '/') {
                     $root = substr($root, 0, -1);
@@ -139,8 +143,9 @@ class Series
             }
 
         } else {
+            // test root with path and get existing file
             foreach ( $roots as $root ) {
-                if ( file_exists($root . $path) && is_dir($root . $path) ) {
+                if (file_exists($root . $path) && is_dir($root . $path)) {
                     $this->_full_path = $root . $path;
                     Analog::log(
                         str_replace(
@@ -163,7 +168,9 @@ class Series
             if (!$conf->getAWSFlag()) {
                 $handle = opendir($this->_full_path);
             } else {
-                $handle = opendir('s3://'.$conf->getAWSBucket().'/'.$this->_full_path);
+                $handle = opendir(
+                    's3://'.$conf->getAWSBucket().'/'.$this->_full_path
+                );
             }
 
             $all_entries = array();
@@ -179,9 +186,13 @@ class Series
                         && !is_dir($this->_full_path . '/' . $entry)
                     ) {
                         if (!$conf->getAWSFlag()) {
-                            $mimetype = $finfo->file($this->_full_path . '/' . $entry);
+                            $mimetype = $finfo->file(
+                                $this->_full_path . '/' . $entry
+                            );
                         }
-                        if ($conf->getAWSFlag() or $mimetype != '' && strpos($mimetype, 'image') === 0 ) {
+                        if ($conf->getAWSFlag() || $mimetype != ''
+                            && strpos($mimetype, 'image') === 0
+                        ) {
                             $all_entries[] = $entry;
                         }
                     }
@@ -190,6 +201,7 @@ class Series
                 closedir($handle);
                 sort($all_entries, SORT_STRING);
 
+                // build begin/end serie
                 if ($this->_start != null && $conf->getAWSFlag()) {
                     $tmp_entry = array();
                     foreach ($all_entries as $entry) {
@@ -212,7 +224,9 @@ class Series
 
                 foreach ($arrayDif as $entry) {
                     $mimetype = $finfo->file($this->_full_path . '/' . $entry);
-                    if ($mimetype != '' && strpos($mimetype, 'image') === 0 or $conf->getAWSFlag()) {
+                    if ($mimetype != ''
+                        && strpos($mimetype, 'image') === 0 || $conf->getAWSFlag()
+                    ) {
                         $all_entries[] = $entry;
                     }
                 }
@@ -227,7 +241,6 @@ class Series
                 }
 
                 if ($go) {
-
                     try {
                         if (!$conf->getAWSFlag()) {
                             $picture = new Picture(
@@ -317,7 +330,7 @@ class Series
      */
     public function setImage($img)
     {
-        if ( in_array($img, $this->_content) ) {
+        if (in_array($img, $this->_content)) {
             $this->_current = $img;
             return true;
         } else {
@@ -344,7 +357,7 @@ class Series
     public function setNumberedImage($pos)
     {
         $pos = $pos - 1;
-        if ( isset($this->_content[$pos]) ) {
+        if (isset($this->_content[$pos])) {
             return $this->setImage($this->_content[$pos]);
         } else {
             Analog::error(
@@ -413,7 +426,7 @@ class Series
     public function getNextImage()
     {
         $_index = array_search($this->_current, $this->_content);
-        if ( $_index === count($this->_content) - 1 ) {
+        if ($_index === count($this->_content) - 1) {
             $_index = 0;
         } else {
             $_index += 1;
@@ -474,7 +487,7 @@ class Series
      */
     public function getInfos()
     {
-        if ( !isset($this->_current) ) {
+        if (!isset($this->_current)) {
             throw new \RuntimeException(
                 _('Series has not been initialized yet.')
             );
@@ -491,14 +504,14 @@ class Series
             );
 
             $rinfos = $this->_conf->getRemoteInfos();
-            if ( $rinfos !== false ) {
+            if ($rinfos !== false) {
                 $rcontents = Picture::getRemoteInfos(
                     $rinfos,
                     $this->_path,
                     $this->_current
                 );
 
-                if ( $rcontents !== null ) {
+                if ($rcontents !== null) {
                     $infos['remote'] = $rcontents;
                 }
 
@@ -595,5 +608,4 @@ class Series
     {
         $this->_content = $content;
     }
-
 }

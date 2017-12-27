@@ -38,6 +38,7 @@
  * @category Main
  * @package  Viewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -52,6 +53,7 @@ use \Analog\Analog;
  * @category Main
  * @package  Viewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -709,6 +711,8 @@ class Picture
             $uri = $ruri;
         }
         $rcontents = null;
+        // if image has remote informations get it and treat
+        // else image has not link with Bach and we can display it without verification
         if ($remoteContents = json_decode(@file_get_contents($uri))) {
             $rcontents['cookie'] = $remoteContents->cookie;
             if ($rinfos['method'] === 'bach') {
@@ -754,7 +758,7 @@ class Picture
                     $rcontents = null;
                 }
             }
-
+            // isCommunicable to know if we display image
             $rcontents = self::isCommunicable(
                 $rcontents,
                 $readingRoomIp,
@@ -810,7 +814,7 @@ class Picture
             return $rcontents;
         }
 
-        // FIXME find a better to take care of communicability
+        // FIXME find a better way to take care of communicability
         // in series with a start and an end image
         if (!isset($rcontents['ead'])
             && !isset($rcontents['mat'])

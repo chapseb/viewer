@@ -37,7 +37,8 @@
  *
  * @category Main
  * @package  Viewer
- * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Johan Cwiklinski  <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -55,7 +56,7 @@ $session = &$_SESSION['bachviewer'];
 
 require APP_DIR . '/../vendor/autoload.php';
 
-if ( defined('VIEWER_XHPROF_PATH')
+if (defined('VIEWER_XHPROF_PATH')
     && function_exists('xhprof_enable')
 ) {
     $profiler = new Bach\XHProf();
@@ -65,23 +66,23 @@ if ( defined('VIEWER_XHPROF_PATH')
 $logger = null;
 
 $log_lvl = Analog::ERROR;
-if ( APP_DEBUG === true ) {
+if (APP_DEBUG === true) {
     $log_lvl = Analog::DEBUG;
 }
 
-if ( defined('APP_TESTS') ) {
+if (defined('APP_TESTS')) {
     $viewer_log = '';
     $logger = \Analog\Handler\Variable::init($viewer_log);
 } else {
     $log_dir = APP_DIR . '/logs/';
-    if ( defined('APP_LOGS') ) {
+    if (defined('APP_LOGS')) {
         $log_dir = APP_LOGS;
     }
-    if ( !file_exists($log_dir) ) {
+    if (!file_exists($log_dir)) {
         throw new \RuntimeException(
             'Log directory (' . $log_dir  . ') does not exists!'
         );
-    } else if ( !is_writeable($log_dir)  ) {
+    } else if (!is_writeable($log_dir)) {
         throw new \RuntimeException(
             'Log directory (' . $log_dir . ') is not writeable!'
         );
@@ -98,7 +99,7 @@ Analog::handler(
 
 $conf = new Conf();
 
-
+/* Add s3 client Variable */
 $s3 = null;
 if ($conf->getAWSFlag()) {
     $s3 = new Aws\S3\S3Client(
@@ -114,15 +115,15 @@ if ($conf->getAWSFlag()) {
     $s3->registerStreamWrapper();
 }
 
-/** I18n stuff */
+/* I18n stuff */
 $lang = null;
 $langs = array(
     'en-US',
     'fr-FR'
 );
 
-/** Try to detect user language */
-if ( function_exists('http_negotiate_language') ) {
+/* Try to detect user language */
+if (function_exists('http_negotiate_language')) {
     $nego = http_negotiate_language($langs);
     switch ( strtolower($nego) ) {
     case 'en-us':
@@ -133,16 +134,16 @@ if ( function_exists('http_negotiate_language') ) {
         break;
     }
 } else {
-    if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
+    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
         $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-        if ( substr($langs, 0, 2) == 'fr' ) {
+        if (substr($langs, 0, 2) == 'fr') {
             $lang = 'fr_FR.utf8';
         }
     }
 }
 
 //fallback to english
-if ( $lang === null ) {
+if ($lang === null) {
     $lang = 'en_US';
 }
 
@@ -155,7 +156,7 @@ bind_textdomain_codeset('BachViewer', 'UTF-8');
 
 //Choose domain
 textdomain('BachViewer');
-/** /I18n stuff */
+/* /I18n stuff */
 
 $app = new Slim(
     array(
@@ -169,11 +170,11 @@ $app_base_url = '';
 $app_title_html = $conf->getTitleHtml();
 $app_favicon_path = $conf->getFaviconPath();
 $app_help_path = $conf->getHelpPath();
-if ( strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php')) 
+if (strncmp($_SERVER['PHP_SELF'], '/index.php', strlen('/index.php'))
     && strncmp($_SERVER['PHP_SELF'], '/debug.php', strlen('/debug.php'))
 ) {
     preg_match('/.*(index|debug)\.php/', $_SERVER['PHP_SELF'], $matches);
-    if ( isset($matches[0]) ) {
+    if (isset($matches[0])) {
         $app_base_url = $matches[0];
     }
 }
@@ -185,14 +186,15 @@ $view->parserExtensions = array(
     new Twig_Extensions_Extension_I18n()
 );
 
-if ( defined('APP_CACHE') && APP_CACHE !== false ) {
+if (defined('APP_CACHE') && APP_CACHE !== false) {
     $view->parserOptions = array(
         'cache'         => APP_CACHE,
         'auto_reload'   => true
     );
 }
 
-if ( !defined('DEFAULT_PICTURE') ) {
+/* DEFAULT_PICTURE could be defined in app/config/config.inc.php */
+if (!defined('DEFAULT_PICTURE')) {
     define('DEFAULT_PICTURE', 'main.jpg');
 }
 
@@ -202,6 +204,7 @@ $app->hook(
         //let's send view parameters before dispatching
         $v = $app->view();
         $ui = $conf->getUI();
+        // Add twig global variable
         $v->setData('app_base_url', $app_base_url);
         $v->setData('app_title_html', $conf->getTitleHtml());
         $v->setData('app_favicon_path', $conf->getFaviconPath());
@@ -244,7 +247,7 @@ $app->hook(
         $v->setData('thumb_format', $fmts['thumb']);
 
         $remote_infos = $conf->getRemoteInfos();
-        if ( $remote_infos !== false ) {
+        if ($remote_infos !== false) {
             $v->setData(
                 'remote_method',
                 $remote_infos['method']
@@ -285,13 +288,13 @@ $app->error(
             "\nStack trace:\n" . $e->getTraceAsString()
         );
 
-        if ( (substr($resuUri, 0, 10) === '/ajax/img/'
+        if ((substr($resuUri, 0, 10) === '/ajax/img/'
             || substr($resuUri, 0, 21) === '/ajax/representative/')
             && APP_DEBUG !== true
         ) {
             $format = 'default';
             preg_match('/.*\/format\/(.*)/', $resuUri, $matches);
-            if ( isset($matches[1]) ) {
+            if (isset($matches[1])) {
                 $format = $matches[1];
             }
             $picture = new Picture(
@@ -316,6 +319,7 @@ $app->error(
     }
 );
 
+// redis 
 if ($conf->getRedisAddr() && $conf->getRedisPort() && $conf->getRedisSession()) {
     $client = new \Predis\Client(
         $conf->getRedisAddr() . ':' . $conf->getRedisPort(), [
@@ -355,14 +359,14 @@ $app->get(
 require_once 'routes/images.routes.php';
 require_once 'routes/series.routes.php';
 require_once 'routes/ajax.routes.php';
-if ( APP_DEBUG === true ) {
+if (APP_DEBUG === true) {
     include_once 'routes/debug.routes.php';
 }
 
-if ( !defined('APP_TESTS') ) {
+if (!defined('APP_TESTS')) {
     $app->run();
 
-    if ( isset($profiler) ) {
+    if (isset($profiler)) {
         $profiler->stop();
     }
 }

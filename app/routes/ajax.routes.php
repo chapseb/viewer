@@ -38,6 +38,7 @@
  * @category Routes
  * @package  Viewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -53,7 +54,9 @@ use \Bach\Viewer\Series;
  */
 $app->get(
     '/ajax/img(/:series)/:image(/format/:format)',
-    function ($series_path = null, $image, $format = 'default') use ($app, $viewer) {
+    function ($series_path = null, $image, $format = 'default') use (
+        $app, $viewer
+    ) {
         $picture = $viewer->getImage($series_path, $image);
         $display = $picture->getDisplay($format);
         $response = $app->response();
@@ -64,10 +67,15 @@ $app->get(
     }
 );
 
+/* Zoomify feature
+ * One directory represents one image
+ * */
 $app->get(
     '/ajax/img/:series/format/:format',
-    function ($series_path, $format = 'default') use ($app, $conf, $app_base_url, $viewer) {
-        // thumb image is in TileGroup0/0-0-0.jpg in zoomify
+    function ($series_path, $format = 'default') use (
+        $app, $conf, $app_base_url, $viewer
+    ) {
+        // thumb image is the TileGroup0/0-0-0.jpg file in zoomify
         // with it you can show thumb and medium format in Bach
         $picture = new Picture(
             $conf,
@@ -83,6 +91,7 @@ $app->get(
     '/ajax/representative/:series/format/:format',
     function ($series_path = null, $format) use ($app, $conf, $app_base_url) {
         $request = $app->request;
+        // get start and end image in get request
         $start = $request->params('s');
         $end = $request->params('e');
 
@@ -104,23 +113,13 @@ $app->get(
     }
 );
 
+/* image path in aws environment */
 $app->get(
     '/ajax/imgAws(/:series)/:image(/format/:format)',
-    function ($series_path = null, $image, $format = 'default') use ($app, $conf, $viewer) {
-
-        $s3 = new Aws\S3\S3Client(
-            [
-                'version' => $conf->getAWSVersion(),
-                'region'  => $conf->getAWSRegion(),
-                'credentials' => array(
-                    'key' => $conf->getAWSKey(),
-                    'secret' =>$conf->getAWSSecret()
-                )
-            ]
-        );
-
+    function ($series_path = null, $image, $format = 'default') use ($app, $conf, $viewer, $s3) {
         $roots = $conf->getRoots();
         $results = array();
+        // check which root is good
         foreach ($roots as $root) {
             $objects = $s3->getIterator(
                 'ListObjects',
@@ -134,37 +133,31 @@ $app->get(
                 array_push($results, $object['Key']);
             }
         }
+        // test if one or more results
         if (!empty($results)) {
             $srcUrl = $conf->getCloudfront() . 'prepared_images/'
                 . $format . '/' . $results[0];
+            // test if first result file exists
             if (!file_exists(
-                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+                's3://'. $conf->getAWSBucket().
+                '/'.'prepared_images/'.$format.'/'.$results[0]
             )
             ) {
                 $srcUrl = $conf->getCloudfront().'prepared_images/'
                     . $format . '/main.jpg';
             }
         } else {
+            // in aws main.jpg must be the DEFAULT_PICTURE
             $srcUrl = $conf->getCloudfront().'prepared_images/'.$format.'/main.jpg';
         }
         echo $srcUrl;
     }
 );
 
+/* get representative image in aws environment */
 $app->get(
     '/ajax/representativeAws/:series/format/:format',
-    function ($series_path = null, $format) use ($app, $conf, $app_base_url) {
-
-        $s3 = new Aws\S3\S3Client(
-            [
-                'version' => $conf->getAWSVersion(),
-                'region'  => $conf->getAWSRegion(),
-                'credentials' => array(
-                    'key' => $conf->getAWSKey(),
-                    'secret' =>$conf->getAWSSecret()
-                )
-            ]
-        );
+    function ($series_path = null, $format) use ($app, $conf, $app_base_url, $s3) {
         if (strrpos($series_path, '.') == '') {
             $series_path .= '/';
         }
@@ -188,7 +181,8 @@ $app->get(
             $srcUrl = $conf->getCloudfront() . 'prepared_images/'
                 . $format . '/' . $results[0];
             if (!file_exists(
-                's3://'. $conf->getAWSBucket().'/'.'prepared_images/'.$format.'/'.$results[0]
+                's3://'. $conf->getAWSBucket(). '/' .
+                'prepared_images/' . $format . '/' . $results[0]
             )
             ) {
                 $srcUrl = $conf->getCloudfront().'prepared_images/'
@@ -201,6 +195,11 @@ $app->get(
     }
 );
 
+/**
+ * FIXME: Refactor bach/viewer communication system.
+ * Goal is having just one Bach call which send remote
+ * informations and comments
+ */
 $app->get(
     '/ajax/series/infos/:series/:image',
     function ($series_path, $img) use ($app, $conf, $app_base_url) {
@@ -216,7 +215,7 @@ $app->get(
             $end
         );
 
-        if ( $img !== null ) {
+        if ($img !== null) {
             $series->setImage($img);
         }
 
@@ -230,7 +229,7 @@ $app->get(
     function ($img_params) use ($app, $conf) {
         $img = array_pop($img_params);
         $path = null;
-        if ( count($img_params) > 0 ) {
+        if (count($img_params) > 0) {
             $path = implode('/', $img_params) .'/';
         }
 
@@ -242,7 +241,7 @@ $app->get(
 
         $infos = array();
 
-        if ( $rcontents !== null ) {
+        if ($rcontents !== null) {
             $infos['remote'] = $rcontents;
         }
 
@@ -250,12 +249,13 @@ $app->get(
     }
 );
 
+/* get comment store in Bach database */
 $app->get(
     '/ajax/image/comments/:image_params+',
     function ($img_params) use ($app, $conf) {
         $img = array_pop($img_params);
         $path = null;
-        if ( count($img_params) > 0 ) {
+        if (count($img_params) > 0) {
             $path = implode('/', $img_params) .'/';
         }
 
@@ -269,6 +269,8 @@ $app->get(
     }
 );
 
+/* get Bach url
+ * used to redirect to Bach add comment page */
 $app->get(
     '/ajax/image/comment/bachURL',
     function () use ($app, $conf) {

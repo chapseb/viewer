@@ -38,6 +38,7 @@
  * @category Routes
  * @package  Viewer
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -46,6 +47,7 @@ use \Bach\Viewer\Picture;
 use \Bach\Viewer\Series;
 use \Bach\Viewer\Pdf;
 
+/* get image with format and path */
 $app->get(
     '/show/:format(/:series)/:image',
     function ($format = null, $series_path = null, $image) use ($app, $viewer, $conf) {
@@ -85,6 +87,8 @@ $app->get(
     }
 );
 
+/* get image with transformation
+ * negate, brighness, contrast, rotate */
 $app->get(
     '/transform/:format(/:series)/:image',
     function ($format, $series_path, $image) use ($app, $viewer) {
@@ -101,6 +105,7 @@ $app->get(
     }
 );
 
+/* get html page for standalone image */
 $app->get(
     '/viewer/:image_params+',
     function ($img_params) use ($app, $conf, $app_base_url, $s3) {
@@ -110,11 +115,13 @@ $app->get(
             $path = '/' . implode('/', $img_params);
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////
+        /* in aws, image are just link to s3
+        /* in dedicated server image are in Filesystem
+         * and they're treated with handler (in lib/Bach/Viewer/Handlers)*/
         if ($conf->getAWSFlag() == true) {
             $results = array();
 
-            $roots = $conf->getRoots();
+            $roots = $conf->getRoots(); // link to image is composed with url and root in config
 
             foreach ($roots as $root) {
                 if (substr($root, - 1) == '/') {
@@ -182,8 +189,7 @@ $app->get(
             }
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////
-
+        /* Get remote infos for communicability */
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $path,
@@ -209,11 +215,13 @@ $app->get(
             }
         }
 
+        // Check if result, else use main.jpg
         $flagResult = false;
         if (!isset($results[0])) {
             $results[0] = 'main.jpg';
             $flagResult = true;
         }
+        // instancied variable used in aws context
         if ($conf->getAWSFlag()) {
             $args = array(
                 'cloudfront'          => $conf->getCloudfront(),
@@ -249,6 +257,8 @@ $app->get(
         }
         $args['notdownloadprint'] = $conf->getNotDownloadPrint();
         $args['displayHD'] = $conf->getDisplayHD();
+
+        // check if theme and add varible to twig if there
         if (file_exists('../web/themes/styles/themes.css') ) {
             $args['themes'] = 'themes';
         }
@@ -260,12 +270,15 @@ $app->get(
     }
 );
 
+/* print image route */
 $app->get(
     '/print/:format(/:series)/:image(/:display)',
     function ($format, $series_path, $image, $display = false) use ($app,
         $conf, $viewer
     ) {
         $picture = $viewer->getImage($series_path, $image);
+
+        /* remove slash at begin and end path */
         if (substr($series_path, -1) == '/') {
             $series_path = substr($series_path, 0, -1);
         }
@@ -273,6 +286,7 @@ $app->get(
             $series_path = substr($series_path, 1);
         }
 
+        /* get remote infos from Bach and extract the unitid if exists */
         $rcontents = Picture::getRemoteInfos(
             $conf->getRemoteInfos(),
             $series_path,
@@ -290,6 +304,7 @@ $app->get(
 
         $pdf = new Pdf($conf, $picture, $params, $format, $unitid, $app->request->getReferrer());
 
+        /* if organisation is param, make the pdf file name with it */
         if ($conf->getOrganisationName() != null) {
             $fileFolder = str_replace('/', '__', $series_path);
             $fileName = preg_replace('/.[^.]*$/', '', $image);
@@ -313,6 +328,7 @@ $app->get(
     )
 );
 
+/* print image route in aws context */
 $app->get(
     '/printAws/:format(/:series)/:image(/:display)',
     function ($format, $series_path, $image, $display = false) use ($app,
@@ -322,6 +338,10 @@ $app->get(
         $results = array();
         $roots = $conf->getRoots();
 
+        /* aws image are just link and we don't have the source image on the same server
+            * so we download the image on the server and transform it to picture object
+            * we can treat like in non aws environment 
+        */
         if ($format == 'default') {
             foreach ($roots as $root) {
                 if (substr($root, - 1) == '/') {
@@ -358,6 +378,7 @@ $app->get(
             }
         }
 
+        /* download image with uniqid namei and save it in cache directory */
         if (file_exists('s3://'.$conf->getAWSBucket().'/'.$results[0])) {
             $uniqueFileName = uniqid();
             $pathDisk = __DIR__.'/../cache/';
@@ -385,6 +406,7 @@ $app->get(
             $params = $viewer->bind($app->request);
             $pdf = new Pdf($conf, $picture, $params, $format, null, $app->request->getReferrer());
 
+            /* if organisation is param, make the pdf file name with it */
             if ($conf->getOrganisationName() != null) {
                 $fileFolder = str_replace('/', '__', $series_path);
                 $fileName = preg_replace('/.[^.]*$/', '', $image);
@@ -400,6 +422,7 @@ $app->get(
             } else {
                 $pdf->download();
             }
+            /* delete tmp file */
             unlink($imageFilePath);
         }
     }

@@ -39,6 +39,7 @@
  * @package  Viewer
  * @author   Vincent Fleurette <vincent.fleurette@anaphore.eu>
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */
@@ -54,6 +55,7 @@ use \Analog\Analog;
  * @package  Viewer
  * @author   Vincent Fleurette <vincent.fleurette@anaphore.eu>
  * @author   Johan Cwiklinski <johan.cwiklinski@anaphore.eu>
+ * @author   Sebastien Chaptal <sebastien.chaptal@anaphore.eu>
  * @license  BSD 3-Clause http://opensource.org/licenses/BSD-3-Clause
  * @link     http://anaphore.eu
  */

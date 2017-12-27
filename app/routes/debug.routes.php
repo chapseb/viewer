@@ -44,6 +44,8 @@
 
 use \Bach\Viewer\Picture;
 
+
+/* old route for debug */
 $app->get(
     '/dbg/show/:uri',
     function ($uri) use ($app, $conf, $app_base_url) {
